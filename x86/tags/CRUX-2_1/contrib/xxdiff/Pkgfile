@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.10 2005/03/29 12:10:59 jw Exp $
+# $Id: Pkgfile,v 1.11 2005/04/14 09:30:39 jw Exp $
 # Packager:    Johannes Winkelmann, jw at tks6 dot net
 # Maintainer:  Johannes Winkelmann, jw at tks6 dot net
 # Description: graphical file and directories comparator and merge tool
@@ -6,7 +6,7 @@
 # Depends:     qt3 
 
 name=xxdiff
-version=3.0.4
+version=3.1
 release=1
 source=(http://dl.sourceforge.net/sourceforge/${name}/${name}-${version}.tar.gz\
     ftp://ftp.trolltech.com/freebies/tmake/tmake-1.8.tar.gz \
