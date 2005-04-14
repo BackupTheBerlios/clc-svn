@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.23 2005/04/12 18:51:27 per Exp $
+# $Id: Pkgfile,v 1.24 2005/04/14 22:28:16 per Exp $
 # Maintainer: Per Lidén <per@fukt.bth.se>
 
 name=glibc
@@ -6,12 +6,13 @@ version=2.3.5
 release=1
 source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.bz2 \
 	http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-2.6.11.2.tar.bz2 \
-	hosts resolv.conf nsswitch.conf host.conf ld.so.conf)
+	$name-$version-execvp.patch hosts resolv.conf nsswitch.conf host.conf ld.so.conf)
 
 build() {
     mkdir -p $PKG/usr/include
     cp -r linux-libc-headers-2.6.11.2/include/linux $PKG/usr/include/linux
     cp -r linux-libc-headers-2.6.11.2/include/asm-i386 $PKG/usr/include/asm
+    patch -p0 < $name-$version-execvp.patch
     mkdir build
     cd build
     ../$name-$version/configure --prefix=/usr \

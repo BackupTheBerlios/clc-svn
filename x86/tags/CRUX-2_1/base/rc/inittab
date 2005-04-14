@@ -23,6 +23,7 @@ c3:2:respawn:/sbin/agetty 38400 vc/3 linux
 c4:2:respawn:/sbin/agetty 38400 vc/4 linux
 c5:2:respawn:/sbin/agetty 38400 vc/5 linux
 c6:2:respawn:/sbin/agetty 38400 vc/6 linux
+#s1:2:respawn:/sbin/agetty 38400 tts/0 vt100
 
 ca::ctrlaltdel:/sbin/shutdown -t3 -r now
 
