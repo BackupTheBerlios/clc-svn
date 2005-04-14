@@ -90,15 +90,6 @@ sync_ports(){
 		fi		
 	done
 	
-	if [ ! "$ignore_tag_files" = "true" ]; then  #trim ports lacking .sync files
-		
-		ports=`find $2 -mindepth 2 -type d`
-		
-		for port in $ports; do
-			test -f $port/.sync || rm -rf $port
-		done		
-	fi
-	
 	echo "  Synced:   $synced" | sed 's/  /\n/g'
 	echo "  Failed:   $failed" | sed 's/  /\n/g'
 }
@@ -113,10 +104,15 @@ merge_ports(){
 	
 	mv $3/.current $3/.prev 2>/dev/null
 	
-	ports=`find $2 -mindepth 2 -type d | sort`		
+	if [ "$ignore_tag_files" = "true" ]; then  #merge all ports
+		ports=`find $2 -mindepth 2 -type d | sort`
+	else  #or only tagged ones
+		ports=`find $2 -mindepth 3 -name .sync | sed 's|/\.sync||' | sort`
+	fi
+		
 	for port in $ports; do  #prune duplicates, notify affected parties
 		
-		p=`basename $port`;
+		p=`basename $port`
 		
 		echo "$duplicated" | grep " $p " >/dev/null && continue
 		paths=`echo "$ports" | grep "/$p$"`
@@ -189,13 +185,13 @@ case $1 in
 		ensure_path $base "r"
 		ensure_path $opt "r"
 		
-		export GLOBIGNORE="TARBALL"  #keep archive in $destination
-		
 		mkdir -p $destination; ensure_path $destination "w"
 		mkdir -p $attic; ensure_path $attic "w"
 		
-		chmod 700 $destination $attic  #drop permissions for merge
-		mv -f $destination/* $attic 2>/dev/null
+		export GLOBIGNORE="TARBALL:.*"  #keep archive and dotfiles
+		
+		chmod 700 $destination $attic  #drop permissions for merge		
+		(cd $destination; mv -f * $attic 2>/dev/null)
 				
 		merge_ports $collections $work $destination $attic
 		chmod 755 $destination $attic  #and then restore them

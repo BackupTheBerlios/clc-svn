@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.2 2005/04/14 15:48:07 jdolan Exp $
+# $Id: Pkgfile,v 1.3 2005/04/14 21:30:42 jdolan Exp $
 # Description: Maintain a merged httpup ports repository
 # Maintainer: Jay Dolan jasonthomasdolan at yahoo dot com
 # Url: http://clc.morpheus.net/portdb
@@ -6,7 +6,7 @@
 
 name=prtsync
 version=0.4
-release=1
+release=2
 source=(prtsync prtsync.conf prtsync.8 sample.httpup)
 
 build(){
