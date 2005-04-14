@@ -10,3 +10,6 @@ drwxr-xr-x	root/root	usr/man/man8/
 drwxr-xr-x	root/root	var/
 drwxr-xr-x	root/root	var/lib/
 drwxr-xr-x	root/root	var/lib/prtsync/
+drwxr-xr-x	root/root	var/lib/prtsync/attic/
+drwxr-xr-x	root/root	var/lib/prtsync/dest/
+drwxr-xr-x	root/root	var/lib/prtsync/work/

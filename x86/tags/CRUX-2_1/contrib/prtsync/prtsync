@@ -23,12 +23,16 @@ ensure_path(){
 	fi
 }
 
-#  Sends a notification email to address(es) $1 with subject $2 
+#  Sends a Cc notification email to address(es) $1 with subject $2 
 #  and body $3.  Mails are always sent to $mailer.
 notify(){
-	/usr/sbin/sendmail -f$mailer $mailer $1 <<-EOF  
-	Subject: $2
+	/usr/sbin/sendmail -t -f$mailer <<-EOF
+	To: $mailer
+	`for recipient in $1; do echo Cc: $recipient; done`
+	Subject: $2	
+	
 	$3
+	
 	Please rectify the problem.
 EOF
 }
@@ -99,8 +103,10 @@ sync_ports(){
 	echo "  Failed:   $failed" | sed 's/  /\n/g'
 }
 
-#  Merges ports in $2 to $3, pruning any duplicates.  Notifications are 
-#  made to addresses specified in the collections defined in $1.
+#  Merges ports in $2 to $3, notifying of any duplicates.  Notifications are 
+#  made to addresses specified in the collections defined in $1.  In the 
+#  event of a duplicate, the last stable version of a port from the attic $4
+#  is used if available.
 merge_ports(){
 	
 	echo "Merging ports in $2 to $3.."
@@ -110,23 +116,25 @@ merge_ports(){
 	ports=`find $2 -mindepth 2 -type d | sort`		
 	for port in $ports; do  #prune duplicates, notify affected parties
 		
-		p=`basename $port`; drivers=""
+		p=`basename $port`;
 		
 		echo "$duplicated" | grep " $p " >/dev/null && continue
 		paths=`echo "$ports" | grep "/$p$"`
 		
 		if [ `echo "$paths" | wc -l` -gt 1 ]; then  #duplicate found, notify
 						
-			drivers=`echo "$paths" | sed "s|^$2/|$1/|; s|/$p|.httpup|" | tr '\n' ' '`
-			emails=`fgrep -h "EMAIL=" $drivers | sed "s/EMAIL=//g" | tr '\n' ' '`
+			drivers=`echo -e "\n\n$paths" | sed "s|^$2/|$1/|; s|/$p|.httpup|g"`
+			emails=`fgrep -h "EMAIL=" $drivers | sed "s/EMAIL=//g"`
 			
-			notify "$emails" "Duplicate port $p" "Port $p found in $drivers."
+			notify "$emails" "Duplicate port $p" "Port $p found in:$drivers"
 			duplicated="$duplicated $p "
 			
-		else  #unique port, ensure not in base/opt and merge
-			test -d $base/$p -o -d $opt/$p || cp -r $port $3
-			echo $p >>$3/.current
+			test -d $4/$p && port=$4/$p || continue  #use attic or skip
 		fi
+		
+		test -d $base/$p -o -d $opt/$p || cp -r $port $3
+		echo $p >>$3/.current
+	
 	done
 				
 	if [ -f $3/.current ]; then  #generate REPO, ignoring archive
@@ -181,14 +189,16 @@ case $1 in
 		ensure_path $base "r"
 		ensure_path $opt "r"
 		
-		export GLOBIGNORE="TARBALL"  #keep archive
+		export GLOBIGNORE="TARBALL"  #keep archive in $destination
 		
-		mkdir -p $destination; ensure_path $destination "w";
-		chmod 700 $destination; rm -rf $destination/*
+		mkdir -p $destination; ensure_path $destination "w"
+		mkdir -p $attic; ensure_path $attic "w"
+		
+		chmod 700 $destination $attic  #drop permissions for merge
+		mv -f $destination/* $attic 2>/dev/null
 				
-		merge_ports $collections $work $destination
-						
-		chmod 755 $destination
+		merge_ports $collections $work $destination $attic
+		chmod 755 $destination $attic  #and then restore them
 		;;
 	*)  #show usage and exit
 		echo "Usage: prtsync [options] command" >&2
