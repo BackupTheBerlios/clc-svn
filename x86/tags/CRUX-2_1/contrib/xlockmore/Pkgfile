@@ -1,0 +1,23 @@
+# $Id: Pkgfile,v 1.3 2005/03/08 22:06:39 danm Exp $
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# URL: http://www.tux.org/~bagleyd/xlockmore.html 
+# Description: X Window System Lock Screen
+# Depends on: x11, esound, freetype, gtk, fortune
+
+name=xlockmore
+version=5.14.1
+release=1
+source=(ftp://anonymous:crux@ftp.tux.org/pub/tux/bagleyd/$name/$name-$version.tar.bz2)
+
+build(){
+	cd $name-$version
+	./configure --prefix=/usr --enable-vtlock --enable-syslog \
+		    --enable-multiple-user --enable-multiple-root \
+		    --disable-magick --without-motif --with-opengl \
+		    --with-esound
+	make
+	make prefix=$PKG/usr xapploaddir=$PKG/etc/X11/app-defaults install
+	if [ -d $PKG/usr/lib ]; then
+		rm -rf $PKG/usr/lib
+	fi
+}

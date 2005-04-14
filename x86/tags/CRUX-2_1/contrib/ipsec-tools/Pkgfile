@@ -1,0 +1,45 @@
+# $Id: Pkgfile,v 1.8 2005/03/29 19:27:13 danm Exp $
+# Description: KAME's IPsec utilities to the Linux-2.6 IPsec implementation
+# URL: http://ipsec-tools.sourceforge.net/
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: iputils
+
+name=ipsec-tools
+version=0.5.1
+release=1
+
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.bz2 \
+	$name-$version.patch racoon setkey setkey.conf Makefile)
+
+build() {
+	cd $name-$version
+	patch -p1 < ../$name-$version.patch
+
+	# FIX adminsockdir
+	sed -i 	-e 's|^adminsockdir =.*|adminsockdir = \$\{localstatedir\}/racoon/|g' \
+		-e 's|install-exec-local ||g' \
+		src/racoon/Makefile.in
+	
+	./configure --prefix=/usr \
+		    --bindir=/usr/sbin \
+		    --localstatedir=/var/lib \
+		    --sharedstatedir=/var/run \
+		    --sysconfdir=/etc/racoon \
+		    --libexecdir=/usr/lib/racoon \
+		    --enable-shared \
+		    --enable-natt \
+		    --enable-dpd \
+		    --enable-hybrid \
+		    --enable-adminport \
+		    --enable-frag \
+		    --with-kernel-headers=/usr/include
+	make
+	make DESTDIR=$PKG install
+	mkdir -p $PKG/etc/{rc.d,racoon/samples,racoon/certs}
+	install -m 755 $SRC/racoon ../setkey $PKG/etc/rc.d
+	install -m 600 $SRC/setkey.conf $PKG/etc/racoon
+	install -m 644 $SRC/Makefile $PKG/etc/racoon/certs
+
+	# Maybe you don't want these files 
+	cp src/racoon/samples/*.sample* $PKG/etc/racoon/samples
+}

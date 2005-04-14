@@ -1,0 +1,128 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+lrwxrwxrwx	root/root	usr/bin/acroread -> /usr/lib/Acrobat7/bin/acroread
+drwxr-xr-x	root/root	usr/lib/
+drwxr-xr-x	root/root	usr/lib/Acrobat7/
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Browser/
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Browser/intellinux/
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Browser/intellinux/nppdf.so
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/AcroVersion
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/Cert/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/Cert/curl-ca-bundle.crt
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/GlobalPrefs/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/GlobalPrefs/AttachmentPerms
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/GlobalPrefs/URLPerms
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/JavaScripts/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/JavaScripts/JSByteCodeLin.bin
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/JavaScripts/WebSearch.js
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/Legal/
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/Legal/ENU/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/Legal/ENU/License.html
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/Legal/ENU/license_ENU_uc.txt
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/Messages/
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/Messages/ENU/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/Messages/ENU/RdrMsgENU.pdf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/Messages/RdrMsgSplash.pdf
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/WebSearch/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Reader/WebSearch/WebSearchENU.pdf
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/SPPlugins/
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/SPPlugins/ADMPlugin.apl
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/bin/
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/bin/acroread
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libACE.so -> libACE.so.2.07
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libACE.so.2.07
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libAGM.so -> libAGM.so.4.14
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libAGM.so.4.14
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libAXE16SharedExpat.so
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libAXE8SharedExpat.so
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libAXSLE.so
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libBIB.so -> libBIB.so.1.1
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libBIB.so.1.1
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libCoolType.so -> libCoolType.so.5.01
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libCoolType.so.5.01
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libJP2K.so
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libResAccess.so -> libResAccess.so.0.1
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libResAccess.so.0.1
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libWRServices.so
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libadobelinguistic.so.2 -> libadobelinguistic.so.2.0.0
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libadobelinguistic.so.2.0.0
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libaglcnv.so -> libaglcnv.so.28.0
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libaglcnv.so.28 -> libaglcnv.so.28.0
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libaglcnv.so.28.0
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libagldata.so -> libagldata.so.28.0
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libagldata.so.28 -> libagldata.so.28.0
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libagldata.so.28.0
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libagli18n.so -> libagli18n.so.28.0
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libagli18n.so.28 -> libagli18n.so.28.0
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libagli18n.so.28.0
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libagluc.so -> libagluc.so.28.0
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libagluc.so.28 -> libagluc.so.28.0
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libagluc.so.28.0
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libcrypto.so -> libcrypto.so.0.9.6
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libcrypto.so.0 -> libcrypto.so.0.9.6
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libcrypto.so.0.9.6
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libcurl.so -> libcurl.so.2.0.2
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libcurl.so.2 -> libcurl.so.2.0.2
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libcurl.so.2.0.2
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libssl.so -> libssl.so.0.9.6
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libssl.so.0 -> libssl.so.0.9.6
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/lib/libssl.so.0.9.6
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/plug_ins/
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/plug_ins/SearchFind.api
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/Reader/intellinux/plug_ins/ewh.api
+lrwxrwxrwx	root/root	usr/lib/Acrobat7/Reader/intellinux/res -> ../../Resource
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Resource/
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Resource/CMap/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/CMap/Identity-H
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/CMap/Identity-V
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Resource/Font/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/AdobePiStd.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/CourierStd-Bold.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/CourierStd-BoldOblique.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/CourierStd-Oblique.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/CourierStd.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/MinionPro-Bold.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/MinionPro-BoldIt.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/MinionPro-It.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/MinionPro-Regular.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/MyriadPro-Bold.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/MyriadPro-BoldIt.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/MyriadPro-It.otf
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/MyriadPro-Regular.otf
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Resource/Font/PFM/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/PFM/SY______.PFM
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/PFM/zx______.pfm
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/PFM/zy______.pfm
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/SY______.PFB
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/ZX______.PFB
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Font/ZY______.PFB
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Resource/Icons/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Icons/AdobeReader.png
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Resource/Linguistics/
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Resource/Linguistics/LanguageNames/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/LanguageNames/DisplayLanguageNames.en_US.txt
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/brt04.lex
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/brt0401.lex
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/brt0402.lex
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/brt32.clx
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/brtphon.env
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/can112.lex
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/can32.clx
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/canphon.env
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/eng32.clx
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/engphon.env
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/usa86.lex
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/usa8601.lex
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/usa8602.lex
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/usa8603.lex
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Linguistics/Providers/Proximity/usa8604.lex
+drwxr-xr-x	root/root	usr/lib/Acrobat7/Resource/Support/
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Support/AdobeReader_GNOME.desktop
+-rw-r--r--	root/root	usr/lib/Acrobat7/Resource/Support/AdobeReader_KDE.desktop
+drwxr-xr-x	root/root	usr/lib/Acrobat7/bin/
+-rwxr-xr-x	root/root	usr/lib/Acrobat7/bin/acroread

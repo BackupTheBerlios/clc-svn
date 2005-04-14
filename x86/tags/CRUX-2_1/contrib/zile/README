@@ -1,0 +1,29 @@
+note:
+
+If you want to prepare zile to be used in single-user mode for
+emergencies proceed like this:
+
+    uncomment LDFLAGS=-static setting in the Pkgmk file and then pkgmk
+    -kw -f.
+
+    And then you have to reboot in single user mode. Put this at the
+    bootprompt:
+
+        linux init=/bin/sh
+
+    And then copy the terminfo file for linux to /usr on the root
+    partition.
+
+        # mount -o remount,rw /
+        # mount /usr
+
+        # cp /usr/share/terminfo/l/linux to /etc/linux
+        # umount /usr
+        # mkdir -p /usr/share/terminfo/l/
+        # mv /etc/linux /usr/share/terminfo/l/
+        # mount -o remount,ro /
+
+And now you can see zile work, even without /usr mounted.
+
+If you want your .zilerc to be used while your are in single usermode
+you have to copy it to /.zilerc

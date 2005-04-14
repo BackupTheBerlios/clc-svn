@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.5 2005/04/12 12:32:39 vector Exp $
+# Description: Console IM client with ICQ, Yahoo, MSN, AIM, Jabber support
+# URL: http://thekonst.net/centericq/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on: curl
+
+name=centericq
+version=4.20.0
+release=1
+source=(http://thekonst.net/download/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --disable-nls
+    make
+    make DESTDIR=$PKG install
+
+    install -m 644 centericq.1 $PKG/usr/man/man1
+    rm -rf $PKG/usr/include
+    rm $PKG/usr/{bin/cicqsync,man/man1/cicqsync.1}
+}

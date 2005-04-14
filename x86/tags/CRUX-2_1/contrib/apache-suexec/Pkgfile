@@ -1,0 +1,46 @@
+# $Id: Pkgfile,v 1.6 2005/04/04 16:33:43 jaeger Exp $
+# Description: Apache HTTP server version 2.0.x with suEXEC and SSL support
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# URL: http://httpd.apache.org/
+# Depends on: apr, gdbm, expat, openssl
+# Group: apache
+
+name=apache-suexec
+version=2.0.53
+release=1
+source=(http://www.apache.org/dist/httpd/httpd-$version.tar.gz \
+	crux.layout apache)
+
+build(){
+	cd httpd-$version
+	cat ../crux.layout >> config.layout
+	./configure --enable-layout=CRUX \
+		--with-apr=/usr \
+		--with-apr-util=/usr \
+		--enable-so \
+		--enable-modules=all \
+		--enable-mods-shared=all \
+		--enable-ssl \
+		--enable-deflate \
+		--with-gdbm \
+		--with-expat=/usr \
+		--with-mpm=prefork \
+		--enable-suexec \
+		--with-suexec-bin=/usr/sbin/suexec \
+		--with-suexec-caller=nobody \
+		--with-suexec-userdir=public_html \
+		--with-suexec-docroot=/var/www/htdocs \
+		--with-suexec-uidmin=100 \
+		--with-suexec-gidmin=100 \
+		--with-suexec-safepath=/bin:/usr/bin
+	make 
+	make DESTDIR=$PKG install
+
+	mkdir -p $PKG/etc/apache/{ssl.key,ssl.crt}
+	touch $PKG/etc/apache/ssl.key/server.key
+	touch $PKG/etc/apache/ssl.crt/server.crt
+	install -D -m 755 $SRC/apache $PKG/etc/rc.d/apache
+
+	rm -r $PKG/var/www/htdocs/*
+	chown -R root:root $PKG
+}

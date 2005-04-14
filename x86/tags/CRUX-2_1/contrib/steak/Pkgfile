@@ -1,0 +1,32 @@
+# $Id: Pkgfile,v 1.3 2005/03/08 22:06:39 danm Exp $
+# Description: German/English dictionary
+# URL: http://mars.tm.informatik.uni-frankfurt.de/~razi/steak/steak.html
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: gtk1
+
+name=steak
+version=1.7.3
+release=1
+source=(http://dl.sourceforge.net/sourceforge/steak/Steak.${version}.tar.bz2 \
+	$name-$version.patch)
+build(){
+	cd Steak
+	patch -p1 < ../$name-$version.patch
+	make
+	(cd Xsteak/; make -f Makefile_gtk_1.2 )
+
+	mkdir -p $PKG/usr/lib/Steak/Xsteak
+	mkdir $PKG/usr/bin
+
+	cp -r mini_steak_icon.xpm pinguin_steak_icon.xpm \
+	   copyrights.txt help.txt version.txt iso2txt \
+	   poll printbuffer spacefilter .Steakconfig \
+	   woerterbuch Datensatz/ $PKG/usr/lib/Steak 
+	
+	(cd Xsteak/;
+	   cp steak.xpm xsteak $PKG/usr/lib/Steak/Xsteak)
+	
+	(cd $PKG/usr/bin; \
+	   ln -s ../lib/Steak/woerterbuch steak; \
+	   ln -s ../lib/Steak/Xsteak/xsteak)
+}

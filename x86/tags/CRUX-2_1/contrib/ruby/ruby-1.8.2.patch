@@ -1,0 +1,12 @@
+diff -Nru ruby-1.8.2.orig/configure ruby-1.8.2/configure
+--- ruby-1.8.2.orig/configure	2004-12-26 13:33:31.651077207 +0100
++++ ruby-1.8.2/configure	2004-12-26 13:34:50.342488188 +0100
+@@ -15017,7 +15017,7 @@
+ _ACEOF
+ 
+ else
+-    arch="${target_cpu}-${target_os}"
++    arch="${target_os}"
+     cat >>confdefs.h <<_ACEOF
+ #define RUBY_PLATFORM "${arch}"
+ _ACEOF

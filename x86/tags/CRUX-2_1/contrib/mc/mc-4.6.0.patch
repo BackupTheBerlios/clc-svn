@@ -1,0 +1,2672 @@
+diff -Nru mc-4.6.0.orig/doc/mc.1.in mc-4.6.0/doc/mc.1.in
+--- mc-4.6.0.orig/doc/mc.1.in	2004-09-19 13:54:23.521124191 +0200
++++ mc-4.6.0/doc/mc.1.in	2004-09-19 13:54:52.303632367 +0200
+@@ -1385,8 +1385,10 @@
+ 	od -c %f
+ 
+ B	Edit a bug report and send it to root
+-	vi /tmp/mail.$$
+-	mail -s "Midnight Commander bug" root < /tmp/mail.$$
++	I=`mktemp ${MC_TMPDIR:-/tmp}/mail.XXXXXX` || exit 1
++	vi $I
++	mail -s "Midnight Commander bug" root < $I
++	rm -f $I
+ 
+ M	Read mail
+ 	emacs -f rmail
+diff -Nru mc-4.6.0.orig/edit/editcmd.c mc-4.6.0/edit/editcmd.c
+--- mc-4.6.0.orig/edit/editcmd.c	2004-09-19 13:54:23.653089842 +0200
++++ mc-4.6.0/edit/editcmd.c	2004-09-19 13:54:52.309630805 +0200
+@@ -1563,7 +1563,7 @@
+ static int sprintf_p (char *str, const char *fmt,...)
+ {
+     va_list ap;
+-    int n;
++    size_t n;
+     char *q, *p, *s = str;
+     char q1[32];
+     char *p1;
+@@ -1573,7 +1573,7 @@
+ 
+     while ((p = strchr (p, '%'))) {
+ 	n = p - q;
+-	strncpy (s, q, n);	/* copy stuff between format specifiers */
++	memcpy (s, q, n);	/* copy stuff between format specifiers */
+ 	s += n;
+ 	*s = 0;
+ 	q = p;
+@@ -2711,7 +2711,7 @@
+     int word_len = 0, i, num_compl = 0, max_len;
+     long word_start = 0;
+     char *bufpos;
+-    char match_expr[MAX_REPL_LEN];
++    char *match_expr;
+     struct selection compl[MAX_WORD_COMPLETIONS];	/* completions */
+ 
+     /* don't want to disturb another search */
+@@ -2728,9 +2728,7 @@
+     /* prepare match expression */
+     bufpos = &edit->buffers1[word_start >> S_EDIT_BUF_SIZE]
+ 	[word_start & M_EDIT_BUF_SIZE];
+-    strncpy (match_expr, bufpos, word_len);
+-    match_expr[word_len] = '\0';
+-    strcat (match_expr, "[a-zA-Z_0-9]+");
++    match_expr = g_strdup_printf ("%.*s[a-zA-Z_0-9]+", word_len, bufpos);
+ 
+     /* init search: backward, regexp, whole word, case sensitive */
+     edit_set_search_parameters (0, 1, 1, 1, 1);
+@@ -2762,6 +2760,8 @@
+     }
+ 
+     /* release memory before return */
++    g_free (match_expr);
++
+     for (i = 0; i < num_compl; i++)
+ 	g_free (compl[i].text);
+ 
+diff -Nru mc-4.6.0.orig/edit/syntax.c mc-4.6.0/edit/syntax.c
+--- mc-4.6.0.orig/edit/syntax.c	2004-09-19 13:54:23.657088801 +0200
++++ mc-4.6.0/edit/syntax.c	2004-09-19 13:54:52.311630285 +0200
+@@ -99,7 +99,8 @@
+     for (p = (unsigned char *) text, q = p + strlen ((char *) p); p < q; p++, i++) {
+ 	switch (*p) {
+ 	case '\001':
+-	    p++;
++	    if (++p > q)
++		return -1;
+ 	    for (;;) {
+ 		c = edit_get_byte (edit, i);
+ 		if (!*p)
+@@ -114,7 +115,8 @@
+ 	    }
+ 	    break;
+ 	case '\002':
+-	    p++;
++	    if (++p > q)
++		return -1;
+ 	    j = 0;
+ 	    for (;;) {
+ 		c = edit_get_byte (edit, i);
+@@ -150,12 +152,13 @@
+ 	    }
+ 	    break;
+ 	case '\003':
+-	    p++;
++	    if (++p > q)
++		return -1;
+ 	    c = -1;
+ 	    for (;; i++) {
+ 		d = c;
+ 		c = edit_get_byte (edit, i);
+-		for (j = 0; p[j] != '\003'; j++)
++		for (j = 0; p[j] != '\003' && p[j]; j++)
+ 		    if (c == p[j])
+ 			goto found_char2;
+ 		break;
+@@ -163,20 +166,23 @@
+ 		j = c;		/* dummy command */
+ 	    }
+ 	    i--;
+-	    while (*p != '\003')
++	    while (*p != '\003' && p <= q)
+ 		p++;
++	    if (p > q)
++		return -1;
+ 	    if (p[1] == d)
+ 		i--;
+ 	    break;
+ 	case '\004':
+-	    p++;
++	    if (++p > q)
++		return -1;
+ 	    c = edit_get_byte (edit, i);
+-	    for (; *p != '\004'; p++)
++	    for (; *p != '\004' && *p; p++)
+ 		if (c == *p)
+ 		    goto found_char3;
+ 	    return -1;
+ 	  found_char3:
+-	    for (; *p != '\004'; p++);
++	    for (; *p != '\004' && *p; p++);
+ 	    break;
+ 	default:
+ 	    if (*p != edit_get_byte (edit, i))
+@@ -534,14 +540,14 @@
+ 	if (!*fg)
+ 	    fg = 0;
+     if (fg) {
+-	strcpy (f, fg);
++	g_strlcpy (f, fg, sizeof (f));
+ 	p = strchr (f, '/');
+ 	if (p)
+ 	    *p = '\0';
+ 	fg = f;
+     }
+     if (bg) {
+-	strcpy (b, bg);
++	g_strlcpy (b, bg, sizeof (b));
+ 	p = strchr (b, '/');
+ 	if (p)
+ 	    *p = '\0';
+@@ -637,13 +643,13 @@
+ 	    check_a;
+ 	    if (!strcmp (*a, "left")) {
+ 		a++;
+-		strcpy (whole_left, *a);
++		g_strlcpy (whole_left, *a, sizeof (whole_left));
+ 	    } else if (!strcmp (*a, "right")) {
+ 		a++;
+-		strcpy (whole_right, *a);
++		g_strlcpy (whole_right, *a, sizeof (whole_right));
+ 	    } else {
+-		strcpy (whole_left, *a);
+-		strcpy (whole_right, *a);
++		g_strlcpy (whole_left, *a, sizeof (whole_left));
++		g_strlcpy (whole_right, *a, sizeof (whole_right));
+ 	    }
+ 	    a++;
+ 	    check_not_a;
+@@ -705,8 +711,8 @@
+ 	    bg = *a;
+ 	    if (*a)
+ 		a++;
+-	    strcpy (last_fg, fg ? fg : "");
+-	    strcpy (last_bg, bg ? bg : "");
++	    g_strlcpy (last_fg, fg ? fg : "", sizeof (last_fg));
++	    g_strlcpy (last_bg, bg ? bg : "", sizeof (last_bg));
+ 	    c->keyword[0]->color = this_try_alloc_color_pair (fg, bg);
+ 	    c->keyword[0]->keyword = g_strdup (" ");
+ 	    check_not_a;
+diff -Nru mc-4.6.0.orig/lib/cedit.menu mc-4.6.0/lib/cedit.menu
+--- mc-4.6.0.orig/lib/cedit.menu	2004-09-19 13:54:23.526122890 +0200
++++ mc-4.6.0/lib/cedit.menu	2004-09-19 13:54:52.314629504 +0200
+@@ -449,7 +449,7 @@
+ 
+ m       view `man'
+         MAN=%{Enter name of man:}
+-        TMPFILE=/tmp/mcview.$MAN.$$
++        TMPFILE=`mktemp ${MC_TMPDIR:-/tmp}/mcview.$MAN.$$` || exit 1
+         man -Pcat $MAN >$TMPFILE
+         mcview $TMPFILE
+         rm -f $TMPFILE
+diff -Nru mc-4.6.0.orig/lib/mc.menu mc-4.6.0/lib/mc.menu
+--- mc-4.6.0.orig/lib/mc.menu	2004-09-19 13:54:23.526122890 +0200
++++ mc-4.6.0/lib/mc.menu	2004-09-19 13:54:52.315629244 +0200
+@@ -14,9 +14,10 @@
+ 	
+ 
+ 0       Edit a bug report and send it to root
+-        ${EDITOR-vi} /tmp/mail.$$
+-	test -r /tmp/mail.$$ && mail root < /tmp/mail.$$
+-	rm -f /tmp/mail.$$
++	I=`mktemp ${MC_TMPDIR:-/tmp}/mail.XXXXXX` || exit 1
++	${EDITOR-vi} $I
++	test -r $I && mail root < $I
++	rm -f $I
+ 
+ =+ f \.1$ | f \.3$ | f \.4$ | f \.5$ | f \.6$ | f \.7$ | f \.8$ | f \.man$ & t r
+ 1       Display the file with roff -man
+@@ -112,8 +113,9 @@
+ 	CHECK=`awk '{print $1 ; exit}' %f` 2>/dev/null
+ 	case $CHECK in
+ 	  Newsgroups:|Path:)
+-	      cp %f /tmp/%f.$$ && sed '/^'"$CHECK"' /,/^$/d' /tmp/%f.$$ > %f
+-              [ "$?" = "0" ] && rm /tmp/%f.$$
++	      I=`mktemp ${MC_TMPDIR:-/tmp}/news.XXXXXX` || exit 1
++	      cp %f $I && sed '/^'"$CHECK"' /,/^$/d' $I > %f
++              [ "$?" = "0" ] && rm $I
+ 	      echo %f: header removed
+ 		;;
+ 	  *)
+@@ -126,7 +128,7 @@
+ 	set %t
+ 	while [ -n "$1" ]; do
+ 	  CHECK=`awk '{print $1 ; exit}' $1` 2>/dev/null
+-	  WFILE=/tmp/${1}.$$
++	  WFILE=`mktemp ${MC_TMPDIR:-/tmp}/news.XXXXXX` || exit 1
+ 	  case $CHECK in
+ 	    Newsgroups:|Path:)
+ 	      cp $1 $WFILE && sed '/^'"$CHECK"' /,/^$/d' $WFILE > $1
+diff -Nru mc-4.6.0.orig/slang/sltermin.c mc-4.6.0/slang/sltermin.c
+--- mc-4.6.0.orig/slang/sltermin.c	2004-09-19 13:54:23.677083596 +0200
++++ mc-4.6.0/slang/sltermin.c	2004-09-19 13:54:52.319628203 +0200
+@@ -267,9 +267,12 @@
+ 
+    if (NULL != (home = getenv ("HOME")))
+      {
+-	strncpy (home_ti, home, sizeof (home_ti) - 11);
+-	home_ti [sizeof(home_ti) - 11] = 0;
+-	strcat (home_ti, "/.terminfo");
++	size_t len = strlen (home);
++
++	if (len > sizeof (home_ti) - sizeof ("/.terminfo"))
++	  len = sizeof (home_ti) - sizeof ("/.terminfo");
++	memcpy (home_ti, home, len);
++	memcpy (home_ti + len, "/.terminfo", sizeof ("/.terminfo"));
+ 	Terminfo_Dirs [0] = home_ti;
+      }
+ 
+diff -Nru mc-4.6.0.orig/src/cmd.c mc-4.6.0/src/cmd.c
+--- mc-4.6.0.orig/src/cmd.c	2004-09-19 13:54:23.543118466 +0200
++++ mc-4.6.0/src/cmd.c	2004-09-19 13:54:52.322627422 +0200
+@@ -1132,7 +1132,7 @@
+ 
+ 	q = g_strdup_printf (_(" Symlink `%s\' points to: "), name_trunc (p, 32));
+ 
+-	i = readlink (p, buffer, MC_MAXPATHLEN);
++	i = readlink (p, buffer, MC_MAXPATHLEN - 1);
+ 	if (i > 0) {
+ 	    buffer [i] = 0;
+ 	    dest = input_expand_dialog (_(" Edit symlink "), q, buffer);
+diff -Nru mc-4.6.0.orig/src/command.c mc-4.6.0/src/command.c
+--- mc-4.6.0.orig/src/command.c	2004-09-19 13:54:23.547117425 +0200
++++ mc-4.6.0/src/command.c	2004-09-19 13:54:52.326626382 +0200
+@@ -258,7 +258,7 @@
+ WInput *
+ command_new (int y, int x, int cols)
+ {
+-    WInput *cmd = g_new (WInput, 1);
++    WInput *cmd;
+ 
+     cmd = input_new (y, x, DEFAULT_COLOR, cols, "", "cmdline");
+ 
+diff -Nru mc-4.6.0.orig/src/complete.c mc-4.6.0/src/complete.c
+--- mc-4.6.0.orig/src/complete.c	2004-09-19 13:54:23.553115864 +0200
++++ mc-4.6.0/src/complete.c	2004-09-19 13:54:52.329625601 +0200
+@@ -270,7 +270,7 @@
+ 	*temp = '$';
+ 	if (isbrace)
+ 	    temp [1] = '{';
+-        strncpy (temp + 1 + isbrace, *env_p, p - *env_p);
++        memcpy (temp + 1 + isbrace, *env_p, p - *env_p);
+         if (isbrace)
+             strcpy (temp + 2 + (p - *env_p), "}");
+         else
+@@ -605,8 +605,7 @@
+ 	    matches = i;
+             match_list [matches + 1] = NULL;
+ 	    match_list[0] = g_malloc (low + 1);
+-	    strncpy (match_list[0], match_list[1], low);
+-	    match_list[0][low] = 0;
++	    g_strlcpy (match_list[0], match_list[1], low + 1);
+ 	}
+     } else {				/* There were no matches. */
+         g_free (match_list);
+@@ -806,7 +805,7 @@
+ 	    	*(p++) = *(q++);
+ 	    *p = 0;
+ 	}
+-	strncpy (in->buffer + start, text, len - start + end);
++	memcpy (in->buffer + start, text, len - start + end);
+ 	in->point += len;
+ 	update_input (in, 1);
+ 	end += len;
+diff -Nru mc-4.6.0.orig/src/dir.c mc-4.6.0/src/dir.c
+--- mc-4.6.0.orig/src/dir.c	2004-09-19 13:54:23.544118206 +0200
++++ mc-4.6.0/src/dir.c	2004-09-19 13:54:52.331625080 +0200
+@@ -503,9 +503,11 @@
+     }
+ 
+     if (next_free) {
++	char *path = vfs_canon (".");
+ 	/* Add ".." except the root directory */
+-	if (strcmp (vfs_canon ("."), "/") != 0)
++	if (strcmp (path, "/") != 0)
+ 	    add_dotdot_to_list (list, next_free++);
++	g_free (path);
+ 	do_sort (list, sort, next_free - 1, reverse, case_sensitive);
+     } else {
+ 	tree_store_end_check ();
+@@ -576,7 +578,7 @@
+     int i, status, link_to_dir, stale_link;
+     struct stat buf;
+     int marked_cnt;
+-    GHashTable *marked_files = g_hash_table_new (g_str_hash, g_str_equal);
++    GHashTable *marked_files;
+ 
+     tree_store_start_check_cwd ();
+     dirp = mc_opendir (".");
+@@ -587,6 +589,7 @@
+ 	return set_zero_dir (list);
+     }
+ 
++    marked_files = g_hash_table_new (g_str_hash, g_str_equal);
+     alloc_dir_copy (list->size);
+     for (marked_cnt = i = 0; i < count; i++) {
+ 	dir_copy.list[i].fnamelen = list->list[i].fnamelen;
+@@ -622,6 +625,7 @@
+ 	       clean_dir (&dir_copy, count);
+ 	     */
+ 	    tree_store_end_check ();
++	    g_hash_table_destroy (marked_files);
+ 	    return next_free;
+ 	}
+ 
+@@ -655,9 +659,11 @@
+     tree_store_end_check ();
+     g_hash_table_destroy (marked_files);
+     if (next_free) {
++	char *path = vfs_canon (".");
+ 	/* Add ".." except the root directory */
+-	if (strcmp (vfs_canon ("."), "/") != 0)
++	if (strcmp (path, "/") != 0)
+ 	    add_dotdot_to_list (list, next_free++);
++	g_free (path);
+ 	do_sort (list, sort, next_free - 1, rev, case_sensitive);
+     } else
+ 	next_free = set_zero_dir (list);
+diff -Nru mc-4.6.0.orig/src/ext.c mc-4.6.0/src/ext.c
+--- mc-4.6.0.orig/src/ext.c	2004-09-19 13:54:23.545117946 +0200
++++ mc-4.6.0/src/ext.c	2004-09-19 13:54:52.334624300 +0200
+@@ -477,7 +477,6 @@
+     int found = 0;
+     int error_flag = 0;
+     int ret = 0;
+-    int old_patterns;
+     struct stat mystat;
+     int view_at_line_number;
+     char *include_target;
+@@ -559,8 +558,6 @@
+     }
+     mc_stat (filename, &mystat);
+ 
+-    old_patterns = easy_patterns;
+-    easy_patterns = 0;		/* Real regular expressions are needed :) */
+     include_target = NULL;
+     include_target_len = 0;
+     for (p = data; *p; p++) {
+@@ -593,11 +590,11 @@
+ 		/* Do not transform shell patterns, you can use shell/ for
+ 		 * that
+ 		 */
+-		if (regexp_match (p, filename, match_normal))
++		if (regexp_match (p, filename, match_regex))
+ 		    found = 1;
+ 	    } else if (!strncmp (p, "directory/", 10)) {
+ 		if (S_ISDIR (mystat.st_mode)
+-		    && regexp_match (p + 10, filename, match_normal))
++		    && regexp_match (p + 10, filename, match_regex))
+ 		    found = 1;
+ 	    } else if (!strncmp (p, "shell/", 6)) {
+ 		p += 6;
+@@ -683,7 +680,6 @@
+ 		break;
+ 	}
+     }
+-    easy_patterns = old_patterns;
+     if (error_flag)
+ 	return -1;
+     return ret;
+diff -Nru mc-4.6.0.orig/src/file.c mc-4.6.0/src/file.c
+--- mc-4.6.0.orig/src/file.c	2004-09-19 13:54:23.558114563 +0200
++++ mc-4.6.0/src/file.c	2004-09-19 13:54:52.338623259 +0200
+@@ -366,7 +366,7 @@
+ 	dst_is_symlink = 0;
+ 
+   retry_src_readlink:
+-    len = mc_readlink (src_path, link_target, MC_MAXPATHLEN);
++    len = mc_readlink (src_path, link_target, MC_MAXPATHLEN - 1);
+     if (len < 0) {
+ 	return_status =
+ 	    file_error (_(" Cannot read source link \"%s\" \n %s "),
+@@ -715,6 +715,7 @@
+ 	    gettimeofday (&tv_current, NULL);
+ 
+ 	    if (n_read > 0) {
++		char *t = buf;
+ 		n_read_total += n_read;
+ 
+ 		/* Windows NT ftp servers report that files have no
+@@ -729,9 +730,10 @@
+ 
+ 		/* dst_write */
+ 		while ((n_written =
+-			mc_write (dest_desc, buf, n_read)) < n_read) {
++			mc_write (dest_desc, t, n_read)) < n_read) {
+ 		    if (n_written > 0) {
+ 			n_read -= n_written;
++			t += n_written;
+ 			continue;
+ 		    }
+ 		    return_status =
+diff -Nru mc-4.6.0.orig/src/find.c mc-4.6.0/src/find.c
+--- mc-4.6.0.orig/src/find.c	2004-09-19 13:54:23.560114042 +0200
++++ mc-4.6.0/src/find.c	2004-09-19 13:54:52.341622478 +0200
+@@ -312,7 +312,7 @@
+     dir_stack *new;
+ 
+     new = g_new (dir_stack, 1);
+-    new->name = g_strdup (dir);
++    new->name = concat_dir_and_file (dir, "");
+     new->prev = dir_stack_base;
+     dir_stack_base = new;
+ }
+@@ -338,17 +338,9 @@
+ {
+     char *tmp_name;
+     static char *dirname;
+-    int i;
+ 
+-    if (dir [0] == PATH_SEP && dir [1] == PATH_SEP)
++    while (dir [0] == PATH_SEP && dir [1] == PATH_SEP)
+ 	dir++;
+-    i = strlen (dir);
+-    if (i){
+-	if (dir [i - 1] != PATH_SEP){
+-	    dir [i] = PATH_SEP;
+-	    dir [i + 1] = 0;
+-	}
+-    }
+ 
+     if (old_dir){
+ 	if (strcmp (old_dir, dir)){
+@@ -401,7 +393,7 @@
+     char ch = 0;
+     int  i = 0;
+ 
+-    do {
++    for (;;) {
+ 	if (*pos >= *n_read){
+ 	    *pos = 0;
+ 	    if ((*n_read = mc_read (file_fd, buf, buf_size)) <= 0)
+@@ -420,10 +412,12 @@
+ 	if (i >= buffer_size - 1){
+ 	    buffer = g_realloc (buffer, buffer_size += 80);
+ 	}
++	/* Strip newline to fix $ matching */
++	if (ch == '\n')
++	    break;
+ 
+ 	buffer [i++] = ch;
+-
+-    } while (ch != '\n');
++    }
+ 
+     *has_newline = ch ? 1 : 0;
+ 
+@@ -502,7 +496,7 @@
+ {
+     static struct dirent *dp   = 0;
+     static DIR  *dirp = 0;
+-    static char directory [MC_MAXPATHLEN+2];
++    static char *directory;
+     struct stat tmp_stat;
+     static int pos;
+     static int subdirs_left = 0;
+@@ -513,6 +507,10 @@
+ 	    mc_closedir (dirp);
+ 	    dirp = 0;
+ 	}
++	if (directory) {
++	    g_free (directory);
++	    directory = NULL;
++	}
+         dp = 0;
+ 	return 1;
+     }
+@@ -550,8 +548,9 @@
+ 		    break;
+ 	    } 
+ 	    
+-	    strcpy (directory, tmp);
+-	    g_free (tmp);
++	    if (directory)
++		g_free (directory);
++	    directory = tmp;
+ 
+ 	    if (verbose){
+ 		    char buffer [BUF_SMALL];
+@@ -582,8 +581,8 @@
+     tmp_name = concat_dir_and_file (directory, dp->d_name);
+ 
+     if (subdirs_left){
+-	mc_lstat (tmp_name, &tmp_stat);
+-	if (S_ISDIR (tmp_stat.st_mode)){
++	if (!mc_lstat (tmp_name, &tmp_stat)
++	    && S_ISDIR (tmp_stat.st_mode)){
+ 	    push_directory (tmp_name);
+ 	    subdirs_left--;
+ 	}
+diff -Nru mc-4.6.0.orig/src/info.c mc-4.6.0/src/info.c
+--- mc-4.6.0.orig/src/info.c	2004-09-19 13:54:23.564113001 +0200
++++ mc-4.6.0/src/info.c	2004-09-19 13:54:52.342622218 +0200
+@@ -123,7 +123,7 @@
+ 	    size_trunc_len (buffer1, 5, myfs_stats.avail, 1);
+ 	    size_trunc_len (buffer2, 5, myfs_stats.total, 1);
+ 	    printw (_("Free space: %s (%d%%) of %s"), buffer1, myfs_stats.total ?
+-		    100 * myfs_stats.avail / myfs_stats.total : 0, buffer2);
++		    (int) (100.0 * myfs_stats.avail / myfs_stats.total) : 0, buffer2);
+ 	} else
+ 	    addstr (_("No space information"));
+ 
+@@ -170,7 +170,7 @@
+ 	    printw (_("Size:      %s"), buffer);
+ #ifdef HAVE_ST_BLOCKS
+ 	    printw ((buf.st_blocks==1) ?
+-		_(" (%d block)") : _(" (%d blocks)"), buf.st_blocks);
++		_(" (%ld block)") : _(" (%ld blocks)"), (long) buf.st_blocks);
+ #endif
+ 	}
+ 	
+diff -Nru mc-4.6.0.orig/src/main.c mc-4.6.0/src/main.c
+--- mc-4.6.0.orig/src/main.c	2004-09-19 13:54:23.566112481 +0200
++++ mc-4.6.0/src/main.c	2004-09-19 13:54:52.347620917 +0200
+@@ -1300,7 +1300,7 @@
+ 	    concat_dir_and_file (panel->cwd, selection (panel)->fname);
+ 	int i;
+ 
+-	i = mc_readlink (p, buffer, MC_MAXPATHLEN);
++	i = mc_readlink (p, buffer, MC_MAXPATHLEN - 1);
+ 	g_free (p);
+ 	if (i > 0) {
+ 	    buffer[i] = 0;
+diff -Nru mc-4.6.0.orig/src/man2hlp.c mc-4.6.0/src/man2hlp.c
+--- mc-4.6.0.orig/src/man2hlp.c	2004-09-19 13:54:23.579109098 +0200
++++ mc-4.6.0/src/man2hlp.c	2004-09-19 13:54:52.349620396 +0200
+@@ -611,8 +611,7 @@
+ 	/* Bold text or italics text */
+ 	if (buffer[0] == '.' && (buffer[1] == 'I' || buffer[1] == 'B'))
+ 	    for (buffer += 2; *buffer == ' ' || *buffer == '\t'; buffer++);
+-	strncpy (old, buffer, sizeof (old) - 1);
+-	old[sizeof (old) - 1] = 0;
++	g_strlcpy (old, buffer, sizeof (old));
+ 	link_flag = 3;
+ 	break;
+     case 3:
+diff -Nru mc-4.6.0.orig/src/profile.c mc-4.6.0/src/profile.c
+--- mc-4.6.0.orig/src/profile.c	2004-09-19 13:54:23.577109618 +0200
++++ mc-4.6.0/src/profile.c	2004-09-19 13:54:52.352619616 +0200
+@@ -325,8 +325,7 @@
+     
+     s = GetSetProfileChar (set, AppName, KeyName, Default, FileName);
+     if (!set){
+-	ReturnedString [Size-1] = 0;
+-	strncpy (ReturnedString, s, Size-1);
++	g_strlcpy (ReturnedString, s, Size);
+    }
+     return 1;
+ }
+diff -Nru mc-4.6.0.orig/src/screen.c mc-4.6.0/src/screen.c
+--- mc-4.6.0.orig/src/screen.c	2004-09-19 13:54:23.556115083 +0200
++++ mc-4.6.0/src/screen.c	2004-09-19 13:54:52.356618575 +0200
+@@ -672,7 +672,7 @@
+ 	int  len;
+ 
+ 	link = concat_dir_and_file (panel->cwd, panel->dir.list [panel->selected].fname);
+-	len = mc_readlink (link, link_target, MC_MAXPATHLEN);
++	len = mc_readlink (link, link_target, MC_MAXPATHLEN - 1);
+ 	g_free (link);
+ 	if (len > 0){
+ 	    link_target[len] = 0;
+@@ -1045,7 +1045,6 @@
+     int  spaces, extra;
+     int  side, width;
+ 
+-    char *txt, buffer[30]; /*Hope that this is enough ;-) */
+     if (!panel->split)
+ 	adjust_top_file (panel);
+ 
+@@ -1068,21 +1067,16 @@
+ 
+ 	for (format = panel->format; format; format = format->next){
+             if (format->string_fn){
+-                txt = format->title;
+-
+-		header_len = strlen (txt);
++		header_len = strlen (format->title);
+ 		if (header_len > format->field_len){
+-		    strcpy (buffer, txt);
+-		    txt = buffer;
+-		    txt [format->field_len] = 0;
+-		    header_len = strlen (txt);
++		    header_len = format->field_len;
+ 		}
+ 
+                 attrset (MARKED_COLOR);
+                 spaces = (format->field_len - header_len) / 2;
+                 extra  = (format->field_len - header_len) % 2;
+-		printw ("%*s%-s%*s", spaces, "",
+-			 txt, spaces+extra, "");
++		printw ("%*s%.*s%*s", spaces, "",
++			header_len, format->title, spaces+extra, "");
+ 		width -= 2 * spaces + extra + header_len;
+ 	    } else {
+ 		attrset (NORMAL_COLOR);
+@@ -2021,7 +2015,7 @@
+ 	int i;
+ 	struct stat mybuf;
+ 
+-	i = readlink (selection (panel)->fname, buffer, MC_MAXPATHLEN);
++	i = readlink (selection (panel)->fname, buffer, MC_MAXPATHLEN - 1);
+ 	if (i < 0)
+ 	    return;
+ 	if (mc_stat (selection (panel)->fname, &mybuf) < 0)
+diff -Nru mc-4.6.0.orig/src/subshell.c mc-4.6.0/src/subshell.c
+--- mc-4.6.0.orig/src/subshell.c	2004-09-19 13:54:23.576109879 +0200
++++ mc-4.6.0/src/subshell.c	2004-09-19 13:54:52.359617794 +0200
+@@ -710,7 +710,9 @@
+     }
+ 
+     g_free (subshell_prompt);
++    g_free (pty_buffer);
+     subshell_prompt = NULL;
++    pty_buffer = NULL;
+ 
+     return quit;
+ }
+diff -Nru mc-4.6.0.orig/src/user.c mc-4.6.0/src/user.c
+--- mc-4.6.0.orig/src/user.c	2004-09-19 13:54:23.573110659 +0200
++++ mc-4.6.0/src/user.c	2004-09-19 13:54:52.361617274 +0200
+@@ -138,19 +138,14 @@
+ 	}
+ 	
+ 	/* Copy the variable name */
+-	var_name = g_malloc (dots - p);
+-	strncpy (var_name, p+4, dots-2 - (p+3));
+-	var_name [dots-2 - (p+3)] = 0;
+-
++	var_name = g_strndup (p + 4, dots - p - 5);
+ 	value = getenv (var_name);
+ 	g_free (var_name);
+ 	if (value){
+ 	    *v = g_strdup (value);
+ 	    return q-p;
+ 	}
+-	var_name = g_malloc (q - dots + 1);
+-	strncpy (var_name, dots, q - dots + 1);
+-	var_name [q-dots] = 0;
++	var_name = g_strndup (dots, q - dots);
+ 	*v = var_name;
+ 	return q-p;
+     }
+@@ -300,13 +295,15 @@
+ 
+ /* Copies a whitespace separated argument from p to arg. Returns the
+    point after argument. */
+-static char *extract_arg (char *p, char *arg)
++static char *extract_arg (char *p, char *arg, size_t size)
+ {
+     while (*p && (*p == ' ' || *p == '\t' || *p == '\n'))
+ 	p++;
+                 /* support quote space .mnu */
+-    while (*p && (*p != ' ' || *(p-1) == '\\') && *p != '\t' && *p != '\n')
++    while (size > 1 && *p && (*p != ' ' || *(p-1) == '\\') && *p != '\t' && *p != '\n') {
+ 	*arg++ = *p++;
++	size--;
++    }
+     *arg = 0;
+     if (!*p || *p == '\n')
+ 	p --;
+@@ -389,29 +386,29 @@
+ 	    p--;
+ 	    break;
+ 	case 'f': /* file name pattern */
+-	    p = extract_arg (p, arg);
++	    p = extract_arg (p, arg, sizeof (arg));
+ 	    *condition = panel && regexp_match (arg, panel->dir.list [panel->selected].fname, match_file);
+ 	    break;
+ 	case 'y': /* syntax pattern */
+             if (edit_widget && edit_widget->syntax_type) {
+-	        p = extract_arg (p, arg);
++	        p = extract_arg (p, arg, sizeof (arg));
+ 	        *condition = panel &&
+                     regexp_match (arg, edit_widget->syntax_type, match_normal);
+ 	    }
+                 break;
+ 	case 'd':
+-	    p = extract_arg (p, arg);
++	    p = extract_arg (p, arg, sizeof (arg));
+ 	    *condition = panel && regexp_match (arg, panel->cwd, match_file);
+ 	    break;
+ 	case 't':
+-	    p = extract_arg (p, arg);
++	    p = extract_arg (p, arg, sizeof (arg));
+ 	    *condition = panel && test_type (panel, arg);
+ 	    break;
+ 	case 'x': /* executable */
+ 	{
+ 	    struct stat status;
+ 	    
+-	    p = extract_arg (p, arg);
++	    p = extract_arg (p, arg, sizeof (arg));
+ 	    if (stat (arg, &status) == 0)
+ 		*condition = is_exe (status.st_mode);
+ 	    else
+@@ -431,50 +428,43 @@
+ static void
+ debug_out (char *start, char *end, int cond)
+ {
+-    static char msg [256];
++    static char *msg;
+     int len;
+ 
+     if (start == NULL && end == NULL){
+-	if (cond == 0){
+-	    /* Init */
+-	    msg [0] = 0;
+-	} else {
+-	    /* Show output */
+-	    if (!debug_flag)
+-		return;
++	/* Show output */
++	if (debug_flag && msg) {
+ 	    len = strlen (msg);
+ 	    if (len)
+ 		msg [len - 1] = 0;
+ 	    message (0, _(" Debug "), "%s", msg);
+-	    debug_flag = 0;
+ 	}
++	debug_flag = 0;
++	g_free (msg);
++	msg = NULL;
+     } else {
++	char *type, *p;
++
+ 	/* Save debug info for later output */
+ 	if (!debug_flag)
+ 	    return;
+ 	/* Save the result of the condition */
+ 	if (debug_error){
+-	    strcat (msg, _(" ERROR: "));
++	    type = _(" ERROR: ");
+ 	    debug_error = 0;
+ 	}
+ 	else if (cond)
+-	    strcat (msg, _(" True:  "));
++	    type = _(" True:  ");
+ 	else
+-	    strcat (msg, _(" False: "));
+-	/* Copy condition statement */
+-	len = strlen (msg);
+-	if (end == NULL){
+-	    /* Copy one character */
+-	    msg [len] = *start;
+-	    msg [len + 1] = 0;
+-	} else {
+-	    /* Copy many characters */
+-	    while (start < end){
+-		msg [len++] = *start++;
+-	    }
+-	    msg [len] = 0;
+-	}
+-	strcat (msg, " \n");
++	    type = _(" False: ");
++	/* This is for debugging, don't need to be super efficient.  */
++	if (end == NULL)
++	    p = g_strdup_printf ("%s%s%c \n", msg ? msg : "", type, *start);
++	else
++	    p = g_strdup_printf ("%s%s%.*s \n", msg ? msg : "", type,
++				 (int) (end - start), start);
++        g_free (msg);
++        msg = p;
+     }
+ }
+ 
+@@ -486,8 +476,6 @@
+     char operator;
+     char *debug_start, *debug_end;
+ 
+-    /* Init debugger */
+-    debug_out (NULL, NULL, 0);
+     /* Repeat till end of line */
+     while (*p && *p != '\n') {
+         /* support quote space .mnu */
+@@ -578,6 +566,8 @@
+ 		break;
+ 	    while (*commands == ' ' || *commands == '\t')
+ 	        commands++;
++	  if (*commands == '0')
++		break;
+ 	}
+ 	col++;
+ 	if (*commands == '\n')
+@@ -734,7 +724,7 @@
+ 	    } else if (*p == '+'){
+ 		if (*(p+1) == '='){
+ 		    /* Combined adding and default */
+-		    p = test_line (edit_widget, p, &accept_entry);
++		    p = test_line (edit_widget, p + 1, &accept_entry);
+ 		    if (selected == 0 && accept_entry)
+ 			selected = menu_lines;
+ 		} else {
+@@ -744,7 +734,7 @@
+ 	    } else if (*p == '='){
+ 		if (*(p+1) == '+'){
+ 		    /* Combined adding and default */
+-		    p = test_line (edit_widget, p, &accept_entry);
++		    p = test_line (edit_widget, p + 1, &accept_entry);
+ 		    if (selected == 0 && accept_entry)
+ 			selected = menu_lines;
+ 		} else {
+diff -Nru mc-4.6.0.orig/src/util.c mc-4.6.0/src/util.c
+--- mc-4.6.0.orig/src/util.c	2004-09-19 13:54:23.575110139 +0200
++++ mc-4.6.0/src/util.c	2004-09-19 13:54:52.364616493 +0200
+@@ -498,7 +498,7 @@
+     char *new_pattern;
+     int was_wildcard = 0;
+ 
+-    if (easy_patterns){
++    if ((match_type != match_regex) && easy_patterns){
+ 	new_pattern = g_malloc (MC_MAXPATHLEN);
+ 	d = new_pattern;
+ 	if (match_type == match_file)
+@@ -848,7 +848,7 @@
+ 	return NULL;
+     }
+ 
+-    strncpy (buffer, p, len);
++    memcpy (buffer, p, len);
+     g_free (p);
+ 
+     return buffer;
+@@ -1063,7 +1063,7 @@
+ 	if (!S_ISLNK (mybuf.st_mode))
+ 	    strcpy (r, p + 1);
+ 	else {
+-	    len = mc_readlink (path, buf2, MC_MAXPATHLEN);
++	    len = mc_readlink (path, buf2, MC_MAXPATHLEN - 1);
+ 	    if (len < 0) {
+ 		 g_free (buf);
+ 		 g_free (buf2);
+diff -Nru mc-4.6.0.orig/src/util.h mc-4.6.0/src/util.h
+--- mc-4.6.0.orig/src/util.h	2004-09-19 13:54:23.575110139 +0200
++++ mc-4.6.0/src/util.h	2004-09-19 13:54:52.366615973 +0200
+@@ -62,7 +62,7 @@
+ #define icase_search(T,D) _icase_search((T), (D), NULL)
+ 
+ /* Matching */
+-enum { match_file, match_normal };
++enum { match_file, match_normal, match_regex };
+ extern int easy_patterns;
+ char *convert_pattern (char *pattern, int match_type, int do_group);
+ int regexp_match (char *pattern, char *string, int match_type);
+diff -Nru mc-4.6.0.orig/src/utilunix.c mc-4.6.0/src/utilunix.c
+--- mc-4.6.0.orig/src/utilunix.c	2004-09-19 13:54:23.591105975 +0200
++++ mc-4.6.0/src/utilunix.c	2004-09-19 13:54:52.369615192 +0200
+@@ -280,9 +280,7 @@
+ 	if (!p){
+ 	    passwd = getpwnam (directory);
+ 	} else {
+-	    name = g_malloc (p - directory + 1);
+-	    strncpy (name, directory, p - directory);
+-	    name [p - directory] = 0;
++	    name = g_strndup (directory, p - directory);
+ 	    passwd = getpwnam (name);
+ 	    g_free (name);
+ 	}
+@@ -298,7 +296,7 @@
+ 
+ /*
+  * Return the directory where mc should keep its temporary files.
+- * This directory is (in Bourne shell terms) "${TMPDIR=/tmp}-$USER"
++ * This directory is (in Bourne shell terms) "${TMPDIR=/tmp}/mc-$USER"
+  * When called the first time, the directory is created if needed.
+  * The first call should be done early, since we are using fprintf()
+  * and not message() to report possible problems.
+@@ -372,6 +370,7 @@
+ 	if (fallback_ok) {
+ 	    fprintf (stderr, _("Temporary files will be created in %s\n"),
+ 		     sys_tmp);
++	    error = NULL;
+ 	} else {
+ 	    fprintf (stderr, _("Temporary files will not be created\n"));
+ 	    tmpdir = "/dev/null/";
+@@ -381,6 +380,9 @@
+ 	getc (stdin);
+     }
+ 
++    if (!error)
++	setenv ("MC_TMPDIR", tmpdir, 1);
++
+     return tmpdir;
+ }
+ 
+diff -Nru mc-4.6.0.orig/src/view.c mc-4.6.0/src/view.c
+--- mc-4.6.0.orig/src/view.c	2004-09-19 13:54:23.574110399 +0200
++++ mc-4.6.0/src/view.c	2004-09-19 13:54:52.373614151 +0200
+@@ -74,6 +74,10 @@
+ #   define IFAIX(x)
+ #endif
+ 
++#if GLIB_MAJOR_VERSION < 2
++# define g_try_malloc g_malloc
++#endif
++
+ #define vwidth (view->widget.cols - (view->have_frame ? 2 : 0))
+ #define vheight (view->widget.lines - (view->have_frame ? 2 : 0))
+ 
+@@ -308,7 +312,7 @@
+ 	    view->block_ptr = g_realloc (view->block_ptr,
+ 					 sizeof (block_ptr_t) * page);
+ 	    for (i = view->blocks; i < page; i++) {
+-		char *p = g_malloc (VIEW_PAGE_SIZE);
++		char *p = g_try_malloc (VIEW_PAGE_SIZE);
+ 		view->block_ptr[i].data = p;
+ 		if (!p)
+ 		    return '\n';
+@@ -336,7 +340,7 @@
+ 	    }
+ 	    view->blocks = page;
+ 	}
+-	if (byte_index > view->bytes_read) {
++	if (byte_index >= view->bytes_read) {
+ 	    return -1;
+ 	} else
+ 	    return view->block_ptr[page - 1].data[offset];
+@@ -589,7 +593,11 @@
+      * file into memory (alex@bcs.zaporizhzhe.ua). Also, mmap can fail
+      * for any reason, so we use this as fallback (pavel@ucw.cz) */
+ 
+-    view->data = (unsigned char *) g_malloc (view->s.st_size);
++    if ((gulong) view->s.st_size == view->s.st_size)
++      view->data = (unsigned char *) g_try_malloc (view->s.st_size);
++    else
++      view->data = NULL;
++
+     if (view->data == NULL
+ 	|| mc_lseek (view->file, 0, SEEK_SET) != 0
+ 	|| mc_read (view->file, view->data,
+@@ -821,7 +829,7 @@
+ 	if (w > 46) {
+ 	    widget_move (view, view->have_frame, 24 + view->have_frame);
+ 	    if (view->hex_mode)
+-		printw (_("Offset 0x%08x"), view->edit_cursor);
++		printw (_("Offset 0x%08lx"), view->edit_cursor);
+ 	    else
+ 		printw (_("Col %d"), -view->start_col);
+ 	}
+@@ -1513,33 +1521,41 @@
+     long i = 0;
+     int prev = 0;
+ 
++    if (!pos && direction == -1)
++	return 0;
++
+     /* skip over all the possible zeros in the file */
+     while ((ch = get_byte (view, pos)) == 0) {
++	if (!pos && direction == -1)
++	    return 0;
+ 	pos += direction;
+ 	i++;
+     }
+     *skipped = i;
+ 
+-    if (pos) {
+-	prev = get_byte (view, pos - 1);
++    if (!i && (pos || direction == -1)) {
++	prev = get_byte (view, pos - direction);
+ 	if ((prev == -1) || (prev == '\n'))
+ 	    prev = 0;
+     }
+ 
+-    for (i = 0; ch != -1; ch = get_byte (view, pos)) {
++    for (i = 1; ch != -1; ch = get_byte (view, pos)) {
+ 
+-	if (i == usable_size) {
++	if (i >= usable_size) {
+ 	    buffer = grow_string_buffer (buffer, &buffer_size);
+ 	    usable_size = buffer_size - 2;
+ 	}
+ 
++	buffer[i++] = ch;
++	if (!pos && direction == -1)
++	    break;
++
+ 	pos += direction;
+-	i++;
+ 
+ 	if (ch == '\n' || !ch) {
++	    i--;
+ 	    break;
+ 	}
+-	buffer[i] = ch;
+     }
+     if (buffer) {
+ 	buffer[0] = prev;
+diff -Nru mc-4.6.0.orig/src/widget.c mc-4.6.0/src/widget.c
+--- mc-4.6.0.orig/src/widget.c	2004-09-19 13:54:23.563113262 +0200
++++ mc-4.6.0/src/widget.c	2004-09-19 13:54:52.377613110 +0200
+@@ -607,7 +607,7 @@
+ 	if (!g->shown)
+ 	    printw ("%*s", gauge_len, "");
+ 	else {
+-	    long percentage, columns;
++	    int percentage, columns;
+ 	    long total = g->max, done = g->current;
+ 	    
+ 	    if (total <= 0 || done < 0) {
+@@ -1255,10 +1255,11 @@
+ {
+    int first = min (x_first, x_last);
+    int last  = max (x_first, x_last);
++   size_t len = strlen (&in->buffer [last]) + 1;
+ 
+    in->point = first;
+    in->mark  = first;
+-   strcpy (&in->buffer [first], &in->buffer [last]);
++   memmove (&in->buffer [first], &in->buffer [last], len);
+    in->need_push = 1;
+ }
+ 
+diff -Nru mc-4.6.0.orig/src/wtools.c mc-4.6.0/src/wtools.c
+--- mc-4.6.0.orig/src/wtools.c	2004-09-19 13:54:23.552116124 +0200
++++ mc-4.6.0/src/wtools.c	2004-09-19 13:54:52.379612590 +0200
+@@ -412,8 +412,7 @@
+ /* we need a unique name for tkname because widget.c:history_tool()
+    needs a unique name for each dialog - using the header is ideal */
+ 
+-    strncpy (tk_name + 3, header, 60);
+-    tk_name[63] = '\0';
++    g_strlcpy (tk_name + 3, header, 61);
+     quick_widgets[2].tkname = tk_name;
+ 
+     len = max (strlen (header), msglen (text, &lines)) + 4;
+diff -Nru mc-4.6.0.orig/vfs/cpio.c mc-4.6.0/vfs/cpio.c
+--- mc-4.6.0.orig/vfs/cpio.c	2004-09-19 13:54:23.641092964 +0200
++++ mc-4.6.0/vfs/cpio.c	2004-09-19 13:54:52.382611809 +0200
+@@ -103,9 +103,9 @@
+ 
+ static struct defer_inode * defer_find(struct defer_inode *l, struct defer_inode *i)
+ {
+-    if(!l) return NULL;
+-    return l->inumber == i->inumber && l->device == i->device ? l : 
+-	   defer_find(l->next, i);
++    while (l && (l->inumber != i->inumber || l->device != i->device))
++	l = l->next;
++    return l;
+ }
+ 
+ static int cpio_skip_padding(vfs_s_super *super)
+@@ -127,8 +127,14 @@
+ 
+ static void cpio_free_archive(vfs *me, vfs_s_super *super)
+ {
++    struct defer_inode *l, *lnext;
+     if(super->u.cpio.fd != -1)
+-	mc_close(super->u.cpio.fd);
++	mc_close(super->u.cpio.fd), super->u.cpio.fd = -1;
++    for (l = super->u.cpio.defered; l; l = lnext) {
++	lnext = l->next;
++	g_free (l);
++    }
++    super->u.cpio.defered = NULL;
+ }
+ 
+ static int cpio_open_cpio_file(vfs *me, vfs_s_super *super, char *name)
+@@ -246,26 +252,34 @@
+ #define HEAD_LENGTH (26)
+ static int cpio_read_bin_head(vfs *me, vfs_s_super *super)
+ {
+-    struct old_cpio_header buf;
++    union {
++	struct old_cpio_header buf;
++	short shorts[HEAD_LENGTH >> 1];
++    } u;
+     int len;
+     char *name;
+     struct stat stat;
+ 
+-    if((len = mc_read(super->u.cpio.fd, (char *)&buf, HEAD_LENGTH)) < HEAD_LENGTH)
++    if((len = mc_read(super->u.cpio.fd, (char *)&u.buf, HEAD_LENGTH)) < HEAD_LENGTH)
+ 	return STATUS_EOF;
+     CPIO_POS(super) += len;
+     if(super->u.cpio.type == CPIO_BINRE) {
+ 	int i;
+ 	for(i = 0; i < (HEAD_LENGTH >> 1); i++)
+-	    ((short *)&buf)[i] = GUINT16_SWAP_LE_BE(((short *)&buf)[i]);
++	    u.shorts[i] = GUINT16_SWAP_LE_BE(u.shorts[i]);
+     }
+-    g_assert(buf.c_magic == 070707);
++    g_assert(u.buf.c_magic == 070707);
+ 
+-    name = g_malloc(buf.c_namesize);
+-    if((len = mc_read(super->u.cpio.fd, name, buf.c_namesize)) < buf.c_namesize){
++    if (u.buf.c_namesize == 0 || u.buf.c_namesize > MC_MAXPATHLEN) {
++	message (1, MSG_ERROR, _("Corrupted cpio header encountered in\n%s"), super->name);
++	return STATUS_FAIL;
++    }
++    name = g_malloc(u.buf.c_namesize);
++    if((len = mc_read(super->u.cpio.fd, name, u.buf.c_namesize)) < u.buf.c_namesize){
+ 	g_free(name);
+ 	return STATUS_EOF;
+     }
++    name[u.buf.c_namesize - 1] = '\0';
+     CPIO_POS(super) += len;
+     cpio_skip_padding(super);
+ 
+@@ -274,15 +288,15 @@
+ 	return STATUS_TRAIL;
+     }
+ 
+-    stat.st_dev = buf.c_dev;
+-    stat.st_ino = buf.c_ino;
+-    stat.st_mode = buf.c_mode;
+-    stat.st_nlink = buf.c_nlink;
+-    stat.st_uid = buf.c_uid;
+-    stat.st_gid = buf.c_gid;
+-    stat.st_rdev = buf.c_rdev;
+-    stat.st_size = (buf.c_filesizes[0] << 16) | buf.c_filesizes[1];
+-    stat.st_atime = stat.st_mtime = stat.st_ctime = (buf.c_mtimes[0] << 16) | buf.c_mtimes[1];
++    stat.st_dev = u.buf.c_dev;
++    stat.st_ino = u.buf.c_ino;
++    stat.st_mode = u.buf.c_mode;
++    stat.st_nlink = u.buf.c_nlink;
++    stat.st_uid = u.buf.c_uid;
++    stat.st_gid = u.buf.c_gid;
++    stat.st_rdev = u.buf.c_rdev;
++    stat.st_size = (u.buf.c_filesizes[0] << 16) | u.buf.c_filesizes[1];
++    stat.st_atime = stat.st_mtime = stat.st_ctime = (u.buf.c_mtimes[0] << 16) | u.buf.c_mtimes[1];
+ 
+     return cpio_create_entry(me, super, &stat, name);
+ }
+@@ -310,11 +324,16 @@
+ 	return STATUS_FAIL;
+     }
+ 
++    if (hd.c_namesize == 0 || hd.c_namesize > MC_MAXPATHLEN) {
++	message (1, MSG_ERROR, _("Corrupted cpio header encountered in\n%s"), super->name);
++	return STATUS_FAIL;
++    }
+     name = g_malloc(hd.c_namesize);
+     if((len = mc_read(super->u.cpio.fd, name, hd.c_namesize)) < hd.c_namesize) {
+ 	g_free (name);
+ 	return STATUS_EOF;
+     }
++    name[hd.c_namesize - 1] = '\0';
+     CPIO_POS(super) +=  len;
+     cpio_skip_padding(super);
+ 
+@@ -365,11 +384,16 @@
+        (super->u.cpio.type == CPIO_CRC && hd.c_magic != 070702))
+ 	return STATUS_FAIL;
+ 
++    if (hd.c_namesize == 0 || hd.c_namesize > MC_MAXPATHLEN) {
++	message (1, MSG_ERROR, _("Corrupted cpio header encountered in\n%s"), super->name);
++	return STATUS_FAIL;
++    }
+     name = g_malloc(hd.c_namesize);
+     if((len = mc_read(super->u.cpio.fd, name, hd.c_namesize)) < hd.c_namesize){
+ 	g_free (name);
+ 	return STATUS_EOF;
+     }
++    name[hd.c_namesize - 1] = '\0';
+     CPIO_POS(super) += len;
+     cpio_skip_padding(super);
+ 
+@@ -430,7 +454,8 @@
+ 		message_3s(1, MSG_ERROR, _("Inconsistent hardlinks of\n%s\nin cpio archive\n%s"),
+ 			   name, super->name);
+ 		inode = NULL;
+-	    }
++	    } else if (!inode->st.st_size)
++		inode->st.st_size = stat->st_size;
+ 	}
+     }
+ 
+diff -Nru mc-4.6.0.orig/vfs/direntry.c mc-4.6.0/vfs/direntry.c
+--- mc-4.6.0.orig/vfs/direntry.c	2004-09-19 13:54:23.649090882 +0200
++++ mc-4.6.0/vfs/direntry.c	2004-09-19 13:54:52.385611028 +0200
+@@ -217,13 +217,11 @@
+ vfs_s_entry *
+ vfs_s_find_entry_tree (vfs *me, vfs_s_inode *root, char *path, int follow, int flags)
+ {
+-    unsigned int pseg;
++    size_t pseg;
+     vfs_s_entry *ent = NULL;
+-    char p[MC_MAXPATHLEN] = "";
++    char p[MC_MAXPATHLEN] = "", *t = p;
+ 
+     while (root){
+-	int t;
+-
+ 	while (*path == PATH_SEP)	/* Strip leading '/' */
+ 	    path++;
+ 
+@@ -233,9 +231,14 @@
+ 	for (pseg = 0; path[pseg] && path[pseg] != PATH_SEP; pseg++)
+ 		;
+ 
+-	strcat (p, PATH_SEP_STR);
+-	strncpy (p + (t = strlen (p)), path, pseg);
+-	p[t + pseg] = '\0';
++	if (t + pseg + sizeof (PATH_SEP_STR) > p + sizeof (p))
++	    ERRNOR (ENOMEM, NULL);
++
++	memcpy (t, PATH_SEP_STR, sizeof (PATH_SEP_STR) - 1);
++	t += sizeof (PATH_SEP_STR) - 1;
++	memcpy (t, path, pseg);
++	t += pseg;
++	*t = '\0';
+ 
+ 	for (ent = root->subdir; ent != NULL; ent = ent->next)
+ 	    if (strlen (ent->name) == pseg && (!strncmp (ent->name, path, pseg)))
+@@ -375,21 +378,31 @@
+ 
+     /* Convert absolute paths to relative ones */
+     if (*linkname == PATH_SEP) {
+-	char *p, *q;
++	char *p, *q, *r, *end;
+ 
+ 	for (p = path, q = entry->ino->linkname; *p == *q; p++, q++);
+ 	while (*(--q) != PATH_SEP);
+ 	q++;
++	r = buf;
++	end = buf + MC_MAXPATHLEN;
+ 	for (;; p++) {
+ 	    p = strchr (p, PATH_SEP);
+ 	    if (!p) {
+-		strcat (buf, q);
++		size_t len = strlen (q);
++
++		if (r + len >= end)
++		  break;
++
++		memcpy (r, q, len + 1);
++		linkname = buf;
+ 		break;
+ 	    }
+-	    strcat (buf, "..");
+-	    strcat (buf, PATH_SEP_STR);
++
++	    if (r + sizeof (".." PATH_SEP_STR) > end)
++		break;
++	    memcpy (r, ".." PATH_SEP_STR, sizeof (".." PATH_SEP_STR) - 1);
++	    r += sizeof (".." PATH_SEP_STR) - 1;
+ 	}
+-	linkname = buf;
+     }
+ 
+     return (MEDATA->find_entry) (me, entry->dir, linkname, follow - 1, 0);
+@@ -622,8 +635,7 @@
+ 	return NULL;
+ 
+     if (info->cur->name) {
+-	strncpy(dir.dent.d_name, info->cur->name, MC_MAXPATHLEN);
+-	dir.dent.d_name[MC_MAXPATHLEN] = 0;
++	g_strlcpy(dir.dent.d_name, info->cur->name, MC_MAXPATHLEN);
+     } else {
+ 	vfs_die("Null in structure-cannot happen");
+     }
+@@ -729,8 +741,7 @@
+     if (ino->linkname == NULL)
+ 	ERRNOR (EFAULT, -1);
+ 
+-    strncpy (buf, ino->linkname, size);
+-    *(buf+size-1) = 0;
++    g_strlcpy (buf, ino->linkname, size);
+     return strlen (buf);
+ }
+ 
+@@ -1037,7 +1048,7 @@
+     struct vfs_s_inode *ino;
+     char buf[MC_MAXPATHLEN];
+ 
+-    strncpy (buf, path, MC_MAXPATHLEN);
++    g_strlcpy (buf, path, MC_MAXPATHLEN);
+     ino = vfs_s_inode_from_path (me, path, FL_FOLLOW | FL_NONE);
+ 
+     if (!ino->localname)
+diff -Nru mc-4.6.0.orig/vfs/extfs/a.in mc-4.6.0/vfs/extfs/a.in
+--- mc-4.6.0.orig/vfs/extfs/a.in	2004-09-19 13:54:23.595104934 +0200
++++ mc-4.6.0/vfs/extfs/a.in	2004-09-19 13:55:51.189304963 +0200
+@@ -8,6 +8,13 @@
+ # 
+ 
+ # These mtools components must be in PATH for this to work
++
++sub quote {
++    $_ = shift(@_);
++    s/([^\w\/.+-])/\\$1/g;
++    return($_);
++}
++
+ $mmd = "mmd";
+ $mrd = "mrd";
+ $mdel = "mdel";
+@@ -15,7 +22,7 @@
+ $mcopy = "mcopy -noQ";
+ 
+ $0 =~ s|.*/||;
+-$disk = $0;
++$qdisk = quote($0);
+ 
+ $ENV{MTOOLS_DATE_STRING} = "mm-dd-yyyy";
+ $ENV{MTOOLS_TWENTY_FOUR_HOUR_CLOCK} = "1";
+@@ -29,29 +36,36 @@
+   /mkdir/ && do {
+     shift; shift;
+     exit 1 if scalar(@ARGV) != 1;
+-    system("$mmd $disk:/$ARGV[0] >/dev/null");
++    $qname = quote($ARGV[0]);
++    system("$mmd $qdisk:/$qname >/dev/null");
+     exit 0; };
+   /rmdir/ && do {
+     shift; shift;
+     exit 1 if scalar(@ARGV) != 1;
+-    system("$mrd $disk:/$ARGV[0] >/dev/null");
++    $qname = quote($ARGV[0]);
++    system("$mrd $qdisk:/$qname >/dev/null");
+     exit 0; };
+   /rm/ && do {
+     shift; shift;
+     exit 1 if scalar(@ARGV) != 1;
+-    system("$mdel $disk:/$ARGV[0] >/dev/null");
++    $qname = quote($ARGV[0]);
++    system("$mdel $qdisk:/$qname >/dev/null");
+     exit 0; };
+   /copyout/ && do {
+     shift; shift;
+     exit 1 if scalar(@ARGV) != 2;
+-    ( $src, $dest ) = @ARGV;
+-    system("$mcopy $disk:/$src $dest >/dev/null");
++    ( $qsrc, $qdest ) = @ARGV;
++    $qsrc = quote($qsrc);
++    $qdest = quote($qdest);
++    system("$mcopy $qdisk:/$qsrc $qdest >/dev/null");
+     exit 0; };
+   /copyin/ && do {
+     shift; shift;
+     exit 1 if scalar(@ARGV) != 2;
+-    ( $dest, $src ) = @ARGV;
+-    system("$mcopy $src $disk:/$dest >/dev/null");
++    ( $qdest, $qsrc ) = @ARGV;
++    $qsrc = quote($qsrc);
++    $qdest = quote($qdest);
++    system("$mcopy $qsrc $qdisk:/$qdest >/dev/null");
+     exit 0; };
+   /.*/ && do {                               # an unfamiliar command
+     exit 1; };
+@@ -59,11 +73,11 @@
+ 
+ sub get_dirs {
+   my ($path, $name, $size, $date, $time, $longname, @lst, @rv);
+-
+   $path = shift(@_);
++  my $qpath = quote($path);
+   @rv = ();
+ 
+-  open(FILE,"$mdir $disk:/$path |");
++  open(FILE,"$mdir $qdisk:/$qpath |");
+   while ( <FILE> ) {
+     chomp();
+     /^ / && next;                            # ignore `non-file' lines
+diff -Nru mc-4.6.0.orig/vfs/extfs/apt.in mc-4.6.0/vfs/extfs/apt.in
+--- mc-4.6.0.orig/vfs/extfs/apt.in	2004-09-19 13:54:23.598104154 +0200
++++ mc-4.6.0/vfs/extfs/apt.in	2004-09-19 13:55:51.191304443 +0200
+@@ -6,6 +6,12 @@
+ #
+ # apt
+ 
++sub quote {
++    $_ = shift(@_);
++    s/([^\w\/.+-])/\\$1/g;
++    return($_);
++}
++
+ sub bt
+ {
+     my ($dt) = @_;
+@@ -229,14 +235,16 @@
+ sub copyout
+ {
+     my($archive,$filename) = @_;
++    my $qarchive = quote($archive);
++    my $qfilename = quote($filename);
+     if( $archive eq 'CHECK' ) {
+-       system("apt-get -q check > $filename");
++       system("apt-get -q check > $qfilename");
+     } elsif( $archive eq 'AVAILABLE' ) {
+-       system("apt-cache dumpavail > $filename");
++       system("apt-cache dumpavail > $qfilename");
+     } elsif( $archive eq 'STATS' ) {
+-       system("apt-cache stats > $filename");
++       system("apt-cache stats > $qfilename");
+     } elsif( $archive eq 'CONFIG' ) {
+-       system("(apt-config dump 2>&1) > $filename");
++       system("(apt-config dump 2>&1) > $qfilename");
+     } elsif( $archive eq 'UPDATE' ) {
+        open O, ">$filename";
+        print O $pressupdate;
+@@ -246,12 +254,12 @@
+        print O $pressupgrade;
+        close O;
+     } elsif( $archive eq 'apt.conf' ) {
+-       system("cp /etc/apt/apt.conf $filename");
++       system("cp /etc/apt/apt.conf $qfilename");
+     } elsif( $archive eq 'sources.list' ) {
+-       system("cp /etc/apt/sources.list $filename");
++       system("cp /etc/apt/sources.list $qfilename");
+     } elsif( $archive =~ /^CACHE\// ) {
+        $archive =~ s%^CACHE/%/var/cache/apt/archives/%;
+-       system("cp $archive $filename");
++       system("cp $qarchive $qfilename");
+     } else {
+        open O, ">$filename";
+        print O $archive, "\n";
+@@ -262,15 +270,17 @@
+ sub copyin
+ {
+     my($archive,$filename) = @_;
++    my $qarchive = quote($archive);
++    my $qfilename = quote($filename);
+     if( $archive =~ /\.deb$/ ) {
+-       system("dpkg -i $filename>/dev/null");
++       system("dpkg -i $qfilename>/dev/null");
+     } elsif( $archive eq 'apt.conf' ) {
+-       system("cp $filename /etc/apt/apt.conf");
++       system("cp $qfilename /etc/apt/apt.conf");
+     } elsif( $archive eq 'sources.list' ) {
+-       system("cp $filename /etc/apt/sources.list");
++       system("cp $qfilename /etc/apt/sources.list");
+     } elsif( $archive =~ /^CACHE\// ) {
+-       $archive =~ s%^CACHE/%/var/cache/apt/archives/%;
+-       system("cp $filename $archive");
++       $qarchive =~ s%^CACHE/%/var/cache/apt/archives/%;
++       system("cp $qfilename $qarchive");
+     } else {
+        die "extfs: cannot create regular file \`$archive\': Permission denied\n";
+     }
+@@ -293,19 +303,20 @@
+ sub rm
+ {
+     my($archive) = @_;
++    my $qarchive = quote($archive);
+     if( $archive =~ /^CACHE\// ) {
+-       $archive =~ s%^CACHE/%/var/cache/apt/archives/%;
+-       system("rm -f $archive");
++       $qarchive =~ s%^CACHE/%/var/cache/apt/archives/%;
++       system("rm -f $qarchive");
+     } elsif( $archive eq 'apt.conf' ) {
+        system("rm -f /etc/apt/apt.conf");
+     } elsif( $archive eq 'sources.list' ) {
+        system("rm -f /etc/apt/sources.list");
+     } elsif( $archive =~ /\.debd?$/ ) {
+        # uncommented and changed to use dpkg - alpha
+-       my $name = $archive;
+-       $name =~ s%.*/%%g;
+-       $name =~ s%_.*%%g;
+-       system("dpkg --remove $name >/dev/null");
++       my $qname = $qarchive;
++       $qname =~ s%.*/%%g;
++       $qname =~ s%_.*%%g;
++       system("dpkg --remove $qname >/dev/null");
+        die("extfs: $archive: Operation not permitted\n") if $? != 0;
+     } else {
+        die "extfs: $archive: Operation not permitted\n";
+diff -Nru mc-4.6.0.orig/vfs/extfs/deb.in mc-4.6.0/vfs/extfs/deb.in
+--- mc-4.6.0.orig/vfs/extfs/deb.in	2004-09-19 13:54:23.598104154 +0200
++++ mc-4.6.0/vfs/extfs/deb.in	2004-09-19 13:55:51.197302881 +0200
+@@ -19,6 +19,12 @@
+ # Copyright (C) 1997 Free Software Foundation
+ #
+ 
++sub quote {
++    $_ = shift(@_);
++    s/([^\w\/.+-])/\\$1/g;
++    return($_);
++}
++
+ sub mcdebfs_list
+ {
+ #
+@@ -26,8 +32,9 @@
+ #		Empty directories do not appear at all
+ #
+ 	local($archivename)=@_;
++	local $qarchivename = quote($archivename);
+ 	chop($date=`LC_ALL=C date "+%b %d %Y %H:%M"`);
+-	chop($info_size=`dpkg -I $archivename | wc -c`);
++	chop($info_size=`dpkg -I $qarchivename | wc -c`);
+ 	$install_size=length($pressinstall);
+ 
+ 	print "dr-xr-xr-x   1 root     root     0 $date CONTENTS\n";
+@@ -36,7 +43,7 @@
+ 	print "-r--r--r--   1 root     root     $info_size $date INFO\n";
+ 	print "-r-xr--r--   1 root     root     $install_size $date INSTALL\n";
+ 
+-	if ( open(PIPEIN, "dpkg-deb -c $archivename |") )
++	if ( open(PIPEIN, "dpkg-deb -c $qarchivename |") )
+ 	{
+ 		while(<PIPEIN>)
+ 		{
+@@ -81,7 +88,7 @@
+ 		}
+ 	}
+         # begin from Patrik Rak
+-        if ( open(PIPEIN, "dpkg-deb -I $archivename |") )
++        if ( open(PIPEIN, "dpkg-deb -I $qarchivename |") )
+         {
+                while(<PIPEIN>)
+                {
+@@ -109,16 +116,19 @@
+ sub mcdebfs_copyout
+ {
+ 	local($archive,$filename,$destfile)=@_;
++	local $qarchive = quote($archive);
++	local $qfilename = quote($filename);
++	local $qdestfile = quote($destfile);
+ 
+ 	if($filename eq "INFO")
+ 	{
+-		system("dpkg-deb -I $archive > $destfile");
++		system("dpkg-deb -I $qarchive > $qdestfile");
+         # begin from Patrik Rak
+         }
+         elsif($filename =~ /^DEBIAN/)
+         {
+-               $filename=~s!^DEBIAN/!!;
+-               system("dpkg-deb -I $archive $filename > $destfile");
++               $qfilename=~s!^DEBIAN/!!;
++               system("dpkg-deb -I $qarchive $qfilename > $qdestfile");
+         # end from Patrik Rak
+ 
+ 	}
+@@ -128,36 +138,32 @@
+ 		{
+ 			print FILEOUT $pressinstall;
+ 			close FILEOUT;
+-			system("chmod a+x $destfile");
++			system("chmod a+x $qdestfile");
+ 		}
+ 	}
+ 	else
+ 	{
+ 	# files can be prepended with ./ or not, depending on the version of tar
+-		$filename=~s!^CONTENTS/!!;
+-		system("dpkg-deb --fsys-tarfile $archive | tar xOf - $filename ./$filename > $destfile 2>/dev/null");
++		$qfilename=~s!^CONTENTS/!!;
++		system("dpkg-deb --fsys-tarfile $qarchive | tar xOf - $qfilename ./$qfilename > $qdestfile 2>/dev/null");
+ 	}
+ }
+ 
+ sub mcdebfs_run
+ {
+ 	local($archive,$filename)=@_;
++	local $qarchive = quote($archive);
+ 	if($filename eq "INSTALL")
+ 	{
+ 		print "Installing $archive\n";
+-		system("dpkg -i $archive");
++		system("dpkg -i $qarchive");
+ 	}
+ 	else
+ 	{
+-	        $suffix = "aaa";
+-		while (1) {
+-		    $tmpdir = "/tmp/mcdebfs.run".$$.$suffix;
+-		    last if mkdir $tmpdir, 0700;
+-		    $suffix++;
+-		    # Somebody is being really nasty, give up
+-		    exit 1 if $suffix eq "zzz";
+-		}
+-		
++		use File::Temp qw(mkdtemp);
++		my $template = "/tmp/mcdebfs.run.XXXXXX";
++		$template="$ENV{MC_TMPDIR}/mcdebfs.XXXXXX" if ($ENV{MC_TMPDIR});
++		$tmpdir = mkdtemp($template);
+ 		$tmpcmd="$tmpdir/run";
+ 		&mcdebfs_copyout($archive, $filename, $tmpcmd);
+ 		system("chmod u+x $tmpcmd");
+diff -Nru mc-4.6.0.orig/vfs/extfs/deba.in mc-4.6.0/vfs/extfs/deba.in
+--- mc-4.6.0.orig/vfs/extfs/deba.in	2004-09-19 13:54:23.596104674 +0200
++++ mc-4.6.0/vfs/extfs/deba.in	2004-09-19 13:55:51.193303922 +0200
+@@ -6,111 +6,25 @@
+ #
+ # deba
+ 
+-sub bt
+-{
+-    my ($dt) = @_;
+-    my (@time);
+-    @time = localtime($dt);
+-    $bt = sprintf "%02d-%02d-%d %02d:%02d", $time[4] + 1, $time[3],
+-		  $time[5] + 1900, $time[2], $time[1];
+-    return $bt;
+-}
+-
+-
+-sub ft
+-{
+-    my ($f) = @_;
+-    return "d" if -d $f;
+-    return "l" if -l $f;
+-    return "p" if -p $f;
+-    return "S" if -S $f;
+-    return "b" if -b $f;
+-    return "c" if -c $f;
+-    return "-";
+-}
+-
+-sub fm
+-{
+-    my ($n) = @_;
+-    my ($m);
+-
+-    if( $n & 0400 ) {
+-       $m .= "r";
+-    } else {
+-       $m .= "-";
+-    }
+-    if( $n & 0200 ) {
+-       $m .= "w";
+-    } else {
+-       $m .= "-";
+-    }
+-    if( $n & 04000 ) {
+-       $m .= "s";
+-    } elsif( $n & 0100 ) {
+-       $m .= "x";
+-    } else {
+-       $m .= "-";
+-    }
+-
+-    if( $n & 0040 ) {
+-       $m .= "r";
+-    } else {
+-       $m .= "-";
+-    }
+-    if( $n & 0020 ) {
+-       $m .= "w";
+-    } else {
+-       $m .= "-";
+-    }
+-    if( $n & 02000 ) {
+-       $m .= "s";
+-    } elsif( $n & 0010 ) {
+-       $m .= "x";
+-    } else {
+-       $m .= "-";
+-    }
+-
+-    if( $n & 0004 ) {
+-       $m .= "r";
+-    } else {
+-       $m .= "-";
+-    }
+-    if( $n & 0002 ) {
+-       $m .= "w";
+-    } else {
+-       $m .= "-";
+-    }
+-    if( $n & 01000 ) {
+-       $m .= "t";
+-    } elsif( $n & 0001 ) {
+-       $m .= "x";
+-    } else {
+-       $m .= "-";
+-    }
+-
+-    return $m;
+-}
+-
+-sub ls {
+-    my ($file) = @_;
+-    my @stat = stat($file);
+-    # mode, nlink, uid, gid, size, mtime, filename
+-    printf "%s%s %d %d %d %d %s CONTENTS%s\n", ft($file), fm($stat[2] & 07777),
+-    $stat[3], $stat[4], $stat[5], $stat[7], bt($stat[9]), $file;
++sub quote {
++    $_ = shift(@_);
++    s/([^\w\/.+-])/\\$1/g;
++    return($_);
+ }
+ 
+ sub list
+ {
+-       my($archive)=@_;
++       my($qarchive)=@_;
++       $qarchive = quote($qarchive);
+        chop($date=`LC_ALL=C date "+%b %d %Y %H:%M"`);
+-       chop($info_size=`apt-cache show $archive | wc -c`);
++       chop($info_size=`apt-cache show $qarchive | wc -c`);
+        $install_size=length($pressinstall);
+        $upgrade_size=length($pressupgrade);
+ 
+        print "-r--r--r--   1 root     root     $info_size $date INFO\n";
+ 
+-       chop($debd = `dpkg -s $archive | grep -i ^Version | sed 's/^version: //i'`);
+-       chop($deba = `apt-cache show $archive | grep -i ^Version | sed 's/^version: //i'`);
++       chop($debd = `dpkg -s $qarchive | grep -i ^Version | sed 's/^version: //i'`);
++       chop($deba = `apt-cache show $qarchive | grep -i ^Version | sed 's/^version: //i'`);
+        if( ! $debd ) {
+            print "-r-xr--r--   1 root     root     $install_size $date INSTALL\n";
+        } elsif( $debd ne $deba ) {
+@@ -121,20 +35,21 @@
+ sub copyout
+ {
+        my($archive,$filename,$destfile)=@_;
+-
++       my $qarchive = quote($archive);
++       my $qdestfile = quote($destfile);
+        if($filename eq "INFO") {
+-           system("apt-cache show $archive > $destfile");
++           system("apt-cache show $qarchive > $qdestfile");
+         } elsif($filename eq "INSTALL")        {
+-           if ( open(FILEOUT,">$destfile") ) {
++           if ( open(FILEOUT, "> $destfile") ) {
+                print FILEOUT $pressinstall;
+                close FILEOUT;
+-               system("chmod a+x $destfile");
++               system("chmod a+x $qdestfile");
+            }
+        } elsif($filename eq "UPGRADE") {
+-           if ( open(FILEOUT,">$destfile") ) {
++           if ( open(FILEOUT, ">, $destfile") ) {
+                print FILEOUT $pressupgrade;
+                close FILEOUT;
+-               system("chmod a+x $destfile");
++               system("chmod a+x $qdestfile");
+            }
+        } else {
+            die "extfs: $filename: No such file or directory\n";
+@@ -144,10 +59,11 @@
+ sub run
+ {
+        my($archive,$filename)=@_;
++       my $qarchive = quote($archive);
+        if($filename eq "INSTALL") {
+-           system("apt-get install $archive");
++           system("apt-get install $qarchive");
+        } elsif($filename eq "UPGRADE") {
+-           system("apt-get install $archive");
++           system("apt-get install $qarchive");
+        } else {
+            die "extfs: $filename: Permission denied\n";
+        }
+diff -Nru mc-4.6.0.orig/vfs/extfs/debd.in mc-4.6.0/vfs/extfs/debd.in
+--- mc-4.6.0.orig/vfs/extfs/debd.in	2004-09-19 13:54:23.596104674 +0200
++++ mc-4.6.0/vfs/extfs/debd.in	2004-09-19 13:55:51.195303402 +0200
+@@ -6,6 +6,12 @@
+ #
+ # debd
+ 
++sub quote {
++    $_ = shift(@_);
++    s/([^\w\/.+-])/\\$1/g;
++    return($_);
++}
++
+ sub bt
+ {
+     my ($dt) = @_;
+@@ -102,8 +108,9 @@
+ sub list
+ {
+        my($archive)=@_;
++       my $qarchive = quote($archive);
+        chop($date=`LC_ALL=C date "+%b %d %Y %H:%M"`);
+-       chop($info_size=`dpkg -s $archive | wc -c`);
++       chop($info_size=`dpkg -s $qarchive | wc -c`);
+        $repack_size=length($pressrepack);
+        $reinstall_size=length($pressreinstall);
+        $remove_size=length($pressremove);
+@@ -118,7 +125,7 @@
+        print "-r--r--r--   1 root     root     $info_size $date INFO\n";
+        print "-r-xr--r--   1 root     root     $purge_size $date DPKG-PURGE\n";
+ 
+-       chop($status = `dpkg -s $archive | grep ^Status`);
++       chop($status = `dpkg -s $qarchive | grep ^Status`);
+        if( $status =~ /deinstall/ ) {
+            print "-r-xr--r--   1 root     root     $select_size $date DPKG-SELECT\n";
+        } elsif( $status =~ /install/ ) {
+@@ -141,7 +148,7 @@
+ 
+ 
+ 
+-       if ( open(PIPEIN, "LANG=C ls -l /var/lib/dpkg/info/$archive.* |") ) {
++       if ( open(PIPEIN, "LANG=C ls -l /var/lib/dpkg/info/$qarchive.* |") ) {
+            while(<PIPEIN>) {
+                chop;
+                next if /\.list$/;
+@@ -163,35 +170,38 @@
+ sub copyout
+ {
+        my($archive,$filename,$destfile)=@_;
++       my $qarchive = quote($archive);
++       my $qfilename = quote($filename);
++       my $qdestfile = quote($destfile);
+ 
+        if($filename eq "INFO") {
+-           system("dpkg -s $archive > $destfile");
++           system("dpkg -s $qarchive > $qdestfile");
+         } elsif($filename eq "DPKG-REPACK") {
+            if ( open(FILEOUT,">$destfile") ) {
+                print FILEOUT $pressrepack;
+                close FILEOUT;
+-               system("chmod a+x $destfile");
++               system("chmod a+x $qdestfile");
+            }
+         } elsif($filename =~ /^DEBIAN/) {
+             $filename=~s!^DEBIAN/!!;
+-            system("cat /var/lib/dpkg/info/$archive.$filename > $destfile");
++            system("cat /var/lib/dpkg/info/$qarchive.$qfilename > $qdestfile");
+        } elsif($filename eq "DPKG-REMOVE" || $filename eq "APT-REMOVE") {
+            if ( open(FILEOUT,">$destfile") ) {
+                print FILEOUT $pressremove;
+                close FILEOUT;
+-               system("chmod a+x $destfile");
++               system("chmod a+x $qdestfile");
+            }
+        } elsif($filename eq "DPKG-PURGE" || $filename eq "APT-PURGE") {
+            if ( open(FILEOUT,">$destfile") ) {
+                print FILEOUT $presspurge;
+                close FILEOUT;
+-               system("chmod a+x $destfile");
++               system("chmod a+x $qdestfile");
+            }
+        } elsif($filename eq "DPKG-RECONFIGURE") {
+            if ( open(FILEOUT,">$destfile") ) {
+                print FILEOUT $pressreconfigure;
+                close FILEOUT;
+-               system("chmod a+x $destfile");
++               system("chmod a+x $qdestfile");
+            }
+        } elsif($filename eq "APT-REINSTALL") {
+            if ( open(FILEOUT,">$destfile") ) {
+@@ -209,41 +219,43 @@
+            if ( open(FILEOUT,">$destfile") ) {
+                print FILEOUT $pressunselect;
+                close FILEOUT;
+-               system("chmod a+x $destfile");
++               system("chmod a+x $qdestfile");
+            }
+        } else {
+-           $filename=~s!^CONTENTS!!;
+-           system("cat $filename > $destfile");
++           $qfilename=~s!^CONTENTS!!;
++           system("cat $qfilename > $qdestfile");
+        }
+ }
+ 
+ sub run
+ {
+        my($archive,$filename)=@_;
++       my $qarchive = quote($archive);
++       my $qfilename = quote($filename);
+        if($filename eq "DPKG-REMOVE") {
+-           system("dpkg --remove $archive");
++           system("dpkg --remove $qarchive");
+        } elsif($filename eq "APT-REMOVE") {
+-           system("apt-get remove $archive");
++           system("apt-get remove $qarchive");
+        } elsif($filename eq "DPKG-PURGE") {
+-           system("dpkg --purge $archive");
++           system("dpkg --purge $qarchive");
+        } elsif($filename eq "APT-PURGE") {
+-           system("apt-get --purge remove $archive");
++           system("apt-get --purge remove $qarchive");
+        } elsif($filename eq "DPKG-REPACK") {
+-           system("dpkg-repack $archive");
++           system("dpkg-repack $qarchive");
+        } elsif($filename eq "DPKG-SELECT") {
+-           system("echo $archive install | dpkg --set-selections");
++           system("echo $aqrchive install | dpkg --set-selections");
+        } elsif($filename eq "DPKG-UNSELECT") {
+-           system("echo $archive deinstall | dpkg --set-selections");
++           system("echo $qarchive deinstall | dpkg --set-selections");
+        } elsif($filename eq "APT-REINSTALL") {
+-           system("apt-get -u --reinstall install $archive");
++           system("apt-get -u --reinstall install $qarchive");
+        } elsif($filename eq "DPKG-RECONFIGURE") {
+-           system("dpkg-reconfigure $archive");
++           system("dpkg-reconfigure $qarchive");
+        } elsif($filename=~/^DEBIAN/) {
+            $filename=~s!^DEBIAN!!;
+-           system("/var/lib/dpkg/info/$archive.$filename");
++           system("/var/lib/dpkg/info/$qarchive.$qfilename");
+        } else {
+-           $filename=~s!^CONTENTS!!;
+-           system($filename);
++           $qfilename=~s!^CONTENTS!!;
++           system($qfilename);
+        }
+ }
+ 
+diff -Nru mc-4.6.0.orig/vfs/extfs/dpkg.in mc-4.6.0/vfs/extfs/dpkg.in
+--- mc-4.6.0.orig/vfs/extfs/dpkg.in	2004-09-19 13:54:23.597104414 +0200
++++ mc-4.6.0/vfs/extfs/dpkg.in	2004-09-19 13:55:51.200302101 +0200
+@@ -6,6 +6,12 @@
+ #
+ # dpkg
+ 
++sub quote {
++    $_ = shift(@_);
++    s/([^\w\/.+-])/\\$1/g;
++    return($_);
++}
++
+ sub bt
+ {
+     my ($dt) = @_;
+@@ -183,20 +189,21 @@
+ sub copyout
+ {
+     my($archive,$filename) = @_;
++    my $qfilename = quote($filename);
+     if( $archive eq 'DIVERSIONS' ) {
+-       system("dpkg-divert --list > $filename 2>/dev/null");
++       system("dpkg-divert --list > $qfilename 2>/dev/null");
+     } elsif( $archive eq 'ARCHITECTURE' ) {
+-       system("dpkg-architecture > $filename 2>/dev/null");
++       system("dpkg-architecture > $qfilename 2>/dev/null");
+     } elsif( $archive eq 'LIST' ) {
+-       system("dpkg -l '*' > $filename 2>/dev/null");
++       system("dpkg -l '*' > $qfilename 2>/dev/null");
+     } elsif( $archive eq 'AUDIT' ) {
+-       system("dpkg --audit > $filename 2>/dev/null");
++       system("dpkg --audit > $qfilename 2>/dev/null");
+     } elsif( $archive eq 'GET-SELECTIONS' ) {
+-       system("dpkg --get-selections > $filename 2>/dev/null");
++       system("dpkg --get-selections > $qfilename 2>/dev/null");
+     } elsif( $archive eq 'STATUS' ) {
+-       system("cp /var/lib/dpkg/status $filename");
++       system("cp /var/lib/dpkg/status $qfilename");
+     } elsif( $archive eq 'AVAILABLE' ) {
+-       system("cp /var/lib/dpkg/available $filename");
++       system("cp /var/lib/dpkg/available $qfilename");
+     } elsif( $archive eq 'CONFIGURE' ) {
+        open O, ">$filename";
+        print O $pressconfigure;
+@@ -224,8 +231,9 @@
+ sub copyin
+ {
+     my($archive,$filename) = @_;
++    my $qfilename = quote($filename);
+     if( $archive =~ /\.deb$/ ) {
+-       system("dpkg -i $filename>/dev/null");
++       system("dpkg -i $qfilename>/dev/null");
+     } else {
+        die "extfs: cannot create regular file \`$archive\': Permission denied\n";
+     }
+@@ -252,12 +260,12 @@
+ {
+     my($archive) = @_;
+     if( $archive =~ /\.debd?$/ ) {
+-       my $name = $archive;
+-       $name =~ s%.*/%%g;
+-       $name =~ s%_.*%%g;
+-       system("if dpkg -s $name | grep ^Status | grep -qs config-files; \
+-           then dpkg --purge $name>/dev/null; \
+-           else dpkg --remove $name>/dev/null; fi");
++       my $qname = quote($archive);
++       $qname =~ s%.*/%%g;
++       $qname =~ s%_.*%%g;
++       system("if dpkg -s $qname | grep ^Status | grep -qs config-files; \
++           then dpkg --purge $qname>/dev/null; \
++           else dpkg --remove $qname>/dev/null; fi");
+        die("extfs: $archive: Operation not permitted\n") if $? != 0;
+     } else {
+        die "extfs: $archive: Operation not permitted\n";
+diff -Nru mc-4.6.0.orig/vfs/extfs/rpm mc-4.6.0/vfs/extfs/rpm
+--- mc-4.6.0.orig/vfs/extfs/rpm	2004-09-19 13:54:23.595104934 +0200
++++ mc-4.6.0/vfs/extfs/rpm	2004-09-19 13:54:52.390609727 +0200
+@@ -1,14 +1,17 @@
+ #! /bin/sh
+ #
+ # Written by Erik Troan (ewt@redhat.com) 1996
+-#            Jakub Jelinek (jj@sunsite.mff.cuni.cz) 1996
++#            Jakub Jelinek (jj@sunsite.mff.cuni.cz) 1996, 2004
+ #            Tomasz K³oczko (kloczek@rudy.mif.pg.gda.pl) 1997
+ # minor changes by Wojtek Pilorz (wpilorz@bdk.lublin.pl) 1997
+ # minor changes by Michele Marziani (marziani@fe.infn.it) 1997
+ # bug files by Marc Merlin (marcsoft@merlins.org) 1998
+ # locale bugfix by Michal Svec (rebel@penguin.cz) 2000
+-# (C) 1996 The Free Software Foundation.
++# Whitespace(s) & single quote(s) in filename workaround
++#   by Andrew V. Samoilov <sav@bcs.zp.ua> 2004
++# https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=64007
+ #
++# (C) 1996-2004 The Free Software Foundation.
+ #
+ 
+ # override any locale for dates
+@@ -22,6 +25,10 @@
+   RPM="rpm"
+ fi
+ RPM2CPIO="rpm2cpio"
++SED=sed
++# Surround the whole filename with single quotes and handle specially
++# \', ' and \ at the end of the string.
++SEDCMD="s/\\(\\\\\\?\\)'/'\\1\\1\\\\''/g;s/\\\\\$/'\\\\\\\\'/;s/^/'/;s/\$/'/"
+ 
+ mcrpmfs_list ()
+ {
+@@ -31,12 +38,13 @@
+     if test -z "$MCFASTRPM"; then
+       MCFASTRPM=$MCFASTRPM_DFLT
+     fi
++    f="`echo "$1" | $SED "$SEDCMD"`"
+     FILEPREF="-r--r--r--   1 root     root    "
+-    DESC=`$RPM -qip "$1" 2>/dev/null` || {
++    DESC=`$RPM -qip "$f" 2>/dev/null` || {
+ 	echo "$FILEPREF 0 "`date +"%b %d %H:%M"`" ERROR"
+ 	exit 1
+     }
+-    DATE=`$RPM -qp --qf "%{BUILDTIME:date}\n" "$1" | cut -c 5-11,21-24`
++    DATE=`$RPM -qp --qf "%{BUILDTIME:date}\n" "$f" | cut -c 5-11,21-24`
+     HEADERSIZE=`echo "$DESC" | wc -c`
+     echo "-r--r--r--   1 root     root  $HEADERSIZE $DATE HEADER"
+     echo "-r-xr-xr-x   1 root     root    39 $DATE INSTALL"
+@@ -47,25 +55,25 @@
+     echo "$FILEPREF 0 $DATE INFO/BUILDHOST"
+     echo "$FILEPREF 0 $DATE INFO/SOURCERPM"
+     if test "$MCFASTRPM" = 0 ; then
+-     test "`$RPM -qp --qf \"%{DISTRIBUTION}\" \"$1\"`" = "(none)" ||
++     test "`$RPM -qp --qf \"%{DISTRIBUTION}\" \"$f\"`" = "(none)" ||
+  	 echo "$FILEPREF 0 $DATE INFO/DISTRIBUTION"
+-     test "`$RPM -qp --qf \"%{VENDOR}\" \"$1\"`" = "(none)" ||
++     test "`$RPM -qp --qf \"%{VENDOR}\" \"$f\"`" = "(none)" ||
+ 	 echo "$FILEPREF 0 $DATE INFO/VENDOR"
+-     test "`$RPM -qp --qf \"%{DESCRIPTION}\" \"$1\"`" = "(none)" ||
++     test "`$RPM -qp --qf \"%{DESCRIPTION}\" \"$f\"`" = "(none)" ||
+          echo "$FILEPREF 0 $DATE INFO/DESCRIPTION"
+-     test "`$RPM -qp --qf \"%{SUMMARY}\" \"$1\"`" = "(none)" ||
++     test "`$RPM -qp --qf \"%{SUMMARY}\" \"$f\"`" = "(none)" ||
+          echo "$FILEPREF 0 $DATE INFO/SUMMARY"
+-     if test "`$RPM -qp --qf \"%{RPMTAG_PREIN}%{RPMTAG_POSTIN}%{RPMTAG_PREUN}%{RPMTAG_POSTUN}%{VERIFYSCRIPT}\" \"$1\"`" != "(none)(none)(none)(none)(none)"; then
++     if test "`$RPM -qp --qf \"%{RPMTAG_PREIN}%{RPMTAG_POSTIN}%{RPMTAG_PREUN}%{RPMTAG_POSTUN}%{VERIFYSCRIPT}\" \"$f\"`" != "(none)(none)(none)(none)(none)"; then
+ 	echo "dr-xr-xr-x   1 root     root     0 $DATE INFO/SCRIPTS"
+-	test "`$RPM -qp --qf \"%{RPMTAG_PREIN}\" \"$1\"`" = '(none)' ||
++	test "`$RPM -qp --qf \"%{RPMTAG_PREIN}\" \"$f\"`" = '(none)' ||
+ 	   echo "$FILEPREF 0 $DATE INFO/SCRIPTS/PREIN"
+-	test "`$RPM -qp --qf \"%{RPMTAG_POSTIN}\" \"$1\"`" = '(none)' ||
++	test "`$RPM -qp --qf \"%{RPMTAG_POSTIN}\" \"$f\"`" = '(none)' ||
+ 	   echo "$FILEPREF 0 $DATE INFO/SCRIPTS/POSTIN"
+-	test "`$RPM -qp --qf \"%{RPMTAG_PREUN}\" \"$1\"`" = '(none)' ||
++	test "`$RPM -qp --qf \"%{RPMTAG_PREUN}\" \"$f\"`" = '(none)' ||
+ 	   echo "$FILEPREF 0 $DATE INFO/SCRIPTS/PREUN"
+-	test "`$RPM -qp --qf \"%{RPMTAG_POSTUN}\" \"$1\"`" = '(none)' ||
++	test "`$RPM -qp --qf \"%{RPMTAG_POSTUN}\" \"$f\"`" = '(none)' ||
+ 	   echo "$FILEPREF 0 $DATE INFO/SCRIPTS/POSTUN"
+-	test "`$RPM -qp --qf \"%{VERIFYSCRIPT}\" \"$1\"`" = '(none)' ||
++	test "`$RPM -qp --qf \"%{VERIFYSCRIPT}\" \"$f\"`" = '(none)' ||
+ 	   echo "$FILEPREF 0 $DATE INFO/SCRIPTS/VERIFYSCRIPT"
+         echo "$FILEPREF 0 $DATE INFO/SCRIPTS/ALL"
+      fi
+@@ -83,15 +91,15 @@
+      echo "$FILEPREF 0 $DATE INFO/SCRIPTS/ALL"
+     fi
+     if test "$MCFASTRPM" = 0 ; then
+-     test "`$RPM -qp --qf \"%{PACKAGER}\" \"$1\"`" = "(none)" ||
++     test "`$RPM -qp --qf \"%{PACKAGER}\" \"$f\"`" = "(none)" ||
+ 	 echo "$FILEPREF 0 $DATE INFO/PACKAGER"
+-     test "`$RPM -qp --qf \"%{URL}\" \"$1\"`" = "(none)" ||
++     test "`$RPM -qp --qf \"%{URL}\" \"$f\"`" = "(none)" ||
+ 	 echo "$FILEPREF 0 $DATE INFO/URL"
+-     test "`$RPM -qp --qf \"%{SERIAL}\" \"$1\"`" = "(none)" ||
++     test "`$RPM -qp --qf \"%{SERIAL}\" \"$f\"`" = "(none)" ||
+ 	 echo "$FILEPREF 0 $DATE INFO/SERIAL"
+-     test "`$RPM -qp --qf \"%{COPYRIGHT}\" \"$1\"`" = "(none)" ||
++     test "`$RPM -qp --qf \"%{COPYRIGHT}\" \"$f\"`" = "(none)" ||
+ 	 echo "$FILEPREF 0 $DATE INFO/COPYRIGHT"
+-     test "`$RPM -qp --qf \"%{LICENSE}\" \"$1\"`" = "(none)" ||
++     test "`$RPM -qp --qf \"%{LICENSE}\" \"$f\"`" = "(none)" ||
+ 	 echo "$FILEPREF 0 $DATE INFO/LICENSE"
+     else
+ 	 echo "$FILEPREF 0 $DATE INFO/PACKAGER"
+@@ -105,13 +113,13 @@
+     echo "$FILEPREF 0 $DATE INFO/OS"
+     echo "$FILEPREF 0 $DATE INFO/SIZE"
+     if test "$MCFASTRPM" != 0 ; then
+-    $RPM -qp --qf "[%{REQUIRENAME}\n]" "$1" | grep "(none)" > /dev/null ||
++    $RPM -qp --qf "[%{REQUIRENAME}\n]" "$f" | grep "(none)" > /dev/null ||
+ 	echo "$FILEPREF 0 $DATE INFO/REQUIRENAME"
+-    $RPM -qp --qf "[%{OBSOLETES}\n]" "$1" | grep "(none)" > /dev/null ||
++    $RPM -qp --qf "[%{OBSOLETES}\n]" "$f" | grep "(none)" > /dev/null ||
+ 	echo "$FILEPREF 0 $DATE INFO/OBSOLETES"
+-    $RPM -qp --qf "[%{PROVIDES}\n]" "$1" | grep "(none)" > /dev/null ||
++    $RPM -qp --qf "[%{PROVIDES}\n]" "$f" | grep "(none)" > /dev/null ||
+ 	echo "$FILEPREF 0 $DATE INFO/PROVIDES"
+-    test "`$RPM -qp --qf \"%{CHANGELOGTEXT}\" \"$1\"`" = "(none)" ||
++    test "`$RPM -qp --qf \"%{CHANGELOGTEXT}\" \"$f\"`" = "(none)" ||
+        echo "$FILEPREF 0 $DATE INFO/CHANGELOG"
+     else 
+ 	echo "$FILEPREF 0 $DATE INFO/REQUIRENAME"
+@@ -126,41 +134,41 @@
+ 
+ mcrpmfs_copyout ()
+ {
++    f="`echo "$1" | $SED "$SEDCMD"`"
+     case "$2" in
+-	HEADER) $RPM -qip "$1" > "$3"; exit 0;;
+-	INSTALL) echo "# Run this to install this RPM package" > "$3"; exit 0;;
+-	UPGRADE) echo "# Run this to upgrade this RPM package" > "$3"; exit 0;;
+-	ERROR) $RPM -qip "$1" > /dev/null 2> "$3"; exit 0;;
+-	INFO/NAME-VERSION-RELEASE)	$RPM -qp --qf "%{NAME}-%{VERSION}-%{RELEASE}\n" "$1" > "$3"; exit 0;;
+-	INFO/RELEASE)		$RPM -qp --qf "%{RELEASE}\n" "$1" > "$3"; exit 0;;
+-	INFO/GROUP)		$RPM -qp --qf "%{GROUP}\n" "$1" > "$3"; exit 0;;
+-	INFO/DISTRIBUTION) 	$RPM -qp --qf "%{DISTRIBUTION}\n" "$1" > "$3"; exit 0;;
+-	INFO/VENDOR)		$RPM -qp --qf "%{VENDOR}\n" "$1" > "$3"; exit 0;;
+-	INFO/BUILDHOST)		$RPM -qp --qf "%{BUILDHOST}\n" "$1" > "$3"; exit 0;;
+-	INFO/SOURCERPM)		$RPM -qp --qf "%{SOURCERPM}\n" "$1" > "$3"; exit 0;;
+-	INFO/DESCRIPTION)	$RPM -qp --qf "%{DESCRIPTION}\n" "$1" > "$3"; exit 0;;
+-	INFO/PACKAGER)		$RPM -qp --qf "%{PACKAGER}\n" "$1" > "$3"; exit 0;;
+-	INFO/URL)		$RPM -qp --qf "%{URL}\n" "$1" >"$3"; exit 0;;
+-	INFO/BUILDTIME)		$RPM -qp --qf "%{BUILDTIME:date}\n" "$1" >"$3"; exit 0;;
+-	INFO/SERIAL)		$RPM -qp --qf "%{SERIAL}\n" "$1" >"$3"; exit 0;;
+-	INFO/COPYRIGHT)		$RPM -qp --qf "%{COPYRIGHT}\n" "$1" >"$3"; exit 0;;
+-	INFO/RPMVERSION)	$RPM -qp --qf "%{RPMVERSION}\n" "$1" >"$3"; exit 0;;
+-	INFO/REQUIRENAME)	$RPM -qp --qf "[%{REQUIRENAME} %{REQUIREFLAGS:depflags} %{REQUIREVERSION}\n]" "$1" >"$3"; exit 0;;
+-	INFO/PROVIDES)		$RPM -qp --qf "[%{PROVIDES}\n]" "$1" >"$3"; exit 0;;
+-	INFO/SCRIPTS/PREIN)	$RPM -qp --qf "%{RPMTAG_PREIN}\n" "$1" >"$3"; exit 0;;
+-	INFO/SCRIPTS/POSTIN)	$RPM -qp --qf "%{RPMTAG_POSTIN}\n" "$1" >"$3"; exit 0;;
+-	INFO/SCRIPTS/PREUN)	$RPM -qp --qf "%{RPMTAG_PREUN}\n" "$1" >"$3"; exit 0;;
+-	INFO/SCRIPTS/POSTUN)	$RPM -qp --qf "%{RPMTAG_POSTUN}\n" "$1" >"$3"; exit 0;;
+-	INFO/SCRIPTS/VERIFYSCRIPT)	$RPM -qp --qf "%{VERIFYSCRIPT}\n" "$1" >"$3"; exit 0;;
+-	INFO/SCRIPTS/ALL)		$RPM -qp --scripts "$1" > "$3"; exit 0;;
+-	INFO/SUMMARY)		$RPM -qp --qf "%{SUMMARY}\n" "$1" > "$3"; exit 0;;
+-	INFO/OS)		$RPM -qp --qf "%{OS}\n" "$1" > "$3"; exit 0;;
+-	INFO/CHANGELOG)		$RPM -qp --qf "[* %{CHANGELOGTIME:date} %{CHANGELOGNAME}\n%{CHANGELOGTEXT}\n\n]\n" "$1" > "$3"; exit 0;;
+-	INFO/SIZE)		$RPM -qp --qf "%{SIZE} bytes\n" "$1" > "$3"; exit 0;;
+-	CONTENTS.cpio)		$RPM2CPIO "$1" > "$3"; exit 0;;
++	HEADER) $RPM -qip "$f" > "$3"; exit 0;;
++  	INSTALL) echo "# Run this to install this RPM package" > "$3"; exit 0;;
++  	UPGRADE) echo "# Run this to upgrade this RPM package" > "$3"; exit 0;;
++	ERROR) $RPM -qip "$f" > /dev/null 2> "$3"; exit 0;;
++	INFO/NAME-VERSION-RELEASE)	$RPM -qp --qf "%{NAME}-%{VERSION}-%{RELEASE}\n" "$f" > "$3"; exit 0;;
++	INFO/RELEASE)		$RPM -qp --qf "%{RELEASE}\n" "$f" > "$3"; exit 0;;
++	INFO/GROUP)		$RPM -qp --qf "%{GROUP}\n" "$f" > "$3"; exit 0;;
++	INFO/DISTRIBUTION) 	$RPM -qp --qf "%{DISTRIBUTION}\n" "$f" > "$3"; exit 0;;
++	INFO/VENDOR)		$RPM -qp --qf "%{VENDOR}\n" "$f" > "$3"; exit 0;;
++	INFO/BUILDHOST)		$RPM -qp --qf "%{BUILDHOST}\n" "$f" > "$3"; exit 0;;
++	INFO/SOURCERPM)		$RPM -qp --qf "%{SOURCERPM}\n" "$f" > "$3"; exit 0;;
++	INFO/DESCRIPTION)	$RPM -qp --qf "%{DESCRIPTION}\n" "$f" > "$3"; exit 0;;
++	INFO/PACKAGER)		$RPM -qp --qf "%{PACKAGER}\n" "$f" > "$3"; exit 0;;
++	INFO/URL)		$RPM -qp --qf "%{URL}\n" "$f" >"$3"; exit 0;;
++	INFO/BUILDTIME)		$RPM -qp --qf "%{BUILDTIME:date}\n" "$f" >"$3"; exit 0;;
++	INFO/SERIAL)		$RPM -qp --qf "%{SERIAL}\n" "$f" >"$3"; exit 0;;
++	INFO/COPYRIGHT)		$RPM -qp --qf "%{COPYRIGHT}\n" "$f" >"$3"; exit 0;;
++	INFO/RPMVERSION)	$RPM -qp --qf "%{RPMVERSION}\n" "$f" >"$3"; exit 0;;
++	INFO/REQUIRENAME)	$RPM -qp --qf "[%{REQUIRENAME} %{REQUIREFLAGS:depflags} %{REQUIREVERSION}\n]" "$f" >"$3"; exit 0;;
++	INFO/PROVIDES)		$RPM -qp --qf "[%{PROVIDES}\n]" "$f" >"$3"; exit 0;;
++	INFO/SCRIPTS/PREIN)	$RPM -qp --qf "%{RPMTAG_PREIN}\n" "$f" >"$3"; exit 0;;
++	INFO/SCRIPTS/POSTIN)	$RPM -qp --qf "%{RPMTAG_POSTIN}\n" "$f" >"$3"; exit 0;;
++	INFO/SCRIPTS/PREUN)	$RPM -qp --qf "%{RPMTAG_PREUN}\n" "$f" >"$3"; exit 0;;
++	INFO/SCRIPTS/POSTUN)	$RPM -qp --qf "%{RPMTAG_POSTUN}\n" "$f" >"$3"; exit 0;;
++	INFO/SCRIPTS/VERIFYSCRIPT)	$RPM -qp --qf "%{VERIFYSCRIPT}\n" "$f" >"$3"; exit 0;;
++	INFO/SCRIPTS/ALL)		$RPM -qp --scripts "$f" > "$3"; exit 0;;
++	INFO/SUMMARY)		$RPM -qp --qf "%{SUMMARY}\n" "$f" > "$3"; exit 0;;
++	INFO/OS)		$RPM -qp --qf "%{OS}\n" "$f" > "$3"; exit 0;;
++	INFO/CHANGELOG)		$RPM -qp --qf "[* %{CHANGELOGTIME:date} %{CHANGELOGNAME}\n%{CHANGELOGTEXT}\n\n]\n" "$f" > "$3"; exit 0;;
++	INFO/SIZE)		$RPM -qp --qf "%{SIZE} bytes\n" "$f" > "$3"; exit 0;;
++  	CONTENTS.cpio)		$RPM2CPIO "$1" > "$3"; exit 0;;
+ 	*)
+-	    TMPDIR=/tmp/mctmpdir.$$
+-	    mkdir $TMPDIR || exit 1
++	    TMPDIR=`mktemp -d ${MC_TMPDIR:-/tmp}/mctmpdir-rpm.XXXXXX` || exit 1
+ 	    cd $TMPDIR
+ 	    # Files in RPM version 4 and above start with "./" - try both
+ 	    $RPM2CPIO "$1" | cpio -iumd --quiet "$2" "./$2" >/dev/null
+@@ -172,9 +180,10 @@
+ 
+ mcrpmfs_run ()
+ {
++    f="`echo "$1" | $SED "$SEDCMD"`"
+     case "$2" in
+-	INSTALL) echo "Installing \"$1\""; $RPM -ivh "$1"; exit 0;;
+-	UPGRADE) echo "Upgrading \"$1\""; $RPM -iUvh "$1"; exit 0;;
++	INSTALL) echo "Installing \"$1\""; $RPM -ivh "$f"; exit 0;;
++	UPGRADE) echo "Upgrading \"$1\""; $RPM -Uvh "$f"; exit 0;;
+     esac
+ }
+ 
+diff -Nru mc-4.6.0.orig/vfs/extfs/uar.in mc-4.6.0/vfs/extfs/uar.in
+--- mc-4.6.0.orig/vfs/extfs/uar.in	2004-09-19 13:54:23.599103894 +0200
++++ mc-4.6.0/vfs/extfs/uar.in	2004-09-19 13:54:52.391609467 +0200
+@@ -22,8 +22,7 @@
+ 
+ mcarfs_copyin ()
+ {
+-    TMPDIR=/tmp/mctmpdir-uar.$$
+-    mkdir $TMPDIR || exit 1
++    TMPDIR=`mktemp -d ${MC_TMPDIR:-/tmp}/mctmpdir-uar.XXXXXX` || exit 1
+     name=`basename "$2"`
+     (cd $TMPDIR && cp -fp "$3" $name && $XAR r "$1" $name)
+     rm -rf $TMPDIR
+diff -Nru mc-4.6.0.orig/vfs/extfs/uha.in mc-4.6.0/vfs/extfs/uha.in
+--- mc-4.6.0.orig/vfs/extfs/uha.in	2004-09-19 13:54:23.599103894 +0200
++++ mc-4.6.0/vfs/extfs/uha.in	2004-09-19 13:54:52.393608947 +0200
+@@ -31,8 +31,7 @@
+ 
+ mchafs_copyout ()
+ {
+-    TMPDIR="/tmp/mctmpdir-uha.$$"
+-    mkdir $TMPDIR || exit 1
++    TMPDIR=`mktemp -d ${MC_TMPDIR:-/tmp}/mctmpdir-uha.XXXXXX` || exit 1
+     cd $TMPDIR
+ 
+     $HA xyq "$1" "$2" >/dev/null
+diff -Nru mc-4.6.0.orig/vfs/extfs/ulha.in mc-4.6.0/vfs/extfs/ulha.in
+--- mc-4.6.0.orig/vfs/extfs/ulha.in	2004-09-19 13:54:23.599103894 +0200
++++ mc-4.6.0/vfs/extfs/ulha.in	2004-09-19 13:54:52.395608426 +0200
+@@ -35,12 +35,6 @@
+ LHA_GET="lha pq"
+ LHA_PUT="lha aq"
+ 
+-# Define a directory to create a temporary file for when
+-# running a command to be run from the archive
+-TMPDIR="/tmp/mctmpdir-uha.$$"
+-# Temporary file within the directory
+-TMPCMD=$TMPDIR/run
+-
+ # The 'list' command executive
+ 
+ mc_lha_fs_list()
+@@ -121,9 +115,9 @@
+ 
+ mc_lha_fs_run()
+ {
++   TMPDIR=`mktemp -d ${MC_TMPDIR:-/tmp}/mctmpdir-ulha.XXXXXX` || exit 1
+    trap "rm -rf $TMPDIR; exit 0" 1 2 3 4 15
+-   # FIXME: Try harder to generate a unique directory if this fails
+-   mkdir -m 0700 $TMPDIR || exit 1
++   TMPCMD=$TMPDIR/run
+    $LHA_GET "$1" "$2" > $TMPCMD  
+    chmod a+x $TMPCMD
+    $TMPCMD
+diff -Nru mc-4.6.0.orig/vfs/extfs/urar.in mc-4.6.0/vfs/extfs/urar.in
+--- mc-4.6.0.orig/vfs/extfs/urar.in	2004-09-19 13:54:23.600103633 +0200
++++ mc-4.6.0/vfs/extfs/urar.in	2004-09-19 13:54:52.397607906 +0200
+@@ -77,8 +77,7 @@
+ # preserve pwd. It is clean, but is it necessary?
+     pwd=`pwd`
+ # Create a directory and create in it a tmp directory with the good name     
+-    dir=tmpdir.${RANDOM}
+-    mkdir $dir
++    dir=`mktemp -d ${MC_TMPDIR:-/tmp}/mctmpdir-urar.XXXXXX` || exit 1
+     cd $dir
+     mkdir -p "$2"  
+ # rar cannot create an empty directory    
+diff -Nru mc-4.6.0.orig/vfs/extfs/uzip.in mc-4.6.0/vfs/extfs/uzip.in
+--- mc-4.6.0.orig/vfs/extfs/uzip.in	2004-09-19 13:54:23.601103373 +0200
++++ mc-4.6.0/vfs/extfs/uzip.in	2004-09-19 13:54:52.399607385 +0200
+@@ -344,10 +344,10 @@
+ 
+ # Make a temporary directory with mode 0700.
+ sub mktmpdir {
+-	while (1) {
+-		my $dir = POSIX::tmpnam();
+-		return $dir if mkdir ($dir, 0700);
+-	}
++	use File::Temp qw(mkdtemp);
++	my $template = "/tmp/mcuzipfs.XXXXXX";
++	$template="$ENV{MC_TMPDIR}/mcuzipfs.XXXXXX" if ($ENV{MC_TMPDIR});
++	return mkdtemp($template);
+ }
+ 
+ # Make a filename absolute and return it.
+diff -Nru mc-4.6.0.orig/vfs/extfs/uzoo.in mc-4.6.0/vfs/extfs/uzoo.in
+--- mc-4.6.0.orig/vfs/extfs/uzoo.in	2004-09-19 13:54:23.601103373 +0200
++++ mc-4.6.0/vfs/extfs/uzoo.in	2004-09-19 13:54:52.401606865 +0200
+@@ -13,8 +13,7 @@
+ # it to a temporary directory.
+ mklink ()
+ {
+-    TMPDIR="/tmp/mctmpdir-uzoo.$$"
+-    mkdir $TMPDIR || exit 1
++    TMPDIR=`mktemp -d ${MC_TMPDIR:-/tmp}/mctmpdir-uzoo.XXXXXX` || exit 1
+     trap 'cd /; rm -rf $TMPDIR' 0 1 2 3 5 13 15
+     ARCHIVE=$TMPDIR/tmp.zoo
+     ln -sf "$1" "$ARCHIVE"
+diff -Nru mc-4.6.0.orig/vfs/extfs.c mc-4.6.0/vfs/extfs.c
+--- mc-4.6.0.orig/vfs/extfs.c	2004-09-19 13:54:23.642092704 +0200
++++ mc-4.6.0/vfs/extfs.c	2004-09-19 13:54:52.405605824 +0200
+@@ -888,8 +888,7 @@
+     if (!*info)
+ 	return NULL;
+ 
+-    strncpy(dir.dent.d_name, (*info)->name, MC_MAXPATHLEN);
+-    dir.dent.d_name[MC_MAXPATHLEN] = 0;
++    g_strlcpy(dir.dent.d_name, (*info)->name, MC_MAXPATHLEN);
+ 
+     compute_namelen(&dir.dent);
+     *info = (*info)->next_in_dir;
+@@ -1002,10 +1001,10 @@
+     if (entry == NULL)
+     	return -1;
+     if (!S_ISLNK (entry->inode->mode)) ERRNOR (EINVAL, -1);
+-    if (size > (i = strlen (entry->inode->linkname))) {
+-    	size = i;
++    if (size < (i = strlen (entry->inode->linkname))) {
++    	i = size;
+     }
+-    strncpy (buf, entry->inode->linkname, i);
++    memcpy (buf, entry->inode->linkname, i);
+     return i;
+ }
+ 
+diff -Nru mc-4.6.0.orig/vfs/fish.c mc-4.6.0/vfs/fish.c
+--- mc-4.6.0.orig/vfs/fish.c	2004-09-19 13:54:23.643092444 +0200
++++ mc-4.6.0/vfs/fish.c	2004-09-19 13:54:52.408605043 +0200
+@@ -96,8 +96,7 @@
+ 	if (strncmp(answer, "### ", 4)) {
+ 	    was_garbage = 1;
+ 	    if (string_buf) {
+-	        strncpy(string_buf, answer, string_len - 1);
+-		*(string_buf + string_len - 1) = 0;
++	        g_strlcpy(string_buf, answer, string_len);
+ 	    }
+ 	} else return decode_reply(answer+4, was_garbage);
+     }
+@@ -668,7 +667,7 @@
+ {
+     int r;
+ 
+-    r = command (me, super, WAIT_REPLY, cmd);
++    r = command (me, super, WAIT_REPLY, "%s", cmd);
+     vfs_add_noncurrent_stamps (&vfs_fish_ops, (vfsid) super, NULL);
+     if (r != COMPLETE) ERRNOR (E_REMOTE, -1);
+     if (flags & OPT_FLUSH)
+diff -Nru mc-4.6.0.orig/vfs/ftpfs.c mc-4.6.0/vfs/ftpfs.c
+--- mc-4.6.0.orig/vfs/ftpfs.c	2004-09-19 13:54:23.647091403 +0200
++++ mc-4.6.0/vfs/ftpfs.c	2004-09-19 13:54:52.412604002 +0200
+@@ -266,8 +266,7 @@
+ 	switch (sscanf(answer, "%d", &code)){
+ 	    case 0:
+ 	        if (string_buf) {
+-		    strncpy (string_buf, answer, string_len - 1);
+-		    *(string_buf + string_len - 1) = 0;
++		    g_strlcpy (string_buf, answer, string_len);
+ 		}
+ 	        code = 500;
+ 	        return 5;
+@@ -286,8 +285,7 @@
+ 		    }
+ 		}
+ 	        if (string_buf){
+-		    strncpy (string_buf, answer, string_len - 1);
+-		    *(string_buf + string_len - 1) = 0;
++		    g_strlcpy (string_buf, answer, string_len);
+ 		}
+ 		return code / 100;
+ 	}
+@@ -321,28 +319,28 @@
+     va_list ap;
+     char *str, *fmt_str;
+     int status;
+-    int sock = SUP.sock;
++    int cmdlen;
+     
+     va_start (ap, fmt);
+     fmt_str = g_strdup_vprintf (fmt, ap);
+     va_end (ap);
+ 
+-    status = strlen (fmt_str);
+-    str = g_realloc (fmt_str, status + 3);
+-    strcpy (str + status, "\r\n");
++    cmdlen = strlen (fmt_str);
++    str = g_realloc (fmt_str, cmdlen + 3);
++    strcpy (str + cmdlen, "\r\n");
+ 
+     if (logfile){
+         if (strncmp (str, "PASS ", 5) == 0){
+             fputs ("PASS <Password not logged>\r\n", logfile);
+         } else
+-	    fwrite (str, status + 2, 1, logfile);
++	    fwrite (str, cmdlen + 2, 1, logfile);
+ 
+ 	fflush (logfile);
+     }
+ 
+     got_sigpipe = 0;
+     enable_interrupt_key ();
+-    status = write (SUP.sock, str, status + 2);
++    status = write (SUP.sock, str, cmdlen + 2);
+     
+     if (status < 0){
+ 	code = 421;
+@@ -353,7 +351,7 @@
+ 		level = 1;
+ 		status = reconnect (me, super);
+ 		level = 0;
+-		if (status && write (SUP.sock, str, status + 2) > 0)
++		if (status && write (SUP.sock, str, cmdlen + 2) > 0)
+ 		    goto ok;
+ 	    }
+ 	    got_sigpipe = 1;
+@@ -367,7 +365,7 @@
+     disable_interrupt_key ();
+     
+     if (wait_reply)
+-	return get_reply (me, sock, (wait_reply & WANT_STRING) ? reply_str : NULL, sizeof (reply_str)-1);
++	return get_reply (me, SUP.sock, (wait_reply & WANT_STRING) ? reply_str : NULL, sizeof (reply_str)-1);
+     return COMPLETE;
+ }
+ 
+@@ -903,23 +901,29 @@
+     int data, len = sizeof(data_addr);
+     struct protoent *pe;
+ 
+-    getsockname(SUP.sock, (struct sockaddr *) &data_addr, &len);
+-    data_addr.sin_port = 0;
+-    
+     pe = getprotobyname("tcp");
+     if (pe == NULL)
+ 	    ERRNOR (EIO, -1);
++again:
++    if (getsockname(SUP.sock, (struct sockaddr *) &data_addr, &len) == -1)
++	ERRNOR (EIO, -1);
++    data_addr.sin_port = 0;
++    
+     data = socket (AF_INET, SOCK_STREAM, pe->p_proto);
+     if (data < 0)
+ 	    ERRNOR (EIO, -1);
+ 
+     if (SUP.use_passive_connection){
+-	if ((SUP.use_passive_connection = setup_passive (me, super, data, &data_addr)))
++	if (setup_passive (me, super, data, &data_addr))
+ 	    return data;
+ 
+ 	SUP.use_source_route = 0;
+ 	SUP.use_passive_connection = 0;
+ 	print_vfs_message (_("ftpfs: could not setup passive mode"));
++
++	/* data or data_addr may be damaged by setup_passive */
++	close (data);
++	goto again;
+     }
+ 
+     /* If passive setup fails, fallback to active connections */
+@@ -971,11 +975,12 @@
+ 	data = s;
+     else {
+ 	data = accept (s, (struct sockaddr *)&from, &fromlen);
+-	close(s);
+ 	if (data < 0) {
+ 	    my_errno = errno;
++	    close(s);
+ 	    return -1;
+ 	}
++	close(s);
+     } 
+     disable_interrupt_key();
+     return data;
+@@ -1019,6 +1024,7 @@
+ 		gettimeofday (&tim, NULL);
+ 		if (tim.tv_sec > start_tim.tv_sec + ABORT_TIMEOUT) {
+ 		    /* server keeps sending, drop the connection and reconnect */
++		    close (dsock);
+ 		    reconnect (me, super);
+ 		    return;
+ 		}
+diff -Nru mc-4.6.0.orig/vfs/mcfs.c mc-4.6.0/vfs/mcfs.c
+--- mc-4.6.0.orig/vfs/mcfs.c	2004-09-19 13:54:23.648091143 +0200
++++ mc-4.6.0/vfs/mcfs.c	2004-09-19 13:54:52.415603222 +0200
+@@ -756,8 +756,7 @@
+ 	return NULL;
+     }
+     dirent_dest = mcfs_readdir_data.dent.d_name;
+-    strncpy (dirent_dest, mcfs_info->current->text, MC_MAXPATHLEN);
+-    dirent_dest[MC_MAXPATHLEN] = 0;
++    g_strlcpy (dirent_dest, mcfs_info->current->text, MC_MAXPATHLEN);
+     cached_lstat_info = &mcfs_info->current->my_stat;
+     mcfs_info->current = mcfs_info->current->next;
+ 
+@@ -985,9 +984,12 @@
+     if (!rpc_get (mc->sock, RPC_STRING, &stat_str, RPC_END))
+ 	return the_error (-1, EIO);
+ 
+-    strncpy (buf, stat_str, size);
++    status = strlen (stat_str);
++    if (status < size)
++	size = status;
++    memcpy (buf, stat_str, size);
+     g_free (stat_str);
+-    return strlen (buf);
++    return size;
+ }
+ 
+ static int
+diff -Nru mc-4.6.0.orig/vfs/mcserv.c mc-4.6.0/vfs/mcserv.c
+--- mc-4.6.0.orig/vfs/mcserv.c	2004-09-19 13:54:23.649090882 +0200
++++ mc-4.6.0/vfs/mcserv.c	2004-09-19 13:54:52.417602701 +0200
+@@ -582,7 +582,7 @@
+     int n;
+ 
+     rpc_get (msock, RPC_STRING, &file, RPC_END);
+-    n = readlink (file, buffer, 2048);
++    n = readlink (file, buffer, 2048 - 1);
+     send_status (n, errno);
+     if (n >= 0) {
+ 	buffer[n] = 0;
+diff -Nru mc-4.6.0.orig/vfs/names.c mc-4.6.0/vfs/names.c
+--- mc-4.6.0.orig/vfs/names.c	2004-09-19 13:54:23.640093224 +0200
++++ mc-4.6.0/vfs/names.c	2004-09-19 13:54:52.419602181 +0200
+@@ -31,6 +31,7 @@
+ #include <stdio.h>
+ #include <pwd.h>
+ #include <grp.h>
++#include <glib.h>
+ 
+ #include "names.h"
+ 
+@@ -59,7 +60,7 @@
+ 
+     if (uname[0] != saveuname[0]	/* Quick test w/o proc call */
+ 	||0 != strncmp (uname, saveuname, TUNMLEN)) {
+-	strncpy (saveuname, uname, TUNMLEN);
++	g_strlcpy (saveuname, uname, TUNMLEN);
+ 	pw = getpwnam (uname);
+ 	if (pw) {
+ 	    saveuid = pw->pw_uid;
+@@ -77,7 +78,7 @@
+ 
+     if (gname[0] != savegname[0]	/* Quick test w/o proc call */
+ 	||0 != strncmp (gname, savegname, TUNMLEN)) {
+-	strncpy (savegname, gname, TUNMLEN);
++	g_strlcpy (savegname, gname, TUNMLEN);
+ 	gr = getgrnam (gname);
+ 	if (gr) {
+ 	    savegid = gr->gr_gid;
+diff -Nru mc-4.6.0.orig/vfs/samba/lib/util.c mc-4.6.0/vfs/samba/lib/util.c
+--- mc-4.6.0.orig/vfs/samba/lib/util.c	2004-09-19 13:54:23.607101812 +0200
++++ mc-4.6.0/vfs/samba/lib/util.c	2004-09-19 13:54:52.426600359 +0200
+@@ -114,7 +114,7 @@
+ char *tmpdir(void)
+ {
+   char *p;
+-  if ((p = getenv("TMPDIR"))) {
++  if ((p = getenv("MC_TMPDIR")) || (p = getenv("TMPDIR"))) {
+     return p;
+   }
+   return "/tmp";
+@@ -1885,20 +1885,17 @@
+  
+   char *nis_map = (char *)lp_nis_home_map_name();
+  
+-  char nis_domain[NIS_MAXNAMELEN + 1];
+   char buffer[NIS_MAXATTRVAL + 1];
+   nis_result *result;
+   nis_object *object;
+   entry_obj  *entry;
+  
+-  strncpy(nis_domain, (char *)nis_local_directory(), NIS_MAXNAMELEN);
+-  nis_domain[NIS_MAXNAMELEN] = '\0';
+- 
+-  DEBUG(5, ("NIS+ Domain: %s\n", nis_domain));
++  DEBUG(5, ("NIS+ Domain: %s\n", (char *)nis_local_directory()));
+  
+   if (strcmp(user_name, last_key))
+   {
+-    slprintf(buffer, sizeof(buffer)-1, "[%s=%s]%s.%s", "key", user_name, nis_map, nis_domain);
++    slprintf(buffer, sizeof(buffer)-1, "[%s=%s]%s.%s", "key", user_name, nis_map,
++	     (char *)nis_local_directory());
+     DEBUG(5, ("NIS+ querystring: %s\n", buffer));
+  
+     if (result = nis_list(buffer, RETURN_RESULT, NULL, NULL))
+diff -Nru mc-4.6.0.orig/vfs/smbfs.c mc-4.6.0/vfs/smbfs.c
+--- mc-4.6.0.orig/vfs/smbfs.c	2004-09-19 13:54:23.638093745 +0200
++++ mc-4.6.0/vfs/smbfs.c	2004-09-19 13:54:52.430599318 +0200
+@@ -785,8 +785,7 @@
+ #endif
+ 	return NULL;
+     }
+-    strncpy(dirent_dest, smbfs_info->current->text, MC_MAXPATHLEN);
+-    dirent_dest[MC_MAXPATHLEN] = 0;
++    g_strlcpy(dirent_dest, smbfs_info->current->text, MC_MAXPATHLEN);
+     smbfs_info->current = smbfs_info->current->next;
+ 
+     compute_namelen(&smbfs_readdir_data.dent);
+diff -Nru mc-4.6.0.orig/vfs/tar.c mc-4.6.0/vfs/tar.c
+--- mc-4.6.0.orig/vfs/tar.c	2004-09-19 13:54:23.635094526 +0200
++++ mc-4.6.0/vfs/tar.c	2004-09-19 13:54:52.432598798 +0200
+@@ -264,19 +264,26 @@
+ 	char *bp, *data;
+ 	int size, written;
+ 
++	if (hstat.st_size > MC_MAXPATHLEN) {
++	    message_1s (1, MSG_ERROR, _("Inconsistent tar archive"));
++	    return STATUS_BADCHECKSUM;
++	}
++
+ 	longp = ((header->header.linkflag == LF_LONGNAME)
+ 		 ? &next_long_name
+ 		 : &next_long_link);
+ 
+ 	if (*longp)
+ 	    g_free (*longp);
+-	bp = *longp = g_malloc (hstat.st_size);
++	bp = *longp = g_malloc (hstat.st_size + 1);
+ 
+ 	for (size = hstat.st_size;
+ 	     size > 0;
+ 	     size -= written) {
+ 	    data = get_next_record (archive, tard)->charptr;
+ 	    if (data == NULL) {
++		g_free (*longp);
++		*longp = NULL;
+ 		message_1s (1, MSG_ERROR, _("Unexpected EOF on archive file"));
+ 		return STATUS_BADCHECKSUM;
+ 	    }
+@@ -287,10 +294,14 @@
+ 	    memcpy (bp, data, written);
+ 	    bp += written;
+ 	}
+-#if 0
+-	if (hstat.st_size > 1)
+-	    bp [hstat.st_size - 1] = 0;	/* just to make sure */
+-#endif
++
++	if (bp - *longp == MC_MAXPATHLEN && bp[-1] != '\0') {
++	    g_free (*longp);
++	    *longp = NULL;
++	    message_1s (1, MSG_ERROR, _("Inconsistent tar archive"));
++	    return STATUS_BADCHECKSUM;
++	}	 
++	*bp = 0;
+ 	goto recurse;
+     } else {
+ 	struct stat st;
+diff -Nru mc-4.6.0.orig/vfs/vfs.c mc-4.6.0/vfs/vfs.c
+--- mc-4.6.0.orig/vfs/vfs.c	2004-09-19 13:54:23.636094265 +0200
++++ mc-4.6.0/vfs/vfs.c	2004-09-19 13:54:52.436597757 +0200
+@@ -637,8 +637,7 @@
+ {
+     const char *cwd = mc_return_cwd();
+ 
+-    strncpy (buffer, cwd, size - 1);
+-    buffer [size - 1] = 0;
++    g_strlcpy (buffer, cwd, size);
+     return buffer;
+ }
+ 

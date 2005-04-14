@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.3 2005/03/12 15:25:49 jw Exp $
+# Description: commandline option parser 
+# URL: 
+# Packager:   Robert McMeekin, viper at mcmeekin dot info
+# Maintainer: Johannes Winkelmann, jw at tks6 dot net
+# Depends on: gettext
+
+name=popt
+version=1.7
+release=1
+source=(ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr \
+		--disable-nls
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.5 2005/04/07 14:45:14 jw Exp $
+# Description: A utility to simplify ports searching/installing
+# URL:         http://jw.tks6.net/files/crux/prt-get_manual.html
+# Maintainer:  Johannes Winkelmann, jw at tks6 dot net
+
+name=prt-get
+version=0.5.9
+release=1
+source=(http://jw.tks6.net/files/crux/prt-get-$version.tar.gz)
+
+build() {
+    cd ${name}-${version}
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    mkdir -p $PKG/etc
+    cp src/prt-get.conf $PKG/etc
+}

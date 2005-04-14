@@ -1,0 +1,39 @@
+# $Id: Pkgfile,v 1.2 2005/03/08 22:06:39 danm Exp $
+# Description: Tools to control networking
+# URL: ftp://ftp.inr.ac.ru/ip-routing/
+# Maintainer: Daniel Mueller, daniel at danm dot de
+
+name=iproute2
+version=2.4.7-now-ss020116-try
+release=2
+source=(http://ftp.iasi.roedu.net/mirrors/ftp.inr.ac.ru/ip-routing/$name-$version.tar.gz \
+	$name-$version.patch)
+
+build () {
+    cd $name 
+    patch -p1 < ../$name-$version.patch
+    sed -i -e "s|ATM=y|ATM=n|" \
+           -e "s|DIFFSERV=n|DIFFSERV=y|g" Config
+    sed -i -e "s|-I../include-glibc||" Makefile
+    sed -i -e "s|^#include <db.h>.*|#include <db_185.h>|g" misc/arpd.c
+    echo '#define __constant_htons(x) htons(x)' >> include-glibc/glibc-bugs.h
+
+    if [ -e /lib/modules/`uname -r`/build/include ]; then
+        KERNEL_INCLUDE=/lib/modules/`uname -r`/build/include
+    else
+        KERNEL_INCLUDE="/usr/src/linux/include"
+    fi
+
+    make CCOPTS="-D_GNU_SOURCE $CFLAGS" \
+         KERNEL_INCLUDE="$KERNEL_INCLUDE" \
+         SBINDIR="/usr/sbin"
+
+    mkdir -p $PKG/etc/iproute2 \
+             $PKG/usr/man/man8 \
+             $PKG/usr/sbin
+
+    make KERNEL_INCLUDE="$KERNEL_INCLUDE" DESTDIR=$PKG SBINDIR="/usr/sbin" install
+
+    install -m 644 man/*.8 $PKG/usr/man/man8/
+    rm -rf $PKG/usr/doc
+}

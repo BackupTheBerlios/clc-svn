@@ -1,0 +1,57 @@
+diff -Nru evilwm-0.99.17.orig/Makefile evilwm-0.99.17/Makefile
+--- evilwm-0.99.17.orig/Makefile	2003-10-15 13:48:23.000000000 +0200
++++ evilwm-0.99.17/Makefile	2003-10-15 16:55:47.000000000 +0200
+@@ -22,7 +22,7 @@
+ 
+ # Use Motif hints to find if a window should be borderless.
+ # To use this option, you need to have the Motif development files installed.
+-DEFINES += -DMWM_HINTS
++#DEFINES += -DMWM_HINTS
+ 
+ # To support virtual desktops, uncomment one or both of the following 2 lines.
+ DEFINES += -DVWM
+@@ -70,7 +70,7 @@
+ #DEFINES += -DXDEBUG	# show some X calls
+ 
+ DEFINES += -DVERSION=\"$(version).$(revision).$(subrev)\" $(DEBIAN)
+-CFLAGS  += $(INCLUDES) $(DEFINES) -Os -Wall
++CFLAGS  += $(INCLUDES) $(DEFINES) -Wall
+ #CFLAGS  += $(INCLUDES) $(DEFINES) -g -Wall
+ CFLAGS  += -Wstrict-prototypes -Wpointer-arith -Wcast-align -Wcast-qual -Wshadow -Waggregate-return -Wnested-externs -Winline -Wwrite-strings -Wundef
+ LDFLAGS += $(LDPATH) $(LIBS)
+@@ -94,9 +94,9 @@
+ 
+ doinstall:
+ 	if [ -f evilwm.exe ]; then mv evilwm.exe evilwm; fi
+-	mkdir -p $(prefix)/bin $(prefix)/share/man/man1
++	mkdir -p $(prefix)/bin $(prefix)/man/man1
+ 	install -s evilwm $(prefix)/bin
+-	install evilwm.1 $(prefix)/share/man/man1
++	install evilwm.1 $(prefix)/man/man1
+ 	#gzip -9 $(prefix)/share/man/man1/evilwm.1
+ 
+ install: doinstall
+diff -Nru evilwm-0.99.17.orig/evilwm.1 evilwm-0.99.17/evilwm.1
+--- evilwm-0.99.17.orig/evilwm.1	2003-10-15 13:48:23.000000000 +0200
++++ evilwm-0.99.17/evilwm.1	2003-10-15 16:55:47.000000000 +0200
+@@ -51,7 +51,7 @@
+ bottom-right of screen.
+ .IP I
+ Show information about current window.
+-.IP Equals
++.IP V
+ Maximise current window vertically (toggle).
+ .IP X
+ Maximise current window (toggle).
+diff -Nru evilwm-0.99.17.orig/keymap.h evilwm-0.99.17/keymap.h
+--- evilwm-0.99.17.orig/keymap.h	2002-05-23 20:27:55.000000000 +0200
++++ evilwm-0.99.17/keymap.h	2003-10-15 16:55:47.000000000 +0200
+@@ -14,7 +14,7 @@
+ #define KEY_LOWER	XK_Insert
+ #define KEY_ALTLOWER	XK_KP_Insert
+ #define KEY_INFO	XK_i
+-#define KEY_MAXVERT	XK_equal
++#define KEY_MAXVERT	XK_v
+ #define KEY_MAX		XK_x
+ #define KEY_FIX		XK_f
+ #define KEY_PREVDESK	XK_Left

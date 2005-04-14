@@ -1,0 +1,29 @@
+# $Id: Pkgfile,v 1.5 2005/03/30 15:36:23 sip Exp $
+# Description: Portable Document Format Viewer with Search
+# Packager: Markus Ackermann, maol at symlink dot ch
+# Maintainer: Simone Rota, sip at varlock dot com
+# URL: http://www.adobe.com/
+# Depends on: gtk
+
+name=acroread
+version=7.0.0
+release=1
+source=(ftp://ftp.adobe.com/pub/adobe/reader/unix/7x/7.0/enu/AdbeRdr70_linux_enu.tar.gz)
+PKGMK_NO_STRIP="yes"
+
+build() {
+	mkdir -p $PKG/usr/lib/Acrobat7 $PKG/usr/bin
+	cd $PKG/usr/lib/Acrobat7
+	tar -xf $SRC/AdobeReader/COMMON.TAR
+	tar -xf $SRC/AdobeReader/ILINXR.TAR
+	rm -rf Reader/{help,HowTo}
+	rm -r Browser/{Browser_Plugin_HowTo.txt,install_browser_plugin}
+	find . -name *.api -and -not -name ewh.api -and -not -name \
+		SearchFind.api -exec rm {} \;
+	rm -r Reader/intellinux/plug_ins/{AcroForm,Annotations}
+	chown -R root:root $PKG
+
+	sed -i 's|REPLACE_ME|/usr/lib/Acrobat7/Reader|g' bin/acroread
+	ln -sf /usr/lib/Acrobat7/bin/acroread  $PKG/usr/bin/acroread
+	find . -type d | xargs chmod 755
+}

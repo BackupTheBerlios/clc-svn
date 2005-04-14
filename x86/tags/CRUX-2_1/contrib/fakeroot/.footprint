@@ -1,0 +1,14 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/faked
+-rwxr-xr-x	root/root	usr/bin/fakeroot
+drwxr-xr-x	root/root	usr/lib/
+-rw-r--r--	root/root	usr/lib/libfakeroot.a
+-rwxr-xr-x	root/root	usr/lib/libfakeroot.la
+lrwxrwxrwx	root/root	usr/lib/libfakeroot.so -> libfakeroot.so.0.0.1
+lrwxrwxrwx	root/root	usr/lib/libfakeroot.so.0 -> libfakeroot.so.0.0.1
+-rwxr-xr-x	root/root	usr/lib/libfakeroot.so.0.0.1
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man1/
+-rw-r--r--	root/root	usr/man/man1/faked.1.gz
+-rw-r--r--	root/root	usr/man/man1/fakeroot.1.gz

@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.6 2004/04/11 17:46:25 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=less
+version=382
+release=1
+source=(http://www.greenwoodsoftware.com/less/$name-$version.tar.gz \
+	lessecho.1 filter)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make prefix=$PKG/usr install
+    install -m 644 ../lessecho.1 $PKG/usr/man/man1
+    install -m 755 -D ../filter $PKG/usr/lib/less/filter
+}

@@ -1,0 +1,2944 @@
+This file contains the following patches from ftp://ftp.vim.org/pub/vim/patches/6.3/
+
+	6.3.{001-021,023-024,026-034,036-037,039-040,042-043,045-046,049-051,053-68}
+
+/Per Liden <per@fukt.bth.se>
+
+diff -Nru vim63/runtime/doc/digraph.txt vim63-new/runtime/doc/digraph.txt
+--- vim63/runtime/doc/digraph.txt	2004-06-07 11:05:17.000000000 +0200
++++ vim63-new/runtime/doc/digraph.txt	2005-03-25 00:44:30.859729296 +0100
+@@ -1,4 +1,4 @@
+-*digraph.txt*   For Vim version 6.3.  Last change: 2001 Sep 03
++*digraph.txt*   For Vim version 6.3.  Last change: 2005 Mar 18
+ 
+ 
+ 		  VIM REFERENCE MANUAL    by Bram Moolenaar
+@@ -28,7 +28,8 @@
+ 							*E104* *E39*
+ :dig[raphs] {char1}{char2} {number} ...
+ 			Add digraph {char1}{char2} to the list.  {number} is
+-			the decimal representation of the character.
++			the decimal representation of the character.  Normally
++			it is the Unicode character, see |digraph-encoding|.
+ 			Example: >
+ 	:digr e: 235 a: 228
+ <			Avoid defining a digraph with '_' (underscore) as the
+@@ -48,7 +49,24 @@
+ if you look at it on a system that does not support digraphs or if you print
+ this file.
+ 
+-The decimal number is the number of the character.
++							*digraph-encoding*
++The decimal number normally is the Unicode number of the character.  Note that
++the meaning doesn't change when 'encoding' changes.  The character will be
++converted from Unicode to 'encoding' when needed.  This does require the
++conversion to be available, it might fail.
++
++When Vim was compiled without the +multi_byte feature, you need to specify the
++character in the encoding given with 'encoding'.  You might want to use
++something like this: >
++
++	if has("multi_byte")
++		digraph oe 339
++	elseif &encoding == "iso-8859-15"
++		digraph oe 189
++	endif
++
++This defines the "oe" digraph for a character that is number 339 in Unicode
++and 189 in latin9 (iso-8859-15).
+ 
+ ==============================================================================
+ 2. Using digraphs					*digraphs-use*
+@@ -142,6 +160,14 @@
+ These are the RFC1345 digraphs for the one-byte characters.  See the output of
+ ":digraphs" for the others.  The characters above 255 are only available when
+ Vim was compiled with the |+multi_byte| feature.
++
++EURO
++
++Exception: RFC1345 doesn't specify the euro sign.  In Vim the digraph =e was
++added for this.  Note the difference between latin1, where the digraph Cu is
++used for the currency sign, and latin9 (iso-8859-15), where the digraph =e is
++used for the euro sign, while both of them are the character 164, 0xa4.
++
+ 							*digraph-table*
+ char  digraph	hex	dec	official name ~
+ ^@	NU	0x00	  0	NULL (NUL)
+diff -Nru vim63/runtime/doc/options.txt vim63-new/runtime/doc/options.txt
+--- vim63/runtime/doc/options.txt	2004-06-07 11:05:19.000000000 +0200
++++ vim63-new/runtime/doc/options.txt	2005-03-25 00:44:30.734748296 +0100
+@@ -1,4 +1,4 @@
+-*options.txt*	For Vim version 6.3.  Last change: 2004 Jun 01
++*options.txt*	For Vim version 6.3.  Last change: 2004 Dec 09
+ 
+ 
+ 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+@@ -139,6 +139,9 @@
+ (the ^[ is a real <Esc> here, use CTRL-V <Esc> to enter it)
+ The advantage over a mapping is that it works in all situations.
+ 
++The t_xx options cannot be set from a |modeline| or in the |sandbox|, for
++security reasons.
++
+ The listing from ":set" looks different from Vi.  Long string options are put
+ at the end of the list.  The number of options is quite large.	The output of
+ "set all" probably does not fit on the screen, causing Vim to give the
+@@ -945,6 +948,7 @@
+ 	accidentally overwriting existing files with a backup file.  You might
+ 	prefer using ".bak", but make sure that you don't have files with
+ 	".bak" that you want to keep.
++	Only normal file name characters can be used, "/\*?[|<>" are illegal.
+ 
+ 						*'backupskip'* *'bsk'*
+ 'backupskip' 'bsk'	string	(default: "/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*")
+@@ -2407,6 +2411,7 @@
+ 	type that is actually stored with the file.
+ 	This option is not copied to another buffer, independent of the 's' or
+ 	'S' flag in 'cpoptions'.
++	Only normal file name characters can be used, "/\*?[|<>" are illegal.
+ 
+ 						*'fillchars'* *'fcs'*
+ 'fillchars' 'fcs'	string	(default "vert:|,fold:-")
+@@ -3599,6 +3604,7 @@
+ 	Setting this option to a valid keymap name has the side effect of
+ 	setting 'iminsert' to one, so that the keymap becomes effective.
+ 	'imsearch' is also set to one, unless it was -1
++	Only normal file name characters can be used, "/\*?[|<>" are illegal.
+ 
+ 					*'keymodel'* *'km'*
+ 'keymodel' 'km'		string	(default "")
+@@ -3690,6 +3696,7 @@
+ 	matter what $LANG is set to: >
+ 		:set langmenu=nl_NL.ISO_8859-1
+ <	When 'langmenu' is empty, |v:lang| is used.
++	Only normal file name characters can be used, "/\*?[|<>" are illegal.
+ 	If your $LANG is set to a non-English language but you do want to use
+ 	the English menus: >
+ 		:set langmenu=none
+@@ -4310,6 +4317,7 @@
+ 	Using 'patchmode' for compressed files appends the extension at the
+ 	end (e.g., "file.gz.orig"), thus the resulting name isn't always
+ 	recognized as a compressed file.
++	Only normal file name characters can be used, "/\*?[|<>" are illegal.
+ 
+ 					*'path'* *'pa'* *E343* *E345* *E347*
+ 'path' 'pa'		string	(default on Unix: ".,/usr/include,,"
+@@ -4424,6 +4432,8 @@
+ 	in the standard printer dialog.
+ 	If the option is empty, then vim will use the system default printer
+ 	for ":hardcopy!"
++	This option cannot be set from a |modeline| or in the |sandbox|, for
++	security reasons.
+ 
+ 					*'printencoding'* *'penc'* *E620*
+ 'printencoding' 'penc'	String	(default empty, except for:
+@@ -5711,6 +5721,7 @@
+ 	Syntax autocommand event is triggered with the value as argument.
+ 	This option is not copied to another buffer, independent of the 's' or
+ 	'S' flag in 'cpoptions'.
++	Only normal file name characters can be used, "/\*?[|<>" are illegal.
+ 
+ 					*'tabstop'* *'ts'*
+ 'tabstop' 'ts'		number	(default 8)
+@@ -6089,6 +6100,8 @@
+ 	This option will be used for the window title when exiting Vim if the
+ 	original title cannot be restored.  Only happens if 'title' is on or
+ 	'titlestring' is not empty.
++	This option cannot be set from a |modeline| or in the |sandbox|, for
++	security reasons.
+ 						*'titlestring'*
+ 'titlestring'		string	(default "")
+ 			global
+diff -Nru vim63/runtime/doc/repeat.txt vim63-new/runtime/doc/repeat.txt
+--- vim63/runtime/doc/repeat.txt	2004-06-07 11:05:20.000000000 +0200
++++ vim63-new/runtime/doc/repeat.txt	2005-03-25 00:44:30.493784928 +0100
+@@ -1,4 +1,4 @@
+-*repeat.txt*    For Vim version 6.3.  Last change: 2004 Apr 02
++*repeat.txt*    For Vim version 6.3.  Last change: 2004 Jun 22
+ 
+ 
+ 		  VIM REFERENCE MANUAL    by Bram Moolenaar
+@@ -476,13 +476,14 @@
+ of characters.  'ignorecase' is not used, but "\c" can be used in the pattern
+ to ignore case |/\c|.  Don't include the () for the function name!
+ 
+-The match for sourced scripts is done against the full file name.  Examples: >
+-	breakadd file explorer
+-won't match, the path is missing. >
++The match for sourced scripts is done against the full file name.  If no path
++is specified the current directory is used.  Examples: >
++	breakadd file explorer.vim
++matches "explorer.vim" in the current directory. >
+ 	breakadd file *explorer.vim
+-matches ".../plugin/explorer.vim" and ".../plugin/iexplorer.vim". >
++matches ".../plugin/explorer.vim", ".../plugin/iexplorer.vim", etc. >
+ 	breakadd file */explorer.vim
+-matches ".../plugin/explorer.vim" only.
++matches ".../plugin/explorer.vim" and "explorer.vim" in any other directory.
+ 
+ The match for functions is done against the name as it's shown in the output
+ of ":function".  For local functions this means that something like "<SNR>99_"
+diff -Nru vim63/runtime/plugin/gzip.vim vim63-new/runtime/plugin/gzip.vim
+--- vim63/runtime/plugin/gzip.vim	2004-01-12 17:39:39.000000000 +0100
++++ vim63-new/runtime/plugin/gzip.vim	2005-03-25 00:44:30.877726560 +0100
+@@ -1,6 +1,6 @@
+ " Vim plugin for editing compressed files.
+ " Maintainer: Bram Moolenaar <Bram@vim.org>
+-" Last Change: 2004 Jan 12
++" Last Change: 2005 Mar 24
+ 
+ " Exit quickly when:
+ " - this plugin was already loaded
+@@ -113,7 +113,7 @@
+   " don't do anything if the cmd is not supported
+   if s:check(a:cmd)
+     " Rename the file before compressing it.
+-    let nm = expand("<afile>")
++    let nm = resolve(expand("<afile>"))
+     let nmt = s:tempname(nm)
+     if rename(nm, nmt) == 0
+       call system(a:cmd . " " . nmt)
+diff -Nru vim63/src/buffer.c vim63-new/src/buffer.c
+--- vim63/src/buffer.c	2004-06-01 15:42:34.000000000 +0200
++++ vim63-new/src/buffer.c	2005-03-25 00:44:30.789739936 +0100
+@@ -408,8 +408,7 @@
+     if (!buf_valid(buf))
+ 	return;
+ # ifdef FEAT_EVAL
+-    /* Autocommands may abort script processing. */
+-    if (aborting())
++    if (aborting())	    /* autocmds may abort script processing */
+ 	return;
+ # endif
+ 
+@@ -564,6 +563,7 @@
+ #ifdef FEAT_SYN_HL
+     syntax_clear(buf);		    /* reset syntax info */
+ #endif
++    buf->b_flags &= ~BF_READERR;    /* a read error is no longer relevant */
+ }
+ 
+ /*
+@@ -666,9 +666,23 @@
+ 		&& (defined(FEAT_GUI_DIALOG) || defined(FEAT_CON_DIALOG))
+     if (swap_exists_action == SEA_QUIT && *eap->cmd == 's')
+     {
++#  if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++	cleanup_T   cs;
++
++	/* Reset the error/interrupt/exception state here so that
++	 * aborting() returns FALSE when closing a window. */
++	enter_cleanup(&cs);
++#  endif
++
+ 	/* Quitting means closing the split window, nothing else. */
+ 	win_close(curwin, TRUE);
+ 	swap_exists_action = SEA_NONE;
++
++#  if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++	/* Restore the error/interrupt/exception state if not discarded by a
++	 * new aborting error, interrupt, or uncaught exception. */
++	leave_cleanup(&cs);
++#  endif
+     }
+     else
+ 	handle_swap_exists(old_curbuf);
+@@ -685,28 +699,55 @@
+ handle_swap_exists(old_curbuf)
+     buf_T	*old_curbuf;
+ {
++# if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++    cleanup_T	cs;
++# endif
++
+     if (swap_exists_action == SEA_QUIT)
+     {
++# if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++	/* Reset the error/interrupt/exception state here so that
++	 * aborting() returns FALSE when closing a buffer. */
++	enter_cleanup(&cs);
++# endif
++
+ 	/* User selected Quit at ATTENTION prompt.  Go back to previous
+ 	 * buffer.  If that buffer is gone or the same as the current one,
+ 	 * open a new, empty buffer. */
+ 	swap_exists_action = SEA_NONE;	/* don't want it again */
+ 	close_buffer(curwin, curbuf, DOBUF_UNLOAD);
+ 	if (!buf_valid(old_curbuf) || old_curbuf == curbuf)
+-	    old_curbuf = buflist_new(NULL, NULL, 1L,
+-					 BLN_CURBUF | BLN_LISTED | BLN_FORCE);
++	    old_curbuf = buflist_new(NULL, NULL, 1L, BLN_CURBUF | BLN_LISTED);
+ 	if (old_curbuf != NULL)
+ 	    enter_buffer(old_curbuf);
+ 	/* If "old_curbuf" is NULL we are in big trouble here... */
++
++# if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++	/* Restore the error/interrupt/exception state if not discarded by a
++	 * new aborting error, interrupt, or uncaught exception. */
++	leave_cleanup(&cs);
++# endif
+     }
+     else if (swap_exists_action == SEA_RECOVER)
+     {
++# if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++	/* Reset the error/interrupt/exception state here so that
++	 * aborting() returns FALSE when closing a buffer. */
++	enter_cleanup(&cs);
++# endif
++
+ 	/* User selected Recover at ATTENTION prompt. */
+ 	msg_scroll = TRUE;
+ 	ml_recover();
+ 	MSG_PUTS("\n");	/* don't overwrite the last message */
+ 	cmdline_row = msg_row;
+ 	do_modelines();
++
++# if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++	/* Restore the error/interrupt/exception state if not discarded by a
++	 * new aborting error, interrupt, or uncaught exception. */
++	leave_cleanup(&cs);
++# endif
+     }
+     swap_exists_action = SEA_NONE;
+ }
+@@ -1380,7 +1421,6 @@
+  * If (flags & BLN_CURBUF) is TRUE, may use current buffer.
+  * If (flags & BLN_LISTED) is TRUE, add new buffer to buffer list.
+  * If (flags & BLN_DUMMY) is TRUE, don't count it as a real buffer.
+- * If (flags & BLN_FORCE) is TRUE, don't abort on an error.
+  * This is the ONLY way to create a new buffer.
+  */
+ static int  top_file_num = 1;		/* highest file number */
+@@ -1455,8 +1495,7 @@
+ 	if (buf == curbuf)
+ 	    apply_autocmds(EVENT_BUFWIPEOUT, NULL, NULL, FALSE, curbuf);
+ # ifdef FEAT_EVAL
+-	/* autocmds may abort script processing */
+-	if (!(flags & BLN_FORCE) && aborting())
++	if (aborting())		/* autocmds may abort script processing */
+ 	    return NULL;
+ # endif
+ #endif
+@@ -1509,8 +1548,7 @@
+ 	if (buf != curbuf)	 /* autocommands deleted the buffer! */
+ 	    return NULL;
+ #if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
+-	/* autocmds may abort script processing */
+-	if (!(flags & BLN_FORCE) && aborting())
++	if (aborting())		/* autocmds may abort script processing */
+ 	    return NULL;
+ #endif
+ 	/* buf->b_nwindows = 0; why was this here? */
+@@ -1586,8 +1624,7 @@
+ 	if (flags & BLN_LISTED)
+ 	    apply_autocmds(EVENT_BUFADD, NULL, NULL, FALSE, buf);
+ # ifdef FEAT_EVAL
+-	/* autocmds may abort script processing */
+-	if (!(flags & BLN_FORCE) && aborting())
++	if (aborting())		/* autocmds may abort script processing */
+ 	    return NULL;
+ # endif
+     }
+@@ -2916,7 +2953,12 @@
+ 		}
+ 		else
+ 		{
+-		    while (p > buf + off + 1 && vim_ispathsep(p[-1]))
++		    while (p > buf + off + 1 && vim_ispathsep(p[-1])
++#ifdef FEAT_MBYTE
++			    && (!has_mbyte
++				     || (*mb_head_off)(buf + off, p - 1) == 0)
++#endif
++			    )
+ 			--p;
+ #ifdef VMS
+ 		    /* path separator is part of the path */
+@@ -4217,13 +4259,7 @@
+ #endif
+ 	    set_curbuf(buf, DOBUF_GOTO);
+ #ifdef FEAT_AUTOCMD
+-# ifdef FEAT_EVAL
+-	    /* Autocommands deleted the buffer or aborted script
+-	     * processing!!! */
+-	    if (!buf_valid(buf) || aborting())
+-# else
+ 	    if (!buf_valid(buf))	/* autocommands deleted the buffer!!! */
+-# endif
+ 	    {
+ #if defined(FEAT_GUI_DIALOG) || defined(FEAT_CON_DIALOG)
+ 		swap_exists_action = SEA_NONE;
+@@ -4234,10 +4270,25 @@
+ #if defined(FEAT_GUI_DIALOG) || defined(FEAT_CON_DIALOG)
+ 	    if (swap_exists_action == SEA_QUIT)
+ 	    {
++# if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++		cleanup_T   cs;
++
++		/* Reset the error/interrupt/exception state here so that
++		 * aborting() returns FALSE when closing a window. */
++		enter_cleanup(&cs);
++# endif
++
+ 		/* User selected Quit at ATTENTION prompt; close this window. */
+ 		win_close(curwin, TRUE);
+ 		--open_wins;
+ 		swap_exists_action = SEA_NONE;
++
++# if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++		/* Restore the error/interrupt/exception state if not
++		 * discarded by a new aborting error, interrupt, or uncaught
++		 * exception. */
++		leave_cleanup(&cs);
++# endif
+ 	    }
+ 	    else
+ 		handle_swap_exists(NULL);
+@@ -4250,6 +4301,11 @@
+ 	    (void)vgetc();	/* only break the file loading, not the rest */
+ 	    break;
+ 	}
++#ifdef FEAT_EVAL
++	/* Autocommands deleted the buffer or aborted script processing!!! */
++	if (aborting())
++	    break;
++#endif
+     }
+ #ifdef FEAT_AUTOCMD
+     --autocmd_no_enter;
+diff -Nru vim63/src/diff.c vim63-new/src/diff.c
+--- vim63/src/diff.c	2004-05-07 12:17:25.000000000 +0200
++++ vim63-new/src/diff.c	2005-03-25 00:44:30.443792528 +0100
+@@ -810,6 +810,7 @@
+ #endif
+ #ifdef FEAT_BROWSE
+     char_u	*browseFile = NULL;
++    int		browse_flag = cmdmod.browse;
+ #endif
+ 
+ #ifdef FEAT_BROWSE
+@@ -820,6 +821,7 @@
+ 	if (browseFile == NULL)
+ 	    return;		/* operation cancelled */
+ 	eap->arg = browseFile;
++	cmdmod.browse = FALSE;	/* don't let do_ecmd() browse again */
+     }
+ #endif
+ 
+@@ -960,6 +962,7 @@
+ #endif
+ #ifdef FEAT_BROWSE
+     vim_free(browseFile);
++    cmdmod.browse = browse_flag;
+ #endif
+ }
+ 
+diff -Nru vim63/src/digraph.c vim63-new/src/digraph.c
+--- vim63/src/digraph.c	2004-04-19 19:00:45.000000000 +0200
++++ vim63-new/src/digraph.c	2005-03-25 00:44:30.858729448 +0100
+@@ -1428,6 +1428,7 @@
+ 	{'L', 'i', 0x20a4},
+ 	{'P', 't', 0x20a7},
+ 	{'W', '=', 0x20a9},
++	{'=', 'e', 0x20ac}, /* euro */
+ 	{'o', 'C', 0x2103},
+ 	{'c', 'o', 0x2105},
+ 	{'o', 'F', 0x2109},
+diff -Nru vim63/src/edit.c vim63-new/src/edit.c
+--- vim63/src/edit.c	2004-05-30 21:19:16.000000000 +0200
++++ vim63-new/src/edit.c	2005-03-25 00:44:30.823734768 +0100
+@@ -5933,8 +5933,11 @@
+ 	    im_set_active(TRUE);
+ #endif
+     }
+-    if (regname == NUL)
++    if (regname == NUL || !valid_yank_reg(regname, FALSE))
++    {
++	vim_beep();
+ 	need_redraw = TRUE;	/* remove the '"' */
++    }
+     else
+     {
+ #endif
+@@ -6048,9 +6051,11 @@
+     {
+ 	/*
+ 	 * Don't append the ESC for "r<CR>" and "grx".
++	 * When 'insertmode' is set only CTRL-L stops Insert mode.  Needed for
++	 * when "count" is non-zero.
+ 	 */
+ 	if (cmdchar != 'r' && cmdchar != 'v')
+-	    AppendToRedobuff(ESC_STR);
++	    AppendToRedobuff(p_im ? (char_u *)"\014" : ESC_STR);
+ 
+ 	/*
+ 	 * Repeating insert may take a long time.  Check for
+diff -Nru vim63/src/eval.c vim63-new/src/eval.c
+--- vim63/src/eval.c	2004-05-26 16:34:38.000000000 +0200
++++ vim63-new/src/eval.c	2005-03-25 00:44:30.540777784 +0100
+@@ -7560,6 +7560,7 @@
+ # endif
+ 	++winnr;
+     }
++    ga_append(&ga, NUL);
+ 
+     retvar->var_val.var_string = ga.ga_data;
+ #else
+diff -Nru vim63/src/ex_cmds.c vim63-new/src/ex_cmds.c
+--- vim63/src/ex_cmds.c	2004-06-03 10:23:18.000000000 +0200
++++ vim63-new/src/ex_cmds.c	2005-03-25 00:44:30.798738568 +0100
+@@ -905,6 +905,9 @@
+ 	    curbuf->b_op_end.lnum -= linecount;		/* adjust '] */
+ 	    write_lnum_adjust(-linecount);		/* adjust last line
+ 							   for next write */
++#ifdef FEAT_FOLDING
++	    foldUpdate(curwin, curbuf->b_op_start.lnum, curbuf->b_op_end.lnum);
++#endif
+ 	}
+ 	else
+ 	{
+@@ -3727,6 +3730,7 @@
+ 	    unsigned	len, needed_len;
+ 	    long	nmatch_tl = 0;	/* nr of lines matched below lnum */
+ 	    int		do_again;	/* do it again after joining lines */
++	    int		skip_match = FALSE;
+ 
+ 	    /*
+ 	     * The new text is build up step by step, to avoid too much
+@@ -3811,7 +3815,12 @@
+ 			&& regmatch.endpos[0].lnum == 0
+ 			&& matchcol == regmatch.endpos[0].col)
+ 		{
+-		    ++matchcol; /* search for a match at next column */
++		    if (sub_firstline[matchcol] == NUL)
++			/* We already were at the end of the line.  Don't look
++			 * for a match in this line again. */
++			skip_match = TRUE;
++		    else
++			++matchcol; /* search for a match at next column */
+ 		    goto skip;
+ 		}
+ 
+@@ -4103,9 +4112,12 @@
+ 		/* We already know that we did the last subst when we are at
+ 		 * the end of the line, except that a pattern like
+ 		 * "bar\|\nfoo" may match at the NUL. */
+-		lastone = ((sub_firstline[matchcol] == NUL && nmatch <= 1
+-					   && !re_multiline(regmatch.regprog))
+-			     || got_int || got_quit || !(do_all || do_again));
++		lastone = (skip_match
++			|| got_int
++			|| got_quit
++			|| !(do_all || do_again)
++			|| (sub_firstline[matchcol] == NUL && nmatch <= 1
++					 && !re_multiline(regmatch.regprog)));
+ 		nmatch = -1;
+ 
+ 		/*
+@@ -5300,6 +5312,7 @@
+     int		utf8 = MAYBE;
+     int		this_utf8;
+     int		firstline;
++    int		mix = FALSE;	/* detected mixed encodings */
+ # endif
+ 
+     /*
+@@ -5313,7 +5326,8 @@
+ 						    EW_FILE|EW_SILENT) == FAIL
+ 	    || filecount == 0)
+     {
+-	EMSG2("E151: No match: %s", NameBuff);
++	if (!got_int)
++	    EMSG2("E151: No match: %s", NameBuff);
+ 	return;
+     }
+ 
+@@ -5377,15 +5391,30 @@
+ 	    if (firstline)
+ 	    {
+ 		/* Detect utf-8 file by a non-ASCII char in the first line. */
+-		this_utf8 = FALSE;
++		this_utf8 = MAYBE;
+ 		for (s = IObuff; *s != NUL; ++s)
+ 		    if (*s >= 0x80)
++		    {
++			int l;
++
+ 			this_utf8 = TRUE;
+-		if (utf8 == MAYBE)
++			l = utf_ptr2len_check(s);
++			if (l == 1)
++			{
++			    /* Illegal UTF-8 byte sequence. */
++			    this_utf8 = FALSE;
++			    break;
++			}
++			s += l - 1;
++		    }
++		if (this_utf8 == MAYBE)	    /* only ASCII characters found */
++		    this_utf8 = FALSE;
++		if (utf8 == MAYBE)	    /* first file */
+ 		    utf8 = this_utf8;
+ 		else if (utf8 != this_utf8)
+ 		{
+ 		    EMSG2(_("E670: Mix of help file encodings within a language: %s"), files[fi]);
++		    mix = !got_int;
+ 		    got_int = TRUE;
+ 		}
+ 		firstline = FALSE;
+@@ -5463,8 +5492,8 @@
+ 		{
+ 		    *p2 = NUL;
+ 		    sprintf((char *)NameBuff,
+-			    _("E154: Duplicate tag \"%s\" in file %s"),
+-			    ((char_u **)ga.ga_data)[i], p2 + 1);
++			    _("E154: Duplicate tag \"%s\" in file %s/%s"),
++				     ((char_u **)ga.ga_data)[i], dir, p2 + 1);
+ 		    EMSG(NameBuff);
+ 		    *p2 = '\t';
+ 		    break;
+@@ -5502,6 +5531,10 @@
+ 	    }
+ 	}
+     }
++#ifdef FEAT_MBYTE
++    if (mix)
++	got_int = FALSE;    /* continue with other languages */
++#endif
+ 
+     for (i = 0; i < ga.ga_len; ++i)
+ 	vim_free(((char_u **)ga.ga_data)[i]);
+diff -Nru vim63/src/ex_cmds.h vim63-new/src/ex_cmds.h
+--- vim63/src/ex_cmds.h	2004-03-30 20:20:53.000000000 +0200
++++ vim63-new/src/ex_cmds.h	2005-03-25 00:44:30.559774896 +0100
+@@ -109,7 +109,7 @@
+ EX(CMD_args,		"args",		ex_args,
+ 			BANG|FILES|EDITCMD|ARGOPT|TRLBAR),
+ EX(CMD_argadd,		"argadd",	ex_argadd,
+-			BANG|NEEDARG|RANGE|NOTADR|COUNT|FILES|TRLBAR),
++			BANG|NEEDARG|RANGE|NOTADR|ZEROR|COUNT|FILES|TRLBAR),
+ EX(CMD_argdelete,	"argdelete",	ex_argdelete,
+ 			BANG|RANGE|NOTADR|COUNT|FILES|TRLBAR),
+ EX(CMD_argdo,		"argdo",	ex_listdo,
+diff -Nru vim63/src/ex_cmds2.c vim63-new/src/ex_cmds2.c
+--- vim63/src/ex_cmds2.c	2004-05-28 12:53:58.000000000 +0200
++++ vim63-new/src/ex_cmds2.c	2005-03-25 00:44:30.770742824 +0100
+@@ -431,8 +431,13 @@
+ 	vim_free(q);
+ 	if (p == NULL)
+ 	    return FAIL;
+-	bp->dbg_name = fix_fname(p);
+-	vim_free(p);
++	if (*p != '*')
++	{
++	    bp->dbg_name = fix_fname(p);
++	    vim_free(p);
++	}
++	else
++	    bp->dbg_name = p;
+ #ifdef MACOS_CLASSIC
+ 	if (bp->dbg_name != NULL)
+ 	    slash_n_colon_adjust(bp->dbg_name);
+@@ -2107,7 +2112,7 @@
+ fopen_noinh_readbin(filename)
+     char    *filename;
+ {
+-    int	fd_tmp = open(filename, O_RDONLY | O_BINARY | O_NOINHERIT);
++    int	fd_tmp = mch_open(filename, O_RDONLY | O_BINARY | O_NOINHERIT, 0);
+ 
+     if (fd_tmp == -1)
+ 	return NULL;
+diff -Nru vim63/src/ex_docmd.c vim63-new/src/ex_docmd.c
+--- vim63/src/ex_docmd.c	2004-05-30 20:23:31.000000000 +0200
++++ vim63-new/src/ex_docmd.c	2005-03-25 00:44:30.841732032 +0100
+@@ -525,6 +525,14 @@
+     MSG(_("Entering Ex mode.  Type \"visual\" to go to Normal mode."));
+     while (exmode_active)
+     {
++#ifdef FEAT_EX_EXTRA
++	/* Check for a ":normal" command and no more characters left. */
++	if (ex_normal_busy > 0 && typebuf.tb_len == 0)
++	{
++	    exmode_active = FALSE;
++	    break;
++	}
++#endif
+ 	msg_scroll = TRUE;
+ 	need_wait_return = FALSE;
+ 	ex_pressedreturn = FALSE;
+@@ -6342,6 +6350,9 @@
+ #if defined(FEAT_SEARCHPATH) || defined(FEAT_BROWSE)
+     char_u	*fname = NULL;
+ #endif
++#ifdef FEAT_BROWSE
++    int		browse_flag = cmdmod.browse;
++#endif
+ 
+ #ifndef FEAT_VERTSPLIT
+     if (eap->cmdidx == CMD_vsplit || eap->cmdidx == CMD_vnew)
+@@ -6396,7 +6407,9 @@
+ 	    goto theend;
+ 	eap->arg = fname;
+     }
++    cmdmod.browse = FALSE;	/* Don't browse again in do_ecmd(). */
+ #endif
++
+     if (win_split(eap->addr_count > 0 ? (int)eap->line2 : 0,
+ 				     *eap->cmd == 'v' ? WSP_VERT : 0) != FAIL)
+     {
+@@ -6415,6 +6428,10 @@
+ 	do_exedit(eap, old_curwin);
+     }
+ 
++#ifdef FEAT_BROWSE
++    cmdmod.browse = browse_flag;
++#endif
++
+ #if defined(FEAT_SEARCHPATH) || defined(FEAT_BROWSE)
+ theend:
+     vim_free(fname);
+@@ -6601,10 +6618,24 @@
+ 		need_hide = (curbufIsChanged() && curbuf->b_nwindows <= 1);
+ 		if (!need_hide || P_HID(curbuf))
+ 		{
++# if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++		    cleanup_T   cs;
++
++		    /* Reset the error/interrupt/exception state here so that
++		     * aborting() returns FALSE when closing a window. */
++		    enter_cleanup(&cs);
++# endif
+ # ifdef FEAT_GUI
+ 		    need_mouse_correct = TRUE;
+ # endif
+ 		    win_close(curwin, !need_hide && !P_HID(curbuf));
++
++# if defined(FEAT_AUTOCMD) && defined(FEAT_EVAL)
++		    /* Restore the error/interrupt/exception state if not
++		     * discarded by a new aborting error, interrupt, or
++		     * uncaught exception. */
++		    leave_cleanup(&cs);
++# endif
+ 		}
+ 	    }
+ #endif
+diff -Nru vim63/src/ex_eval.c vim63-new/src/ex_eval.c
+--- vim63/src/ex_eval.c	2004-04-19 19:01:17.000000000 +0200
++++ vim63-new/src/ex_eval.c	2005-03-25 00:44:30.706752552 +0100
+@@ -1820,6 +1820,160 @@
+ }
+ 
+ /*
++ * enter_cleanup() and leave_cleanup()
++ *
++ * Functions to be called before/after invoking a sequence of autocommands for
++ * cleanup for a failed command.  (Failure means here that a call to emsg()
++ * has been made, an interrupt occurred, or there is an uncaught exception
++ * from a previous autocommand execution of the same command.)
++ *
++ * Call enter_cleanup() with a pointer to a cleanup_T and pass the same
++ * pointer to leave_cleanup().  The cleanup_T structure stores the pending
++ * error/interrupt/exception state.
++ */
++
++/*
++ * This function works a bit like ex_finally() except that there was not
++ * actually an extra try block around the part that failed and an error or
++ * interrupt has not (yet) been converted to an exception.  This function
++ * saves the error/interrupt/ exception state and prepares for the call to
++ * do_cmdline() that is going to be made for the cleanup autocommand
++ * execution.
++ */
++    void
++enter_cleanup(csp)
++    cleanup_T	*csp;
++{
++    int		pending = CSTP_NONE;
++
++    /*
++     * Postpone did_emsg, got_int, did_throw.  The pending values will be
++     * restored by leave_cleanup() except if there was an aborting error,
++     * interrupt, or uncaught exception after this function ends.
++     */
++    if (did_emsg || got_int || did_throw || need_rethrow)
++    {
++	csp->pending = (did_emsg     ? CSTP_ERROR     : 0)
++		     | (got_int      ? CSTP_INTERRUPT : 0)
++		     | (did_throw    ? CSTP_THROW     : 0)
++		     | (need_rethrow ? CSTP_THROW     : 0);
++
++	/* If we are currently throwing an exception (did_throw), save it as
++	 * well.  On an error not yet converted to an exception, update
++	 * "force_abort" and reset "cause_abort" (as do_errthrow() would do).
++	 * This is needed for the do_cmdline() call that is going to be made
++	 * for autocommand execution.  We need not save *msg_list because
++	 * there is an extra instance for every call of do_cmdline(), anyway.
++	 */
++	if (did_throw || need_rethrow)
++	    csp->exception = current_exception;
++	else
++	{
++	    csp->exception = NULL;
++	    if (did_emsg)
++	    {
++		force_abort |= cause_abort;
++		cause_abort = FALSE;
++	    }
++	}
++	did_emsg = got_int = did_throw = need_rethrow = FALSE;
++
++	/* Report if required by the 'verbose' option or when debugging.  */
++	report_make_pending(pending, csp->exception);
++    }
++    else
++    {
++	csp->pending = CSTP_NONE;
++	csp->exception = NULL;
++    }
++}
++
++/*
++ * See comment above enter_cleanup() for how this function is used.
++ *
++ * This function is a bit like ex_endtry() except that there was not actually
++ * an extra try block around the part that failed and an error or interrupt
++ * had not (yet) been converted to an exception when the cleanup autocommand
++ * sequence was invoked.
++ *
++ * This function has to be called with the address of the cleanup_T structure
++ * filled by enter_cleanup() as an argument; it restores the error/interrupt/
++ * exception state saved by that function - except there was an aborting
++ * error, an interrupt or an uncaught exception during execution of the
++ * cleanup autocommands.  In the latter case, the saved error/interrupt/
++ * exception state is discarded.
++ */
++    void
++leave_cleanup(csp)
++    cleanup_T	*csp;
++{
++    int		pending = csp->pending;
++
++    if (pending == CSTP_NONE)	/* nothing to do */
++	return;
++
++    /* If there was an aborting error, an interrupt, or an uncaught exception
++     * after the corresponding call to enter_cleanup(), discard what has been
++     * made pending by it.  Report this to the user if required by the
++     * 'verbose' option or when debugging. */
++    if (aborting() || need_rethrow)
++    {
++	if (pending & CSTP_THROW)
++	    /* Cancel the pending exception (includes report). */
++	    discard_exception((except_T *)csp->exception, FALSE);
++	else
++	    report_discard_pending(pending, NULL);
++
++	/* If an error was about to be converted to an exception when
++	 * enter_cleanup() was called, free the message list. */
++	free_msglist(*msg_list);
++	*msg_list = NULL;
++    }
++
++    /*
++     * If there was no new error, interrupt, or throw between the calls
++     * to enter_cleanup() and leave_cleanup(), restore the pending
++     * error/interrupt/exception state.
++     */
++    else
++    {
++	/*
++	 * If there was an exception being thrown when enter_cleanup() was
++	 * called, we need to rethrow it.  Make it the exception currently
++	 * being thrown.
++	 */
++	if (pending & CSTP_THROW)
++	    current_exception = csp->exception;
++
++	/*
++	 * If an error was about to be converted to an exception when
++	 * enter_cleanup() was called, let "cause_abort" take the part of
++	 * "force_abort" (as done by cause_errthrow()).
++	 */
++	else if (pending & CSTP_ERROR)
++	{
++	    cause_abort = force_abort;
++	    force_abort = FALSE;
++	}
++
++	/*
++	 * Restore the pending values of did_emsg, got_int, and did_throw.
++	 */
++	if (pending & CSTP_ERROR)
++	    did_emsg = TRUE;
++	if (pending & CSTP_INTERRUPT)
++	    got_int = TRUE;
++	if (pending & CSTP_THROW)
++	    need_rethrow = TRUE;    /* did_throw will be set by do_one_cmd() */
++
++	/* Report if required by the 'verbose' option or when debugging. */
++	report_resume_pending(pending,
++		   (pending & CSTP_THROW) ? (void *)current_exception : NULL);
++    }
++}
++
++
++/*
+  * Make conditionals inactive and discard what's pending in finally clauses
+  * until the conditional type searched for or a try conditional not in its
+  * finally clause is reached.  If this is in an active catch clause, finish the
+diff -Nru vim63/src/ex_getln.c vim63-new/src/ex_getln.c
+--- vim63/src/ex_getln.c	2004-06-01 09:42:18.000000000 +0200
++++ vim63-new/src/ex_getln.c	2005-03-25 00:44:30.836732792 +0100
+@@ -80,6 +80,9 @@
+ static void	alloc_cmdbuff __ARGS((int len));
+ static int	realloc_cmdbuff __ARGS((int len));
+ static void	draw_cmdline __ARGS((int start, int len));
++static void	save_cmdline __ARGS((struct cmdline_info *ccp));
++static void	restore_cmdline __ARGS((struct cmdline_info *ccp));
++static int	cmdline_paste __ARGS((int regname, int literally));
+ #if defined(FEAT_XIM) && defined(FEAT_GUI_GTK)
+ static void	redrawcmd_preedit __ARGS((void));
+ #endif
+@@ -493,6 +496,10 @@
+ 		i = (int)(xpc.xp_pattern - ccline.cmdbuff);
+ 		while (--j > i)
+ 		{
++#ifdef FEAT_MBYTE
++		    if (has_mbyte)
++			j -= (*mb_head_off)(ccline.cmdbuff, ccline.cmdbuff + j);
++#endif
+ 		    if (vim_ispathsep(ccline.cmdbuff[j]))
+ 		    {
+ 			found = TRUE;
+@@ -588,8 +595,8 @@
+ #ifdef FEAT_EVAL
+ 	    else if (c == 'e')
+ 	    {
+-		struct cmdline_info	    save_ccline;
+-		char_u		    *p;
++		struct cmdline_info save_ccline;
++		char_u		    *p = NULL;
+ 
+ 		/*
+ 		 * Replace the command line with the result of an expression.
+@@ -600,14 +607,16 @@
+ 		    new_cmdpos = 99999;	/* keep it at the end */
+ 		else
+ 		    new_cmdpos = ccline.cmdpos;
+-		save_ccline = ccline;
+-		ccline.cmdbuff = NULL;
+-		ccline.cmdprompt = NULL;
++
++		save_cmdline(&save_ccline);
+ 		c = get_expr_register();
+-		ccline = save_ccline;
++		restore_cmdline(&save_ccline);
+ 		if (c == '=')
+ 		{
++		    save_cmdline(&save_ccline);
+ 		    p = get_expr_line();
++		    restore_cmdline(&save_ccline);
++
+ 		    if (p != NULL
+ 			     && realloc_cmdbuff((int)STRLEN(p) + 1) == OK)
+ 		    {
+@@ -988,8 +997,13 @@
+ 
+ 	case ESC:	/* get here if p_wc != ESC or when ESC typed twice */
+ 	case Ctrl_C:
+-		/* In exmode it doesn't make sense to return. */
+-		if (exmode_active)
++		/* In exmode it doesn't make sense to return. Except when
++		 * ":normal" runs out of characters. */
++		if (exmode_active
++#ifdef FEAT_EX_EXTRA
++			&& (ex_normal_busy == 0 || typebuf.tb_len > 0)
++#endif
++		   )
+ 		    goto cmdline_not_changed;
+ 
+ 		gotesc = TRUE;		/* will free ccline.cmdbuff after
+@@ -1026,11 +1040,9 @@
+ 		    }
+ 		    else
+ 		    {
+-			save_ccline = ccline;
+-			ccline.cmdbuff = NULL;
+-			ccline.cmdprompt = NULL;
++			save_cmdline(&save_ccline);
+ 			c = get_expr_register();
+-			ccline = save_ccline;
++			restore_cmdline(&save_ccline);
+ 		    }
+ 		}
+ #endif
+@@ -1722,7 +1734,13 @@
+     ui_cursor_shape();		/* may show different cursor shape */
+ #endif
+ 
+-    return ccline.cmdbuff;
++    {
++	char_u *p = ccline.cmdbuff;
++
++	/* Make ccline empty, getcmdline() may try to use it. */
++	ccline.cmdbuff = NULL;
++	return p;
++    }
+ }
+ 
+ #if (defined(FEAT_CRYPT) || defined(FEAT_EVAL)) || defined(PROTO)
+@@ -1742,12 +1760,11 @@
+     struct cmdline_info	save_ccline;
+     int			msg_col_save = msg_col;
+ 
+-    save_ccline = ccline;
+-    ccline.cmdbuff = NULL;
++    save_cmdline(&save_ccline);
+     ccline.cmdprompt = prompt;
+     ccline.cmdattr = attr;
+     s = getcmdline(firstc, 1L, 0);
+-    ccline = save_ccline;
++    restore_cmdline(&save_ccline);
+     /* Restore msg_col, the prompt from input() may have changed it. */
+     msg_col = msg_col_save;
+ 
+@@ -2536,6 +2553,133 @@
+     return retval;
+ }
+ 
++static struct cmdline_info  prev_ccline;
++static int		    prev_ccline_used = FALSE;
++
++/*
++ * Save ccline, because obtaining the "=" register may execute "normal :cmd"
++ * and overwrite it.  But get_cmdline_str() may need it, thus make it
++ * available globally in prev_ccline.
++ */
++    static void
++save_cmdline(ccp)
++    struct cmdline_info *ccp;
++{
++    if (!prev_ccline_used)
++    {
++	vim_memset(&prev_ccline, 0, sizeof(struct cmdline_info));
++	prev_ccline_used = TRUE;
++    }
++    *ccp = prev_ccline;
++    prev_ccline = ccline;
++    ccline.cmdbuff = NULL;
++    ccline.cmdprompt = NULL;
++}
++
++/*
++ * Resture ccline after it has been saved with save_cmdline().
++ */
++    static void
++restore_cmdline(ccp)
++    struct cmdline_info *ccp;
++{
++    ccline = prev_ccline;
++    prev_ccline = *ccp;
++}
++
++/*
++ * paste a yank register into the command line.
++ * used by CTRL-R command in command-line mode
++ * insert_reg() can't be used here, because special characters from the
++ * register contents will be interpreted as commands.
++ *
++ * return FAIL for failure, OK otherwise
++ */
++    static int
++cmdline_paste(regname, literally)
++    int regname;
++    int literally;	/* Insert text literally instead of "as typed" */
++{
++    long		i;
++    char_u		*arg;
++    int			allocated;
++    struct cmdline_info	save_ccline;
++
++    /* check for valid regname; also accept special characters for CTRL-R in
++     * the command line */
++    if (regname != Ctrl_F && regname != Ctrl_P && regname != Ctrl_W
++	    && regname != Ctrl_A && !valid_yank_reg(regname, FALSE))
++	return FAIL;
++
++    /* A register containing CTRL-R can cause an endless loop.  Allow using
++     * CTRL-C to break the loop. */
++    line_breakcheck();
++    if (got_int)
++	return FAIL;
++
++#ifdef FEAT_CLIPBOARD
++    regname = may_get_selection(regname);
++#endif
++
++    /* Need to save and restore ccline. */
++    save_cmdline(&save_ccline);
++    i = get_spec_reg(regname, &arg, &allocated, TRUE);
++    restore_cmdline(&save_ccline);
++
++    if (i)
++    {
++	/* Got the value of a special register in "arg". */
++	if (arg == NULL)
++	    return FAIL;
++	cmdline_paste_str(arg, literally);
++	if (allocated)
++	    vim_free(arg);
++	return OK;
++    }
++
++    return cmdline_paste_reg(regname, literally);
++}
++
++/*
++ * Put a string on the command line.
++ * When "literally" is TRUE, insert literally.
++ * When "literally" is FALSE, insert as typed, but don't leave the command
++ * line.
++ */
++    void
++cmdline_paste_str(s, literally)
++    char_u	*s;
++    int		literally;
++{
++    int		c, cv;
++
++    if (literally)
++	put_on_cmdline(s, -1, TRUE);
++    else
++	while (*s != NUL)
++	{
++	    cv = *s;
++	    if (cv == Ctrl_V && s[1])
++		++s;
++#ifdef FEAT_MBYTE
++	    if (has_mbyte)
++	    {
++		c = mb_ptr2char(s);
++		s += mb_char2len(c);
++	    }
++	    else
++#endif
++		c = *s++;
++	    if (cv == Ctrl_V || c == ESC || c == Ctrl_C || c == CAR || c == NL
++#ifdef UNIX
++		    || c == intr_char
++#endif
++		    || (c == Ctrl_BSL && *s == Ctrl_N))
++		stuffcharReadbuff(Ctrl_V);
++	    stuffcharReadbuff(c);
++	}
++}
++
+ #ifdef FEAT_WILDMENU
+ /*
+  * Delete characters on the command line, from "from" to the current
+@@ -2795,6 +2939,7 @@
+     vim_free(p2);
+ 
+     redrawcmd();
++    cursorcmd();
+ 
+     /* When expanding a ":map" command and no matches are found, assume that
+      * the key is supposed to be inserted literally */
+@@ -3974,6 +4119,7 @@
+     char_u      num[50];
+     garray_T	ga;
+     int		save_current_SID = current_SID;
++    struct cmdline_info	    save_ccline;
+ 
+     if (xp->xp_arg == NULL || xp->xp_arg[0] == '\0')
+ 	return FAIL;
+@@ -3987,9 +4133,17 @@
+     args[1] = ccline.cmdbuff;
+     args[2] = num;
+ 
++    /* Save the cmdline, we don't know what the function may do. */
++    save_ccline = ccline;
++    ccline.cmdbuff = NULL;
++    ccline.cmdprompt = NULL;
+     current_SID = xp->xp_scriptID;
++
+     all = call_vim_function(xp->xp_arg, 3, args, FALSE);
++
++    ccline = save_ccline;
+     current_SID = save_current_SID;
++
+     ccline.cmdbuff[ccline.cmdlen] = keep;
+     if (all == NULL)
+ 	return FAIL;
+@@ -4434,6 +4588,24 @@
+     return history[histype][hisidx[histype]].hisnum;
+ }
+ 
++static struct cmdline_info *get_ccline_ptr __ARGS((void));
++
++/*
++ * Get pointer to the command line info to use. cmdline_paste() may clear
++ * ccline and put the previous value in prev_ccline.
++ */
++    static struct cmdline_info *
++get_ccline_ptr()
++{
++    if ((State & CMDLINE) == 0)
++	return NULL;
++    if (ccline.cmdbuff != NULL)
++	return &ccline;
++    if (prev_ccline_used && prev_ccline.cmdbuff != NULL)
++	return &prev_ccline;
++    return NULL;
++}
++
+ /*
+  * Get the current command line in allocated memory.
+  * Only works when the command line is being edited.
+@@ -4442,9 +4614,11 @@
+     char_u *
+ get_cmdline_str()
+ {
+-    if (ccline.cmdbuff == NULL || (State & CMDLINE) == 0)
++    struct cmdline_info *p = get_ccline_ptr();
++
++    if (p == NULL)
+ 	return NULL;
+-    return vim_strnsave(ccline.cmdbuff, ccline.cmdlen);
++    return vim_strnsave(p->cmdbuff, p->cmdlen);
+ }
+ 
+ /*
+@@ -4456,9 +4630,11 @@
+     int
+ get_cmdline_pos()
+ {
+-    if (ccline.cmdbuff == NULL || (State & CMDLINE) == 0)
++    struct cmdline_info *p = get_ccline_ptr();
++
++    if (p == NULL)
+ 	return -1;
+-    return ccline.cmdpos;
++    return p->cmdpos;
+ }
+ 
+ /*
+@@ -4470,7 +4646,9 @@
+ set_cmdline_pos(pos)
+     int		pos;
+ {
+-    if (ccline.cmdbuff == NULL || (State & CMDLINE) == 0)
++    struct cmdline_info *p = get_ccline_ptr();
++
++    if (p == NULL)
+ 	return 1;
+ 
+     /* The position is not set directly but after CTRL-\ e or CTRL-R = has
+@@ -5366,6 +5544,7 @@
+ 	ga_append(&ga, '\n');
+ 	vim_free(theline);
+     }
++    ga_append(&ga, NUL);
+ 
+     return (char_u *)ga.ga_data;
+ }
+diff -Nru vim63/src/fileio.c vim63-new/src/fileio.c
+--- vim63/src/fileio.c	2004-06-01 15:02:00.000000000 +0200
++++ vim63-new/src/fileio.c	2005-03-25 00:44:30.873727168 +0100
+@@ -370,15 +370,21 @@
+      * file may destroy it!  Reported on MS-DOS and Win 95.
+      * If the name is too long we might crash further on, quit here.
+      */
+-    if (fname != NULL
+-	    && *fname != NUL
+-	    && (vim_ispathsep(*(fname + STRLEN(fname) - 1))
+-		|| STRLEN(fname) >= MAXPATHL))
++    if (fname != NULL && *fname != NUL)
+     {
+-	filemess(curbuf, fname, (char_u *)_("Illegal file name"), 0);
+-	msg_end();
+-	msg_scroll = msg_save;
+-	return FAIL;
++	p = fname + STRLEN(fname) - 1;
++	if ((vim_ispathsep(*p)
++#ifdef FEAT_MBYTE
++		    /* Do not use a multi-byte char as path separator. */
++		    && (!has_mbyte || (*mb_head_off)(fname, p) == 0)
++#endif
++	    ) || STRLEN(fname) >= MAXPATHL)
++	{
++	    filemess(curbuf, fname, (char_u *)_("Illegal file name"), 0);
++	    msg_end();
++	    msg_scroll = msg_save;
++	    return FAIL;
++	}
+     }
+ 
+ #ifdef UNIX
+@@ -473,6 +479,8 @@
+ #endif
+ #ifdef VMS
+ 	    curbuf->b_fab_rfm = st.st_fab_rfm;
++	    curbuf->b_fab_rat = st.st_fab_rat;
++	    curbuf->b_fab_mrs = st.st_fab_mrs;
+ #endif
+ 	}
+ 	else
+@@ -2537,6 +2545,11 @@
+ }
+ #endif /* UNIX */
+ 
++#if defined(VMS) && !defined(MIN)
++/* Older DECC compiler for VAX doesn't define MIN() */
++# define MIN(a, b) ((a) < (b) ? (a) : (b))
++#endif
++
+ /*
+  * buf_write() - write to file 'fname' lines 'start' through 'end'
+  *
+@@ -3301,7 +3314,7 @@
+ 		    /* Open with O_EXCL to avoid the file being created while
+ 		     * we were sleeping (symlink hacker attack?) */
+ 		    bfd = mch_open((char *)backup,
+-				       O_WRONLY|O_CREAT|O_EXTRA|O_EXCL, 0666);
++				O_WRONLY|O_CREAT|O_EXTRA|O_EXCL, perm & 0777);
+ 		    if (bfd < 0)
+ 		    {
+ 			vim_free(backup);
+@@ -3685,7 +3698,7 @@
+     while ((fd = mch_open((char *)wfname, O_WRONLY | O_EXTRA | (append
+ 			? (forceit ? (O_APPEND | O_CREAT) : O_APPEND)
+ 			: (O_CREAT | O_TRUNC))
+-			, 0666)) < 0)
++			, perm < 0 ? 0666 : (perm & 0777))) < 0)
+     {
+ 	/*
+ 	 * A forced write will try to create a new file if the old one is
+@@ -3825,8 +3838,10 @@
+ #ifdef FEAT_MBYTE
+     /*
+      * The BOM is written just after the encryption magic number.
++     * Skip it when appending and the file already existed, the BOM only makes
++     * sense at the start of the file.
+      */
+-    if (buf->b_p_bomb && !write_bin)
++    if (buf->b_p_bomb && !write_bin && (!append || perm < 0))
+     {
+ 	write_info.bw_len = make_bom(buffer, fenc);
+ 	if (write_info.bw_len > 0)
+@@ -3930,20 +3945,29 @@
+ 	 * On VMS there is a problem: newlines get added when writing blocks
+ 	 * at a time. Fix it by writing a line at a time.
+ 	 * This is much slower!
+-	 * Explanation: Vim can not handle, so far, variable record format.
+-	 * With $analize/rms filename you can get the rms file structure, and
+-	 * if the Record format filed is variable, CR will be added after
+-	 * every written buffer.  In other cases it works without this fix.
+-	 * From other side read is about 5 times slower for "variable record
+-	 * format" files.
++	 * Explanation: VAX/DECC RTL insists that records in some RMS
++	 * structures end with a newline (carriage return) character, and if
++	 * they don't it adds one.
++	 * With other RMS structures it works perfect without this fix.
+ 	 */
+-	if (buf->b_fab_rfm == FAB$C_VAR)
++	if ((buf->b_fab_rat & (FAB$M_FTN | FAB$M_CR)) != 0)
+ 	{
+-	    write_info.bw_len = len;
+-	    if (buf_write_bytes(&write_info) == FAIL)
++	    int b2write;
++
++	    buf->b_fab_mrs = (buf->b_fab_mrs == 0
++		    ? MIN(4096, bufsize)
++		    : MIN(buf->b_fab_mrs, bufsize));
++
++	    b2write = len;
++	    while (b2write > 0)
+ 	    {
+-		end = 0;		/* write error: break loop */
+-		break;
++		write_info.bw_len = MIN(b2write, buf->b_fab_mrs);
++		if (buf_write_bytes(&write_info) == FAIL)
++		{
++		    end = 0;
++		    break;
++		}
++		b2write -= MIN(b2write, buf->b_fab_mrs);
+ 	    }
+ 	    write_info.bw_len = bufsize;
+ 	    nchars += len;
+@@ -3965,8 +3989,10 @@
+      * original and the backup file to be lost when halting the system right
+      * after writing the file.  That's because only the meta-data is
+      * journalled.  Syncing the file slows down the system, but assures it has
+-     * been written to disk and we don't lose it. */
+-    if (fsync(fd) != 0)
++     * been written to disk and we don't lose it.
++     * For a device do try the fsync() but don't complain if it does not work
++     * (could be a pipe). */
++    if (fsync(fd) != 0 && !device)
+     {
+ 	errmsg = (char_u *)_("E667: Fsync failed");
+ 	end = 0;
+@@ -4078,7 +4104,8 @@
+ 		if ((fd = mch_open((char *)backup, O_RDONLY | O_EXTRA, 0)) >= 0)
+ 		{
+ 		    if ((write_info.bw_fd = mch_open((char *)fname,
+-			  O_WRONLY | O_CREAT | O_TRUNC | O_EXTRA, 0666)) >= 0)
++				    O_WRONLY | O_CREAT | O_TRUNC | O_EXTRA,
++							   perm & 0777)) >= 0)
+ 		    {
+ 			/* copy the file. */
+ 			write_info.bw_buf = smallbuf;
+@@ -4235,7 +4262,7 @@
+ 
+ 	    if (org == NULL
+ 		    || (empty_fd = mch_open(org, O_CREAT | O_EXTRA | O_EXCL,
+-								   0666)) < 0)
++					perm < 0 ? 0666 : (perm & 0777))) < 0)
+ 	      EMSG(_("E206: patchmode: can't touch empty original file"));
+ 	    else
+ 	      close(empty_fd);
+@@ -5290,8 +5317,11 @@
+ 	    }
+ 	    if (p == NULL || buf->b_fname == NULL)
+ 		buf->b_fname = buf->b_ffname;
+-	    mf_fullname(buf->b_ml.ml_mfp);
+ 	}
++
++	/* Always make the swap file name a full path, a "nofile" buffer may
++	 * also have a swap file. */
++	mf_fullname(buf->b_ml.ml_mfp);
+     }
+ #ifdef FEAT_WINDOWS
+     status_redraw_all();
+@@ -5664,6 +5694,10 @@
+     BPTR	flock;
+ #endif
+     struct stat	st;
++    long	perm;
++#ifdef HAVE_ACL
++    vim_acl_T	acl;		/* ACL from original file */
++#endif
+ 
+     /*
+      * When the names are identical, there is nothing to do.
+@@ -5714,10 +5748,17 @@
+     /*
+      * Rename() failed, try copying the file.
+      */
++    perm = mch_getperm(from);
++#ifdef HAVE_ACL
++    /* For systems that support ACL: get the ACL from the original file. */
++    acl = mch_get_acl(from);
++#endif
+     fd_in = mch_open((char *)from, O_RDONLY|O_EXTRA, 0);
+     if (fd_in == -1)
+ 	return -1;
+-    fd_out = mch_open((char *)to, O_CREAT|O_EXCL|O_WRONLY|O_EXTRA, 0666);
++
++    /* Create the new file with same permissions as the original. */
++    fd_out = mch_open((char *)to, O_CREAT|O_EXCL|O_WRONLY|O_EXTRA, (int)perm);
+     if (fd_out == -1)
+     {
+ 	close(fd_in);
+@@ -5748,6 +5789,10 @@
+ 	errmsg = _("E210: Error reading \"%s\"");
+ 	to = from;
+     }
++    mch_setperm(to, perm);
++#ifdef HAVE_ACL
++    mch_set_acl(to, acl);
++#endif
+     if (errmsg != NULL)
+     {
+ 	EMSG2(errmsg, to);
+diff -Nru vim63/src/fold.c vim63-new/src/fold.c
+--- vim63/src/fold.c	2004-04-19 19:01:50.000000000 +0200
++++ vim63-new/src/fold.c	2005-03-25 00:44:30.682756200 +0100
+@@ -2795,7 +2795,7 @@
+ 	{
+ 	    /* Found an entry below top. */
+ 	    fold_changed = TRUE;
+-	    if (fp->fd_top + fp->fd_len > bot)
++	    if (fp->fd_top + fp->fd_len - 1 > bot)
+ 	    {
+ 		/* 5: Make fold that includes bot start below bot. */
+ 		foldMarkAdjustRecurse(&fp->fd_nested,
+diff -Nru vim63/src/getchar.c vim63-new/src/getchar.c
+--- vim63/src/getchar.c	2004-05-16 13:25:18.000000000 +0200
++++ vim63-new/src/getchar.c	2005-03-25 00:44:30.584771096 +0100
+@@ -100,6 +100,7 @@
+ #define RM_YES		0	/* tb_noremap: remap */
+ #define RM_NONE		1	/* tb_noremap: don't remap */
+ #define RM_SCRIPT	2	/* tb_noremap: remap local script mappings */
++#define RM_ABBR		4	/* tb_noremap: don't remap, do abbrev. */
+ 
+ /* typebuf.tb_buf has three parts: room in front (for result of mappings), the
+  * middle for typeahead and room for new characters (which needs to be 3 *
+@@ -896,6 +897,8 @@
+  *
+  * If noremap is REMAP_YES, new string can be mapped again.
+  * If noremap is REMAP_NONE, new string cannot be mapped again.
++ * If noremap is REMAP_SKIP, fist char of new string cannot be mapped again,
++ * but abbreviations are allowed.
+  * If noremap is REMAP_SCRIPT, new string cannot be mapped again, except for
+  *			script-local mappings.
+  * If noremap is > 0, that many characters of the new string cannot be mapped.
+@@ -993,6 +996,8 @@
+     /* If noremap == REMAP_SCRIPT: do remap script-local mappings. */
+     if (noremap == REMAP_SCRIPT)
+ 	val = RM_SCRIPT;
++    else if (noremap == REMAP_SKIP)
++	val = RM_ABBR;
+     else
+ 	val = RM_NONE;
+ 
+@@ -1004,7 +1009,9 @@
+      * If noremap  > 0: "noremap" characters are not remappable, the rest
+      *			mappable
+      */
+-    if (noremap < 0)
++    if (noremap == REMAP_SKIP)
++	nrm = 1;
++    else if (noremap < 0)
+ 	nrm = addlen;
+     else
+ 	nrm = noremap;
+@@ -1856,8 +1863,8 @@
+ 			    && (no_zero_mapping == 0 || c1 != '0')
+ 			    && (typebuf.tb_maplen == 0
+ 				|| (p_remap
+-				    && typebuf.tb_noremap[typebuf.tb_off]
+-								  != RM_NONE))
++				    && (typebuf.tb_noremap[typebuf.tb_off]
++						    & (RM_NONE|RM_ABBR)) == 0))
+ 			    && !(p_paste && (State & (INSERT + CMDLINE)))
+ 			    && !(State == HITRETURN && (c1 == CAR || c1 == ' '))
+ 			    && State != ASKMORE
+@@ -1973,7 +1980,7 @@
+ 				     * remapped, skip the entry.
+ 				     */
+ 				    for (n = mlen; --n >= 0; )
+-					if (*s++ == RM_NONE)
++					if (*s++ & (RM_NONE|RM_ABBR))
+ 					    break;
+ 				    if (n >= 0)
+ 					continue;
+@@ -2132,7 +2139,8 @@
+ 							 + typebuf.tb_off, 1);
+ 				    }
+ 				    KeyNoremap = (typebuf.tb_noremap[
+-						typebuf.tb_off] != REMAP_YES);
++						   typebuf.tb_off]
++						       & (RM_NONE|RM_SCRIPT));
+ 				    del_typebuf(1, 0);
+ 				}
+ 				break;	    /* got character, break for loop */
+@@ -2233,7 +2241,8 @@
+ 			/*
+ 			 * Insert the 'to' part in the typebuf.tb_buf.
+ 			 * If 'from' field is the same as the start of the
+-			 * 'to' field, don't remap the first character.
++			 * 'to' field, don't remap the first character (but do
++			 * allow abbreviations).
+ 			 * If m_noremap is set, don't remap the whole 'to'
+ 			 * part.
+ 			 */
+@@ -2241,8 +2250,8 @@
+ 				mp->m_noremap != REMAP_YES
+ 					    ? mp->m_noremap
+ 					    : STRNCMP(mp->m_str, mp->m_keys,
+-							       (size_t)keylen)
+-							      ? REMAP_YES : 1,
++							  (size_t)keylen) != 0
++						     ? REMAP_YES : REMAP_SKIP,
+ 				0, TRUE, cmd_silent || mp->m_silent) == FAIL)
+ 			{
+ 			    c = -1;
+diff -Nru vim63/src/globals.h vim63-new/src/globals.h
+--- vim63/src/globals.h	2004-05-29 13:36:36.000000000 +0200
++++ vim63-new/src/globals.h	2005-03-25 00:44:30.489785536 +0100
+@@ -1321,7 +1321,7 @@
+ #endif
+ EXTERN char_u e_secure[]	INIT(=N_("E523: Not allowed here"));
+ #if defined(AMIGA) || defined(MACOS) || defined(MSWIN) || defined(RISCOS) \
+-	|| defined(UNIX) || defined(VMS)
++	|| defined(UNIX) || defined(VMS) || defined(OS2)
+ EXTERN char_u e_screenmode[]	INIT(=N_("E359: Screen mode setting not supported"));
+ #endif
+ EXTERN char_u e_scroll[]	INIT(=N_("E49: Invalid scroll size"));
+diff -Nru vim63/src/gui.c vim63-new/src/gui.c
+--- vim63/src/gui.c	2004-06-04 15:30:48.000000000 +0200
++++ vim63-new/src/gui.c	2005-03-25 00:44:30.848730968 +0100
+@@ -2626,6 +2626,10 @@
+ 	    update_screen(VALID);
+ 	    showruler(FALSE);
+ 	    setcursor();
++	    /* In case the commands moved the focus to another window
++	     * (temporarily). */
++	    if (need_mouse_correct)
++		gui_mouse_correct();
+ 
+ 	    once_already = 1;
+ 	    retval = 0;
+@@ -4583,12 +4587,14 @@
+ 	ga_concat(&ga, (char_u *)"/");
+ 	concat_esc(&ga, repl_text, '/');	/* escape slashes */
+ 	ga_concat(&ga, (char_u *)"/g");
++	ga_append(&ga, NUL);
+ 	do_cmdline_cmd(ga.ga_data);
+     }
+     else
+     {
+ 	/* Search for the next match. */
+ 	i = msg_scroll;
++	ga_append(&ga, NUL);
+ 	do_search(NULL, down ? '/' : '?', ga.ga_data, 1L,
+ 						    SEARCH_MSG + SEARCH_MARK);
+ 	msg_scroll = i;	    /* don't let an error message set msg_scroll */
+diff -Nru vim63/src/gui_gtk.c vim63-new/src/gui_gtk.c
+--- vim63/src/gui_gtk.c	2004-05-12 18:01:45.000000000 +0200
++++ vim63-new/src/gui_gtk.c	2005-03-25 00:44:30.647761520 +0100
+@@ -749,6 +749,10 @@
+ 
+ 	    text    = CONVERT_TO_UTF8(menu->dname);
+ 	    tooltip = CONVERT_TO_UTF8(menu->strings[MENU_INDEX_TIP]);
++	    if (tooltip != NULL && !utf_valid_string(tooltip, NULL))
++		/* Invalid text, can happen when 'encoding' is changed.  Avoid
++		 * a nasty GTK error message, skip the tooltip. */
++		CONVERT_TO_UTF8_FREE(tooltip);
+ 
+ 	    menu->id = gtk_toolbar_insert_item(
+ 		    toolbar,
+@@ -993,6 +997,8 @@
+ 
+ # ifdef HAVE_GTK2
+ 	tooltip = CONVERT_TO_UTF8(menu->strings[MENU_INDEX_TIP]);
++	if (tooltip == NULL || utf_valid_string(tooltip, NULL))
++	    /* Only set the tooltip when it's valid utf-8. */
+ # else
+ 	tooltip = menu->strings[MENU_INDEX_TIP];
+ # endif
+diff -Nru vim63/src/if_python.c vim63-new/src/if_python.c
+--- vim63/src/if_python.c	2004-04-16 10:03:07.000000000 +0200
++++ vim63-new/src/if_python.c	2005-03-25 00:44:30.687755440 +0100
+@@ -381,13 +381,14 @@
+ #endif /* Python 1.4 */
+ 
+ #ifndef PY_CAN_RECURSE
+-static PyThreadState* saved_python_thread = NULL;
++static PyThreadState *saved_python_thread = NULL;
+ 
+ /*
+  * Suspend a thread of the Python interpreter, other threads are allowed to
+  * run.
+  */
+-static void Python_SaveThread(void)
++    static void
++Python_SaveThread(void)
+ {
+     saved_python_thread = PyEval_SaveThread();
+ }
+@@ -396,7 +397,8 @@
+  * Restore a thread of the Python interpreter, waits for other threads to
+  * block.
+  */
+-static void Python_RestoreThread(void)
++    static void
++Python_RestoreThread(void)
+ {
+     PyEval_RestoreThread(saved_python_thread);
+     saved_python_thread = NULL;
+@@ -456,8 +458,10 @@
+ 	if (PythonMod_Init())
+ 	    goto fail;
+ 
+-#ifndef PY_CAN_RECURSE
+-	/* the first python thread is vim's */
++	/* the first python thread is vim's, release the lock */
++#ifdef PY_CAN_RECURSE
++	PyEval_SaveThread();
++#else
+ 	Python_SaveThread();
+ #endif
+ 
+diff -Nru vim63/src/if_xcmdsrv.c vim63-new/src/if_xcmdsrv.c
+--- vim63/src/if_xcmdsrv.c	2004-04-19 17:50:30.000000000 +0200
++++ vim63-new/src/if_xcmdsrv.c	2005-03-25 00:44:30.595769424 +0100
+@@ -683,6 +683,7 @@
+     }
+     if (regProp != empty_prop)
+ 	XFree(regProp);
++    ga_append(&ga, NUL);
+     return ga.ga_data;
+ }
+ 
+diff -Nru vim63/src/main.c vim63-new/src/main.c
+--- vim63/src/main.c	2004-05-30 20:02:39.000000000 +0200
++++ vim63-new/src/main.c	2005-03-25 00:44:30.757744800 +0100
+@@ -150,11 +150,6 @@
+     int		literal = FALSE;	/* don't expand file names */
+ #endif
+ 
+-# ifdef NBDEBUG
+-    nbdebug_log_init("SPRO_GVIM_DEBUG", "SPRO_GVIM_DLEVEL");
+-    nbdebug_wait(WT_ENV | WT_WAIT | WT_STOP, "SPRO_GVIM_WAIT", 20);
+-# endif
+-
+     /*
+      * Do any system-specific initialisations.  These can NOT use IObuff or
+      * NameBuff.  Thus emsg2() cannot be called!
+@@ -209,6 +204,13 @@
+ 
+     TIME_MSG("Allocated generic buffers");
+ 
++#ifdef NBDEBUG
++    /* Wait a moment for debugging NetBeans.  Must be after allocating
++     * NameBuff. */
++    nbdebug_log_init("SPRO_GVIM_DEBUG", "SPRO_GVIM_DLEVEL");
++    nbdebug_wait(WT_ENV | WT_WAIT | WT_STOP, "SPRO_GVIM_WAIT", 20);
++#endif
++
+ #if defined(HAVE_LOCALE_H) || defined(X_LOCALE)
+     /*
+      * Setup to use the current locale (for ctype() and many other things).
+@@ -2191,6 +2193,13 @@
+ getout_preserve_modified(exitval)
+     int		exitval;
+ {
++# if defined(SIGHUP) && defined(SIG_IGN)
++    /* Ignore SIGHUP, because a dropped connection causes a read error, which
++     * makes Vim exit and then handling SIGHUP causes various reentrance
++     * problems. */
++    signal(SIGHUP, SIG_IGN);
++# endif
++
+     ml_close_notmod();		    /* close all not-modified buffers */
+     ml_sync_all(FALSE, FALSE);	    /* preserve all swap files */
+     ml_close_all(FALSE);	    /* close all memfiles, without deleting */
+diff -Nru vim63/src/mbyte.c vim63-new/src/mbyte.c
+--- vim63/src/mbyte.c	2004-04-23 10:44:36.000000000 +0200
++++ vim63-new/src/mbyte.c	2005-03-25 00:44:30.650761064 +0100
+@@ -2467,6 +2467,36 @@
+     return 1 - dbcs_head_off(base, p);
+ }
+ 
++#if (defined(HAVE_GTK2) && defined(FEAT_TOOLBAR)) || defined(PROTO)
++/*
++ * Return TRUE if string "s" is a valid utf-8 string.
++ * When "end" is NULL stop at the first NUL.
++ * When "end" is positive stop there.
++ */
++    int
++utf_valid_string(s, end)
++    char_u	*s;
++    char_u	*end;
++{
++    int		l;
++    char_u	*p = s;
++
++    while (end == NULL ? *p != NUL : p < end)
++    {
++	if ((*p & 0xc0) == 0x80)
++	    return FALSE;	/* invalid lead byte */
++	l = utf8len_tab[*p];
++	if (end != NULL && p + l > end)
++	    return FALSE;	/* incomplete byte sequence */
++	++p;
++	while (--l > 0)
++	    if ((*p++ & 0xc0) != 0x80)
++		return FALSE;	/* invalid trail byte */
++    }
++    return TRUE;
++}
++#endif
++
+ #if defined(FEAT_GUI) || defined(PROTO)
+ /*
+  * Special version of mb_tail_off() for use in ScreenLines[].
+diff -Nru vim63/src/memline.c vim63-new/src/memline.c
+--- vim63/src/memline.c	2004-05-14 14:54:01.000000000 +0200
++++ vim63-new/src/memline.c	2005-03-25 00:44:30.853730208 +0100
+@@ -4247,6 +4247,9 @@
+     int		ffdos = (get_fileformat(buf) == EOL_DOS);
+     int		extra = 0;
+ 
++    /* take care of cached line first */
++    ml_flush_line(curbuf);
++
+     if (buf->b_ml.ml_usedchunks == -1
+ 	    || buf->b_ml.ml_chunksize == NULL
+ 	    || line < 0)
+diff -Nru vim63/src/message.c vim63-new/src/message.c
+--- vim63/src/message.c	2004-05-14 15:11:10.000000000 +0200
++++ vim63-new/src/message.c	2005-03-25 00:44:30.464789336 +0100
+@@ -2572,6 +2572,8 @@
+     if (msg_silent != 0)
+ 	return;
+ 
++    /* Don't want a hit-enter prompt here. */
++    ++no_wait_return;
+ #ifdef FEAT_EVAL
+     set_vim_var_string(VV_WARNINGMSG, message, -1);
+ #endif
+@@ -2590,6 +2592,7 @@
+     msg_nowait = TRUE;	    /* don't wait for this message */
+     msg_col = 0;
+ #endif
++    --no_wait_return;
+ }
+ 
+ /*
+@@ -2918,6 +2921,13 @@
+ 		    + 3;		/* for the ": " and NUL */
+ 	    lenhotkey++;		/* for the NUL */
+ 
++	    /* If no hotkey is specified first char is used. */
++	    if (!has_hotkey[0])
++	    {
++		first_hotkey = TRUE;
++		len += 2;		/* "x" -> "[x]" */
++	    }
++
+ 	    /*
+ 	     * Now allocate and load the strings
+ 	     */
+@@ -2939,10 +2949,6 @@
+ 	    /* define first default hotkey */
+ 	    (void)copy_char(buttons, hotkp, TRUE);
+ 
+-	    /* If no hotkey is specified first char is used. */
+-	    if (!has_hotkey[0])
+-		first_hotkey = TRUE;
+-
+ 	    /* Remember where the choices start, displaying starts here when
+ 	     * "hotkp" typed at the more prompt. */
+ 	    confirm_msg_tail = msgp;
+diff -Nru vim63/src/misc1.c vim63-new/src/misc1.c
+--- vim63/src/misc1.c	2004-05-16 22:36:39.000000000 +0200
++++ vim63-new/src/misc1.c	2005-03-25 00:44:30.755745104 +0100
+@@ -2081,7 +2081,7 @@
+ #ifdef FEAT_MBYTE
+     /* If 'delcombine' is set and deleting (less than) one character, only
+      * delete the last combining character. */
+-    if (p_deco && enc_utf8 && (*mb_ptr2len_check)(oldp + col) <= count)
++    if (p_deco && enc_utf8 && utfc_ptr2len_check(oldp + col) >= count)
+     {
+ 	int	c1, c2;
+ 	int	n;
+@@ -3233,7 +3233,11 @@
+     while (*src && dstlen > 0)
+     {
+ 	copy_char = TRUE;
+-	if (*src == '$'
++	if ((*src == '$'
++#ifdef VMS
++		    && at_start
++#endif
++	   )
+ #if defined(MSDOS) || defined(MSWIN) || defined(OS2)
+ 		|| *src == '%'
+ #endif
+@@ -7540,6 +7544,13 @@
+     void
+ prepare_to_exit()
+ {
++#if defined(SIGHUP) && defined(SIG_IGN)
++    /* Ignore SIGHUP, because a dropped connection causes a read error, which
++     * makes Vim exit and then handling SIGHUP causes various reentrance
++     * problems. */
++    signal(SIGHUP, SIG_IGN);
++#endif
++
+ #ifdef FEAT_GUI
+     if (gui.in_use)
+     {
+diff -Nru vim63/src/move.c vim63-new/src/move.c
+--- vim63/src/move.c	2004-03-02 16:41:52.000000000 +0100
++++ vim63-new/src/move.c	2005-03-25 00:44:30.803737808 +0100
+@@ -871,10 +871,7 @@
+ 
+ 	/* long line wrapping, adjust curwin->w_wrow */
+ 	if (curwin->w_p_wrap && col >= (colnr_T)W_WIDTH(curwin)
+-#ifdef FEAT_VERTSPLIT
+-		&& curwin->w_width != 0
+-#endif
+-		)
++		&& W_WIDTH(curwin) - off + curwin_col_off2() > 0)
+ 	{
+ 	    col -= W_WIDTH(curwin);
+ 	    col = col % (W_WIDTH(curwin) - off + curwin_col_off2());
+@@ -1551,7 +1548,12 @@
+ 	    --curwin->w_topfill;
+ 	else
+ #endif
++	{
++#ifdef FEAT_FOLDING
++	    (void)hasFolding(curwin->w_topline, NULL, &curwin->w_topline);
++#endif
+ 	    ++curwin->w_topline;
++	}
+ 	++curwin->w_botline;		/* approximate w_botline */
+ 	curwin->w_valid &= ~(VALID_WROW|VALID_CROW|VALID_BOTLINE);
+     }
+diff -Nru vim63/src/netbeans.c vim63-new/src/netbeans.c
+--- vim63/src/netbeans.c	2004-05-07 17:02:11.000000000 +0200
++++ vim63-new/src/netbeans.c	2005-03-25 00:44:30.810736744 +0100
+@@ -2693,7 +2693,7 @@
+ 
+     if (bufno >= 0 && curwin != NULL && curwin->w_buffer == curbuf)
+     {
+-	int col = mouse_col - curwin->w_wincol - (curwin->w_p_nu ? 9 : 1);
++	int col = mouse_col - W_WINCOL(curwin) - (curwin->w_p_nu ? 9 : 1);
+ 	long off = pos2off(curbuf, &curwin->w_cursor);
+ 
+ 	/* sync the cursor position */
+diff -Nru vim63/src/normal.c vim63-new/src/normal.c
+--- vim63/src/normal.c	2004-06-05 11:19:06.000000000 +0200
++++ vim63-new/src/normal.c	2005-03-25 00:44:30.672757720 +0100
+@@ -1124,6 +1124,11 @@
+ #endif
+     }
+ 
++    /* get the length of mapped chars again after typing a count, second
++     * character or "z333<cr>". */
++    if (old_mapped_len > 0)
++	old_mapped_len = typebuf_maplen();
++
+     /*
+      * If an operation is pending, handle it...
+      */
+@@ -4343,6 +4348,7 @@
+ 	    curwin->w_cursor.lnum = curbuf->b_ml.ml_line_count;
+ 	else
+ 	    curwin->w_cursor.lnum = cap->count0;
++	check_cursor_col();
+     }
+ 
+     switch (nchar)
+diff -Nru vim63/src/ops.c vim63-new/src/ops.c
+--- vim63/src/ops.c	2004-05-25 19:52:26.000000000 +0200
++++ vim63-new/src/ops.c	2005-03-25 00:44:30.741747232 +0100
+@@ -94,13 +94,10 @@
+ static void shift_block __ARGS((oparg_T *oap, int amount));
+ static void block_insert __ARGS((oparg_T *oap, char_u *s, int b_insert, struct block_def*bdp));
+ #endif
+-static void	get_yank_register __ARGS((int regname, int writing));
+ static int	stuff_yank __ARGS((int, char_u *));
+ static void	put_reedit_in_typebuf __ARGS((void));
+ static int	put_in_typebuf __ARGS((char_u *s, int colon));
+ static void	stuffescaped __ARGS((char_u *arg, int literally));
+-static int	get_spec_reg __ARGS((int regname, char_u **argp, int *allocated, int errmsg));
+-static void	cmdline_paste_str __ARGS((char_u *s, int literally));
+ #ifdef FEAT_MBYTE
+ static void	mb_adjust_opend __ARGS((oparg_T *oap));
+ #endif
+@@ -820,7 +817,7 @@
+  * If regname is 0 and writing, use register 0
+  * If regname is 0 and reading, use previous register
+  */
+-    static void
++    void
+ get_yank_register(regname, writing)
+     int	    regname;
+     int	    writing;
+@@ -864,14 +861,12 @@
+ 	y_previous = y_current;
+ }
+ 
+-#ifdef FEAT_CLIPBOARD
++#if defined(FEAT_CLIPBOARD) || defined(PROTO)
+ /*
+  * When "regname" is a clipboard register, obtain the selection.  If it's not
+  * available return zero, otherwise return "regname".
+  */
+-static int may_get_selection __ARGS((int regname));
+-
+-    static int
++    int
+ may_get_selection(regname)
+     int regname;
+ {
+@@ -1347,7 +1342,7 @@
+ /*
+  * If "regname" is a special register, return a pointer to its value.
+  */
+-    static int
++    int
+ get_spec_reg(regname, argp, allocated, errmsg)
+     int		regname;
+     char_u	**argp;
+@@ -1426,47 +1421,20 @@
+ }
+ 
+ /*
+- * paste a yank register into the command line.
+- * used by CTRL-R command in command-line mode
++ * Paste a yank register into the command line.
++ * Only for non-special registers.
++ * Used by CTRL-R command in command-line mode
+  * insert_reg() can't be used here, because special characters from the
+  * register contents will be interpreted as commands.
+  *
+  * return FAIL for failure, OK otherwise
+  */
+     int
+-cmdline_paste(regname, literally)
++cmdline_paste_reg(regname, literally)
+     int regname;
+     int literally;	/* Insert text literally instead of "as typed" */
+ {
+     long	i;
+-    char_u	*arg;
+-    int		allocated;
+-
+-    /* check for valid regname; also accept special characters for CTRL-R in
+-     * the command line */
+-    if (regname != Ctrl_F && regname != Ctrl_P && regname != Ctrl_W
+-	    && regname != Ctrl_A && !valid_yank_reg(regname, FALSE))
+-	return FAIL;
+-
+-    /* A register containing CTRL-R can cause an endless loop.  Allow using
+-     * CTRL-C to break the loop. */
+-    line_breakcheck();
+-    if (got_int)
+-	return FAIL;
+-
+-#ifdef FEAT_CLIPBOARD
+-    regname = may_get_selection(regname);
+-#endif
+-
+-    if (get_spec_reg(regname, &arg, &allocated, TRUE))
+-    {
+-	if (arg == NULL)
+-	    return FAIL;
+-	cmdline_paste_str(arg, literally);
+-	if (allocated)
+-	    vim_free(arg);
+-	return OK;
+-    }
+ 
+     get_yank_register(regname, FALSE);
+     if (y_current->y_array == NULL)
+@@ -1489,46 +1457,6 @@
+     return OK;
+ }
+ 
+-/*
+- * Put a string on the command line.
+- * When "literally" is TRUE, insert literally.
+- * When "literally" is FALSE, insert as typed, but don't leave the command
+- * line.
+- */
+-    static void
+-cmdline_paste_str(s, literally)
+-    char_u	*s;
+-    int		literally;
+-{
+-    int		c, cv;
+-
+-    if (literally)
+-	put_on_cmdline(s, -1, TRUE);
+-    else
+-	while (*s != NUL)
+-	{
+-	    cv = *s;
+-	    if (cv == Ctrl_V && s[1])
+-		++s;
+-#ifdef FEAT_MBYTE
+-	    if (has_mbyte)
+-	    {
+-		c = mb_ptr2char(s);
+-		s += mb_char2len(c);
+-	    }
+-	    else
+-#endif
+-		c = *s++;
+-	    if (cv == Ctrl_V || c == ESC || c == Ctrl_C || c == CAR || c == NL
+-#ifdef UNIX
+-		    || c == intr_char
+-#endif
+-		    || (c == Ctrl_BSL && *s == Ctrl_N))
+-		stuffcharReadbuff(Ctrl_V);
+-	    stuffcharReadbuff(c);
+-	}
+-}
+-
+ #if defined(FEAT_CLIPBOARD) || defined(PROTO)
+ /*
+  * Adjust the register name pointed to with "rp" for the clipboard being
+@@ -3770,6 +3698,11 @@
+     int			name;
+     int			attr;
+     char_u		*arg = eap->arg;
++#ifdef FEAT_MBYTE
++    int			clen;
++#else
++# define clen 1
++#endif
+ 
+     if (arg != NULL && *arg == NUL)
+ 	arg = NULL;
+@@ -3817,10 +3750,12 @@
+ 		}
+ 		for (p = yb->y_array[j]; *p && (n -= ptr2cells(p)) >= 0; ++p)
+ 		{
+-		    msg_outtrans_len(p, 1);
+ #ifdef FEAT_MBYTE
+-		    if (has_mbyte)
+-			p += (*mb_ptr2len_check)(p) - 1;
++		    clen = (*mb_ptr2len_check)(p);
++#endif
++		    msg_outtrans_len(p, clen);
++#ifdef FEAT_MBYTE
++		    p += clen - 1;
+ #endif
+ 		}
+ 	    }
+diff -Nru vim63/src/option.c vim63-new/src/option.c
+--- vim63/src/option.c	2004-05-15 12:20:06.000000000 +0200
++++ vim63-new/src/option.c	2005-03-25 00:44:30.748746168 +0100
+@@ -293,6 +293,7 @@
+ #define P_SECURE	0x40000L/* cannot change in modeline or secure mode */
+ #define P_GETTEXT	0x80000L/* expand default value with _() */
+ #define P_NOGLOB       0x100000L/* do not use local value for global vimrc */
++#define P_NFNAME       0x200000L/* only normal file name chars allowed */
+ 
+ /*
+  * options[] is initialized here.
+@@ -413,7 +414,7 @@
+     {"backupdir",   "bdir", P_STRING|P_EXPAND|P_VI_DEF|P_COMMA|P_NODUP|P_SECURE,
+ 			    (char_u *)&p_bdir, PV_NONE,
+ 			    {(char_u *)DFLT_BDIR, (char_u *)0L}},
+-    {"backupext",   "bex",  P_STRING|P_VI_DEF,
++    {"backupext",   "bex",  P_STRING|P_VI_DEF|P_NFNAME,
+ 			    (char_u *)&p_bex, PV_NONE,
+ 			    {
+ #ifdef VMS
+@@ -696,7 +697,7 @@
+     {"define",	    "def",  P_STRING|P_ALLOCED|P_VI_DEF,
+ #ifdef FEAT_FIND_ID
+ 			    (char_u *)&p_def, OPT_BOTH(PV_DEF),
+-			    {(char_u *)"^\\s#\\s*define", (char_u *)0L}
++			    {(char_u *)"^\\s*#\\s*define", (char_u *)0L}
+ #else
+ 			    (char_u *)NULL, PV_NONE,
+ 			    {(char_u *)NULL, (char_u *)0L}
+@@ -846,7 +847,7 @@
+     {"fileformats", "ffs",  P_STRING|P_VIM|P_COMMA|P_NODUP,
+ 			    (char_u *)&p_ffs, PV_NONE,
+ 			    {(char_u *)DFLT_FFS_VI, (char_u *)DFLT_FFS_VIM}},
+-    {"filetype",    "ft",   P_STRING|P_ALLOCED|P_VI_DEF|P_NOGLOB,
++    {"filetype",    "ft",   P_STRING|P_ALLOCED|P_VI_DEF|P_NOGLOB|P_NFNAME,
+ #ifdef FEAT_AUTOCMD
+ 			    (char_u *)&p_ft, PV_FT,
+ 			    {(char_u *)"", (char_u *)0L}
+@@ -1284,7 +1285,7 @@
+ 			    {(char_u *)0L, (char_u *)0L}
+ #endif
+ 			    },
+-    {"keymap",	    "kmp",  P_STRING|P_ALLOCED|P_VI_DEF|P_RBUF|P_RSTAT,
++    {"keymap",	    "kmp",  P_STRING|P_ALLOCED|P_VI_DEF|P_RBUF|P_RSTAT|P_NFNAME,
+ #ifdef FEAT_KEYMAP
+ 			    (char_u *)&p_keymap, PV_KMAP,
+ 			    {(char_u *)"", (char_u *)0L}
+@@ -1330,7 +1331,7 @@
+ 			    {(char_u *)NULL,
+ #endif
+ 				(char_u *)0L}},
+-    {"langmenu",    "lm",   P_STRING|P_VI_DEF,
++    {"langmenu",    "lm",   P_STRING|P_VI_DEF|P_NFNAME,
+ #if defined(FEAT_MENU) && defined(FEAT_MULTI_LANG)
+ 			    (char_u *)&p_lm, PV_NONE,
+ #else
+@@ -1562,7 +1563,7 @@
+ 			    {(char_u *)0L, (char_u *)0L}
+ #endif
+ 			    },
+-    {"patchmode",   "pm",   P_STRING|P_VI_DEF,
++    {"patchmode",   "pm",   P_STRING|P_VI_DEF|P_NFNAME,
+ 			    (char_u *)&p_pm, PV_NONE,
+ 			    {(char_u *)"", (char_u *)0L}},
+     {"path",	    "pa",   P_STRING|P_EXPAND|P_VI_DEF|P_COMMA|P_NODUP,
+@@ -1595,7 +1596,7 @@
+ 			    (char_u *)NULL, PV_NONE,
+ #endif
+ 			    {(char_u *)FALSE, (char_u *)0L}},
+-    {"printdevice", "pdev", P_STRING|P_VI_DEF,
++    {"printdevice", "pdev", P_STRING|P_VI_DEF|P_SECURE,
+ #ifdef FEAT_PRINTER
+ 			    (char_u *)&p_pdev, PV_NONE,
+ 			    {(char_u *)"", (char_u *)0L}
+@@ -1981,7 +1982,7 @@
+     {"switchbuf",   "swb",  P_STRING|P_VI_DEF|P_COMMA|P_NODUP,
+ 			    (char_u *)&p_swb, PV_NONE,
+ 			    {(char_u *)"", (char_u *)0L}},
+-    {"syntax",	    "syn",  P_STRING|P_ALLOCED|P_VI_DEF|P_NOGLOB,
++    {"syntax",	    "syn",  P_STRING|P_ALLOCED|P_VI_DEF|P_NOGLOB|P_NFNAME,
+ #ifdef FEAT_SYN_HL
+ 			    (char_u *)&p_syn, PV_SYN,
+ 			    {(char_u *)"", (char_u *)0L}
+@@ -2086,7 +2087,7 @@
+ 			    (char_u *)NULL, PV_NONE,
+ #endif
+ 			    {(char_u *)85L, (char_u *)0L}},
+-    {"titleold",    NULL,   P_STRING|P_VI_DEF|P_GETTEXT,
++    {"titleold",    NULL,   P_STRING|P_VI_DEF|P_GETTEXT|P_SECURE,
+ #ifdef FEAT_TITLE
+ 			    (char_u *)&p_titleold, PV_NONE,
+ 			    {(char_u *)N_("Thanks for flying Vim"),
+@@ -2321,7 +2322,7 @@
+ 			    {(char_u *)0L, (char_u *)0L}},
+ 
+ /* terminal output codes */
+-#define p_term(sss, vvv)   {sss, NULL, P_STRING|P_VI_DEF|P_RALL, \
++#define p_term(sss, vvv)   {sss, NULL, P_STRING|P_VI_DEF|P_RALL|P_SECURE, \
+ 			    (char_u *)&vvv, PV_NONE, \
+ 			    {(char_u *)"", (char_u *)0L}},
+ 
+@@ -3174,7 +3175,15 @@
+ 	if (p_hlg == NULL)
+ 	    p_hlg = empty_option;
+ 	else
++	{
++	    /* zh_CN becomes "cn", zh_TW becomes "tw". */
++	    if (STRNICMP(p_hlg, "zh_", 3) == 0 && STRLEN(p_hlg) >= 5)
++	    {
++		p_hlg[0] = TOLOWER_ASC(p_hlg[3]);
++		p_hlg[1] = TOLOWER_ASC(p_hlg[4]);
++	    }
+ 	    p_hlg[2] = NUL;
++	}
+ 	options[idx].flags |= P_ALLOCED;
+     }
+ }
+@@ -3302,7 +3311,8 @@
+ 	errmsg = NULL;
+ 	startarg = arg;		/* remember for error message */
+ 
+-	if (STRNCMP(arg, "all", 3) == 0 && !isalpha(arg[3]))
++	if (STRNCMP(arg, "all", 3) == 0 && !isalpha(arg[3])
++						&& !(opt_flags & OPT_MODELINE))
+ 	{
+ 	    /*
+ 	     * ":set all"  show all options.
+@@ -3318,7 +3328,7 @@
+ 	    else
+ 		showoptions(1, opt_flags);
+ 	}
+-	else if (STRNCMP(arg, "termcap", 7) == 0)
++	else if (STRNCMP(arg, "termcap", 7) == 0 && !(opt_flags & OPT_MODELINE))
+ 	{
+ 	    showoptions(2, opt_flags);
+ 	    show_termcodes();
+@@ -4589,6 +4599,7 @@
+     char_u	*s, *p;
+     int		did_chartab = FALSE;
+     char_u	**gvarp;
++    int		free_oldval = (options[opt_idx].flags & P_ALLOCED);
+ 
+     /* Get the global option to compare with, otherwise we would have to check
+      * two values for all local options. */
+@@ -4604,6 +4615,15 @@
+ 	errmsg = e_secure;
+     }
+ 
++    /* Check for a "normal" file name in some options.  Disallow a path
++     * separator (slash and/or backslash), wildcards and characters that are
++     * often illegal in a file name. */
++    else if ((options[opt_idx].flags & P_NFNAME)
++			 && vim_strpbrk(*varp, (char_u *)"/\\*?[|<>") != NULL)
++    {
++	errmsg = e_invarg;
++    }
++
+     /* 'term' */
+     else if (varp == &T_NAME)
+     {
+@@ -5721,8 +5741,10 @@
+ #endif
+ 	/*
+ 	 * Free string options that are in allocated memory.
++	 * Use "free_oldval", because recursiveness may change the flags under
++	 * our fingers (esp. init_highlight()).
+ 	 */
+-	if (options[opt_idx].flags & P_ALLOCED)
++	if (free_oldval)
+ 	    free_string_option(oldval);
+ 	if (new_value_alloced)
+ 	    options[opt_idx].flags |= P_ALLOCED;
+diff -Nru vim63/src/os_unix.c vim63-new/src/os_unix.c
+--- vim63/src/os_unix.c	2004-05-29 13:38:31.000000000 +0200
++++ vim63-new/src/os_unix.c	2005-03-25 00:44:30.816735832 +0100
+@@ -1921,9 +1921,9 @@
+ {
+     if (name == NULL)
+ 	return FALSE;	       /* actually all ANSI comp. terminals should be here  */
+-    return (STRNICMP(name, "vt3", 3) == 0     /* it will cover all from VT100-VT300 */
+-	    || STRNICMP(name, "vt2", 3) == 0  /* TODO: from VT340 can hanle colors  */
+-	    || STRNICMP(name, "vt1", 3) == 0
++    /* catch VT100 - VT5xx */
++    return ((STRNICMP(name, "vt", 2) == 0
++		&& vim_strchr((char_u *)"12345", name[2]) != NULL)
+ 	    || STRCMP(name, "builtin_vt320") == 0);
+ }
+ 
+@@ -4735,8 +4735,32 @@
+ 
+     /* "unset nonomatch; print -N >" plus two is 29 */
+     len = STRLEN(tempname) + 29;
+-    for (i = 0; i < num_pat; ++i)	/* count the length of the patterns */
++    for (i = 0; i < num_pat; ++i)
++    {
++	/* Count the length of the patterns in the same way as they are put in
++	 * "command" below. */
++#ifdef USE_SYSTEM
+ 	len += STRLEN(pat[i]) + 3;	/* add space and two quotes */
++#else
++	++len;				/* add space */
++	for (j = 0; pat[i][j] != NUL; )
++	    if (vim_strchr((char_u *)" '", pat[i][j]) != NULL)
++	    {
++		len += 2;		/* add two quotes */
++		while (pat[i][j] != NUL
++			&& vim_strchr((char_u *)" '", pat[i][j]) != NULL)
++		{
++		    ++len;
++		    ++j;
++		}
++	    }
++	    else
++	    {
++		++len;
++		++j;
++	    }
++#endif
++    }
+     command = alloc(len);
+     if (command == NULL)
+     {
+diff -Nru vim63/src/proto/ex_eval.pro vim63-new/src/proto/ex_eval.pro
+--- vim63/src/proto/ex_eval.pro	2004-06-07 10:53:57.000000000 +0200
++++ vim63-new/src/proto/ex_eval.pro	2005-03-25 00:44:30.707752400 +0100
+@@ -23,6 +23,8 @@
+ void ex_catch __ARGS((exarg_T *eap));
+ void ex_finally __ARGS((exarg_T *eap));
+ void ex_endtry __ARGS((exarg_T *eap));
++void enter_cleanup __ARGS((cleanup_T *csp));
++void leave_cleanup __ARGS((cleanup_T *csp));
+ int cleanup_conditionals __ARGS((struct condstack *cstack, int searched_cond, int inclusive));
+ void ex_endfunction __ARGS((exarg_T *eap));
+ int has_while_cmd __ARGS((char_u *p));
+diff -Nru vim63/src/proto/ex_getln.pro vim63-new/src/proto/ex_getln.pro
+--- vim63/src/proto/ex_getln.pro	2004-06-07 10:53:58.000000000 +0200
++++ vim63-new/src/proto/ex_getln.pro	2005-03-25 00:44:30.525780064 +0100
+@@ -9,6 +9,7 @@
+ void putcmdline __ARGS((int c, int shift));
+ void unputcmdline __ARGS((void));
+ int put_on_cmdline __ARGS((char_u *str, int len, int redraw));
++void cmdline_paste_str __ARGS((char_u *s, int literally));
+ void redrawcmdline __ARGS((void));
+ void redrawcmd __ARGS((void));
+ void compute_cmdrow __ARGS((void));
+diff -Nru vim63/src/proto/mbyte.pro vim63-new/src/proto/mbyte.pro
+--- vim63/src/proto/mbyte.pro	2004-06-07 10:54:13.000000000 +0200
++++ vim63-new/src/proto/mbyte.pro	2005-03-25 00:44:30.651760912 +0100
+@@ -47,6 +47,7 @@
+ int utf_head_off __ARGS((char_u *base, char_u *p));
+ int mb_off_next __ARGS((char_u *base, char_u *p));
+ int mb_tail_off __ARGS((char_u *base, char_u *p));
++int utf_valid_string __ARGS((char_u *s, char_u *end));
+ int dbcs_screen_tail_off __ARGS((char_u *base, char_u *p));
+ void mb_adjust_cursor __ARGS((void));
+ void mb_adjustpos __ARGS((pos_T *lp));
+diff -Nru vim63/src/proto/ops.pro vim63-new/src/proto/ops.pro
+--- vim63/src/proto/ops.pro	2004-06-07 10:54:14.000000000 +0200
++++ vim63-new/src/proto/ops.pro	2005-03-25 00:44:30.526779912 +0100
+@@ -10,13 +10,16 @@
+ void set_expr_line __ARGS((char_u *new_line));
+ char_u *get_expr_line __ARGS((void));
+ int valid_yank_reg __ARGS((int regname, int writing));
++void get_yank_register __ARGS((int regname, int writing));
++int may_get_selection __ARGS((int regname));
+ void *get_register __ARGS((int name, int copy));
+ void put_register __ARGS((int name, void *reg));
+ int yank_register_mline __ARGS((int regname));
+ int do_record __ARGS((int c));
+ int do_execreg __ARGS((int regname, int colon, int addcr));
+ int insert_reg __ARGS((int regname, int literally));
+-int cmdline_paste __ARGS((int regname, int literally));
++int get_spec_reg __ARGS((int regname, char_u **argp, int *allocated, int errmsg));
++int cmdline_paste_reg __ARGS((int regname, int literally));
+ void adjust_clip_reg __ARGS((int *rp));
+ int op_delete __ARGS((oparg_T *oap));
+ int op_replace __ARGS((oparg_T *oap, int c));
+diff -Nru vim63/src/quickfix.c vim63-new/src/quickfix.c
+--- vim63/src/quickfix.c	2004-05-25 18:04:34.000000000 +0200
++++ vim63-new/src/quickfix.c	2005-03-25 00:44:30.804737656 +0100
+@@ -1680,8 +1680,10 @@
+ 	else if (buf != curbuf)
+ 	    set_curbuf(buf, DOBUF_GOTO);
+ 
++#ifdef FEAT_VERTSPLIT
+ 	/* Only set the height when there is no window to the side. */
+ 	if (curwin->w_width == Columns)
++#endif
+ 	    win_setheight(height);
+ 	curwin->w_p_wfh = TRUE;	    /* set 'winfixheight' */
+ 	if (win_valid(win))
+diff -Nru vim63/src/screen.c vim63-new/src/screen.c
+--- vim63/src/screen.c	2004-06-04 20:35:47.000000000 +0200
++++ vim63-new/src/screen.c	2005-03-25 00:44:30.830733704 +0100
+@@ -110,8 +110,8 @@
+     int		attr;	/* attributes to be used for a match */
+     int		attr_cur; /* attributes currently active in win_line() */
+     linenr_T	first_lnum;	/* first lnum to search for multi-line pat */
+-    char_u	*startp; /* in win_line() points to char where HL starts */
+-    char_u	*endp;	 /* in win_line() points to char where HL ends */
++    colnr_T	startcol; /* in win_line() points to char where HL starts */
++    colnr_T	endcol;	 /* in win_line() points to char where HL ends */
+ } match_T;
+ 
+ static match_T search_hl;	/* used for 'hlsearch' highlight matching */
+@@ -926,8 +926,8 @@
+ 
+ 	/* When a change starts above w_topline and the end is below
+ 	 * w_topline, start redrawing at w_topline.
+-	 * If the end of the change is above w_topline: do like no changes was
+-	 * maded, but redraw the first line to find changes in syntax. */
++	 * If the end of the change is above w_topline: do like no change was
++	 * made, but redraw the first line to find changes in syntax. */
+ 	if (mod_top != 0 && mod_top < wp->w_topline)
+ 	{
+ 	    if (mod_bot > wp->w_topline)
+@@ -937,6 +937,11 @@
+ 		top_end = 1;
+ #endif
+ 	}
++
++	/* When line numbers are displayed need to redraw all lines below
++	 * inserted/deleted lines. */
++	if (mod_top != 0 && buf->b_mod_xlines != 0 && wp->w_p_nu)
++	    mod_bot = MAXLNUM;
+     }
+ 
+     /*
+@@ -1607,12 +1612,6 @@
+ 			}
+ 		    }
+ 		}
+-
+-		/* When inserting or deleting lines and 'number' is set:
+-		 * Redraw all lines below the change to update the line
+-		 * numbers. */
+-		if (buf->b_mod_xlines != 0 && wp->w_p_nu)
+-		    bot_start = 0;
+ 	    }
+ 
+ #ifdef FEAT_FOLDING
+@@ -1907,8 +1906,8 @@
+ 	if (n > 0)
+ 	{
+ 	    /* draw the fold column at the right */
+-	    if (n > wp->w_width)
+-		n = wp->w_width;
++	    if (n > W_WIDTH(wp))
++		n = W_WIDTH(wp);
+ 	    screen_fill(W_WINROW(wp) + row, W_WINROW(wp) + endrow,
+ 		    W_ENDCOL(wp) - n, (int)W_ENDCOL(wp),
+ 		    ' ', ' ', hl_attr(HLF_FC));
+@@ -1920,8 +1919,8 @@
+ 	    int nn = n + 2;
+ 
+ 	    /* draw the sign column left of the fold column */
+-	    if (nn > wp->w_width)
+-		nn = wp->w_width;
++	    if (nn > W_WIDTH(wp))
++		nn = W_WIDTH(wp);
+ 	    screen_fill(W_WINROW(wp) + row, W_WINROW(wp) + endrow,
+ 		    W_ENDCOL(wp) - nn, (int)W_ENDCOL(wp) - n,
+ 		    ' ', ' ', hl_attr(HLF_SC));
+@@ -2897,8 +2896,8 @@
+     shl = &search_hl;
+     for (;;)
+     {
+-	shl->startp = NULL;
+-	shl->endp = NULL;
++	shl->startcol = MAXCOL;
++	shl->endcol = MAXCOL;
+ 	shl->attr_cur = 0;
+ 	if (shl->rm.regprog != NULL)
+ 	{
+@@ -2913,25 +2912,25 @@
+ 	    if (shl->lnum != 0 && shl->lnum <= lnum)
+ 	    {
+ 		if (shl->lnum == lnum)
+-		    shl->startp = line + shl->rm.startpos[0].col;
++		    shl->startcol = shl->rm.startpos[0].col;
+ 		else
+-		    shl->startp = line;
++		    shl->startcol = 0;
+ 		if (lnum == shl->lnum + shl->rm.endpos[0].lnum
+ 						  - shl->rm.startpos[0].lnum)
+-		    shl->endp = line + shl->rm.endpos[0].col;
++		    shl->endcol = shl->rm.endpos[0].col;
+ 		else
+-		    shl->endp = line + MAXCOL;
++		    shl->endcol = MAXCOL;
+ 		/* Highlight one character for an empty match. */
+-		if (shl->startp == shl->endp)
++		if (shl->startcol == shl->endcol)
+ 		{
+ #ifdef FEAT_MBYTE
+-		    if (has_mbyte && *shl->endp != NUL)
+-			shl->endp += (*mb_ptr2len_check)(shl->endp);
++		    if (has_mbyte && line[shl->endcol] != NUL)
++			shl->endcol += (*mb_ptr2len_check)(line + shl->endcol);
+ 		    else
+ #endif
+-			++shl->endp;
++			++shl->endcol;
+ 		}
+-		if (shl->startp < ptr)  /* match at leftcol */
++		if ((long)shl->startcol < v)  /* match at leftcol */
+ 		{
+ 		    shl->attr_cur = shl->attr;
+ 		    search_attr = shl->attr;
+@@ -3194,22 +3193,22 @@
+ 		 * Do this first for search_hl, then for match_hl, so that
+ 		 * ":match" overrules 'hlsearch'.
+ 		 */
++		v = (long)(ptr - line);
+ 		shl = &search_hl;
+ 		for (;;)
+ 		{
+ 		    while (shl->rm.regprog != NULL)
+ 		    {
+-			if (shl->startp != NULL
+-				&& ptr >= shl->startp
+-				&& ptr < shl->endp)
++			if (shl->startcol != MAXCOL
++				&& v >= (long)shl->startcol
++				&& v < (long)shl->endcol)
+ 			{
+ 			    shl->attr_cur = shl->attr;
+ 			}
+-			else if (ptr == shl->endp)
++			else if (v == (long)shl->endcol)
+ 			{
+ 			    shl->attr_cur = 0;
+ 
+-			    v = (long)(ptr - line);
+ 			    next_search_hl(wp, shl, lnum, (colnr_T)v);
+ 
+ 			    /* Need to get the line again, a multi-line regexp
+@@ -3219,23 +3218,23 @@
+ 
+ 			    if (shl->lnum == lnum)
+ 			    {
+-				shl->startp = line + shl->rm.startpos[0].col;
++				shl->startcol = shl->rm.startpos[0].col;
+ 				if (shl->rm.endpos[0].lnum == 0)
+-				    shl->endp = line + shl->rm.endpos[0].col;
++				    shl->endcol = shl->rm.endpos[0].col;
+ 				else
+-				    shl->endp = line + MAXCOL;
++				    shl->endcol = MAXCOL;
+ 
+-				if (shl->startp == shl->endp)
++				if (shl->startcol == shl->endcol)
+ 				{
+ 				    /* highlight empty match, try again after
+ 				     * it */
+ #ifdef FEAT_MBYTE
+ 				    if (has_mbyte)
+-					shl->endp +=
+-					       (*mb_ptr2len_check)(shl->endp);
++					shl->endcol += (*mb_ptr2len_check)(line
++							       + shl->endcol);
+ 				    else
+ #endif
+-					++shl->endp;
++					++shl->endcol;
+ 				}
+ 
+ 				/* Loop to check if the match starts at the
+@@ -3869,8 +3868,8 @@
+ 		    && ((area_attr != 0 && vcol == fromcol)
+ #ifdef FEAT_SEARCH_EXTRA
+ 			/* highlight 'hlsearch' match at end of line */
+-			|| ptr - 1 == search_hl.startp
+-			|| ptr - 1 == match_hl.startp
++			|| (ptr - line) - 1 == (long)search_hl.startcol
++			|| (ptr - line) - 1 == (long)match_hl.startcol
+ #endif
+ 		       ))
+ 	    {
+@@ -3907,7 +3906,7 @@
+ #ifdef FEAT_SEARCH_EXTRA
+ 		if (area_attr == 0)
+ 		{
+-		    if (ptr - 1 == match_hl.startp)
++		    if ((ptr - line) - 1 == (long)match_hl.startcol)
+ 			char_attr = match_hl.attr;
+ 		    else
+ 			char_attr = search_hl.attr;
+@@ -4170,8 +4169,8 @@
+ #ifdef FEAT_MBYTE
+ 		    /* When there is a multi-byte character, just output a
+ 		     * space to keep it simple. */
+-		    if (has_mbyte && mb_off2cells(LineOffset[screen_row - 1]
+-						+ (unsigned)Columns - 1) != 1)
++		    if (has_mbyte && MB_BYTE2LEN(ScreenLines[LineOffset[
++					screen_row - 1] + (Columns - 1)]) > 1)
+ 			out_char(' ');
+ 		    else
+ #endif
+@@ -4831,7 +4830,12 @@
+     if (matches == NULL)	/* interrupted completion? */
+ 	return;
+ 
+-    buf = alloc((unsigned)Columns + 1);
++#ifdef FEAT_MBYTE
++    if (has_mbyte)
++	buf = alloc((unsigned)Columns * MB_MAXBYTES + 1);
++    else
++#endif
++	buf = alloc((unsigned)Columns + 1);
+     if (buf == NULL)
+ 	return;
+ 
+@@ -6608,9 +6612,14 @@
+ 			len = screen_Columns;
+ 		    else
+ 			len = Columns;
+-		    mch_memmove(new_ScreenLines + new_LineOffset[new_row],
+-			    ScreenLines + LineOffset[old_row],
+-			    (size_t)len * sizeof(schar_T));
++#ifdef FEAT_MBYTE
++		    /* When switching to utf-8 don't copy characters, they
++		     * may be invalid now. */
++		    if (!(enc_utf8 && ScreenLinesUC == NULL))
++#endif
++			mch_memmove(new_ScreenLines + new_LineOffset[new_row],
++				ScreenLines + LineOffset[old_row],
++				(size_t)len * sizeof(schar_T));
+ #ifdef FEAT_MBYTE
+ 		    if (enc_utf8 && ScreenLinesUC != NULL)
+ 		    {
+diff -Nru vim63/src/search.c vim63-new/src/search.c
+--- vim63/src/search.c	2004-06-02 11:08:23.000000000 +0200
++++ vim63-new/src/search.c	2005-03-25 00:44:30.472788120 +0100
+@@ -808,10 +808,10 @@
+ 	    at_first_line = FALSE;
+ 
+ 	    /*
+-	     * stop the search if wrapscan isn't set, after an interrupt and
+-	     * after a match
++	     * Stop the search if wrapscan isn't set, after an interrupt,
++	     * after a match and after looping twice.
+ 	     */
+-	    if (!p_ws || got_int || called_emsg || break_loop || found)
++	    if (!p_ws || got_int || called_emsg || break_loop || found || loop)
+ 		break;
+ 
+ 	    /*
+@@ -1138,10 +1138,11 @@
+ 	/*
+ 	 * If there is a character offset, subtract it from the current
+ 	 * position, so we don't get stuck at "?pat?e+2" or "/pat/s-2".
++	 * Skip this if pos.col is near MAXCOL (closed fold).
+ 	 * This is not done for a line offset, because then we would not be vi
+ 	 * compatible.
+ 	 */
+-	if (!spats[0].off.line && spats[0].off.off)
++	if (!spats[0].off.line && spats[0].off.off && pos.col < MAXCOL - 2)
+ 	{
+ 	    if (spats[0].off.off > 0)
+ 	    {
+@@ -1209,7 +1210,7 @@
+ 
+ 		retval = 2;	    /* pattern found, line offset added */
+ 	    }
+-	    else
++	    else if (pos.col < MAXCOL - 2)	/* just in case */
+ 	    {
+ 		/* to the right, check for end of file */
+ 		if (spats[0].off.off > 0)
+@@ -4404,7 +4405,7 @@
+ 	if (lp[3] == 'L')
+ 	    off_line = TRUE;
+ 	if (lp[4] == 'E')
+-	    off_end = TRUE;
++	    off_end = SEARCH_END;
+ 	lp += 5;
+ 	off = getdigits(&lp);
+     }
+diff -Nru vim63/src/structs.h vim63-new/src/structs.h
+--- vim63/src/structs.h	2004-06-02 12:09:24.000000000 +0200
++++ vim63-new/src/structs.h	2005-03-25 00:44:30.708752248 +0100
+@@ -665,6 +665,17 @@
+ #define ET_ERROR	1	/* error exception */
+ #define ET_INTERRUPT	2	/* interrupt exception triggered by Ctrl-C */
+ 
++/*
++ * Structure to save the error/interrupt/exception state between calls to
++ * enter_cleanup() and leave_cleanup().  Must be allocated as an automatic
++ * variable by the (common) caller of these functions.
++ */
++typedef struct cleanup_stuff cleanup_T;
++struct cleanup_stuff
++{
++    int pending;		/* error/interrupt/exception state */
++    except_T *exception;	/* exception value */
++};
+ 
+ #ifdef FEAT_SYN_HL
+ /* struct passed to in_id_list() */
+@@ -918,7 +929,9 @@
+     FSSpec	b_FSSpec;	/* MacOS File Identification */
+ #endif
+ #ifdef VMS
+-    char	b_fab_rfm;	/* Record format */
++    char	 b_fab_rfm;	/* Record format    */
++    char	 b_fab_rat;	/* Record attribute */
++    unsigned int b_fab_mrs;	/* Max record size  */
+ #endif
+ #ifdef FEAT_SNIFF
+     int		b_sniff;	/* file was loaded through Sniff */
+diff -Nru vim63/src/syntax.c vim63-new/src/syntax.c
+--- vim63/src/syntax.c	2004-05-04 14:32:29.000000000 +0200
++++ vim63-new/src/syntax.c	2005-03-25 00:44:30.640762584 +0100
+@@ -437,17 +437,21 @@
+     linenr_T	parsed_lnum;
+     linenr_T	first_stored;
+     int		dist;
++    static int	changedtick = 0;	/* remember the last change ID */
+ 
+     reg_syn = TRUE;	/* let vim_regexec() know we're using syntax */
+ 
+     /*
+      * After switching buffers, invalidate current_state.
++     * Also do this when a change was made, the current state may be invalid
++     * then.
+      */
+-    if (syn_buf != wp->w_buffer)
++    if (syn_buf != wp->w_buffer || changedtick != syn_buf->b_changedtick)
+     {
+ 	invalidate_current_state();
+ 	syn_buf = wp->w_buffer;
+     }
++    changedtick = syn_buf->b_changedtick;
+     syn_win = wp;
+ 
+     /*
+@@ -6016,7 +6020,18 @@
+      * If syntax highlighting is enabled load the highlighting for it.
+      */
+     if (get_var_value((char_u *)"g:syntax_on") != NULL)
+-	(void)cmd_runtime((char_u *)"syntax/syncolor.vim", TRUE);
++    {
++	static int	recursive = 0;
++
++	if (recursive >= 5)
++	    EMSG(_("E679: recursive loop loading syncolor.vim"));
++	else
++	{
++	    ++recursive;
++	    (void)cmd_runtime((char_u *)"syntax/syncolor.vim", TRUE);
++	    --recursive;
++	}
++    }
+ #endif
+ }
+ 
+diff -Nru vim63/src/tag.c vim63-new/src/tag.c
+--- vim63/src/tag.c	2004-05-04 14:40:27.000000000 +0200
++++ vim63-new/src/tag.c	2005-03-25 00:44:30.677756960 +0100
+@@ -2382,7 +2382,15 @@
+ 	    ga_init2(&tag_fnames, (int)sizeof(char_u *), 10);
+ 	    do_in_runtimepath((char_u *)
+ #ifdef FEAT_MULTI_LANG
++# ifdef VMS
++		    /* Functions decc$to_vms() and decc$translate_vms() crash
++		     * on some VMS systems with wildcards "??".  Seems ECO
++		     * patches do fix the problem in C RTL, but we can't use
++		     * an #ifdef for that. */
++		    "doc/tags doc/tags-*"
++# else
+ 		    "doc/tags doc/tags-??"
++# endif
+ #else
+ 		    "doc/tags"
+ #endif
+diff -Nru vim63/src/term.c vim63-new/src/term.c
+--- vim63/src/term.c	2004-05-13 15:00:27.000000000 +0200
++++ vim63-new/src/term.c	2005-03-25 00:44:30.626764712 +0100
+@@ -808,8 +808,20 @@
+     {(int)KS_CDL,	IF_EB("\033[%dM", ESC_STR "[%dM")},
+ #  endif
+     {(int)KS_CL,	IF_EB("\033[H\033[2J", ESC_STR "[H" ESC_STR_nc "[2J")},
++    {(int)KS_CD,	IF_EB("\033[J", ESC_STR "[J")},
++    {(int)KS_CCO,	"8"},			/* allow 8 colors */
+     {(int)KS_ME,	IF_EB("\033[0m", ESC_STR "[0m")},
+     {(int)KS_MR,	IF_EB("\033[7m", ESC_STR "[7m")},
++    {(int)KS_MD,        IF_EB("\033[1m", ESC_STR "[1m")},  /* bold mode */
++    {(int)KS_SE,        IF_EB("\033[22m", ESC_STR "[22m")},/* normal mode */
++    {(int)KS_UE,        IF_EB("\033[24m", ESC_STR "[24m")},/* exit underscore mode */
++    {(int)KS_US,        IF_EB("\033[4m", ESC_STR "[4m")},  /* underscore mode */
++    {(int)KS_CZH,       IF_EB("\033[34;43m", ESC_STR "[34;43m" )},  /* italic mode: blue text on yellow */
++    {(int)KS_CZR,       IF_EB("\033[0m", ESC_STR "[0m")},           /* italic mode end */
++    {(int)KS_CAB,       IF_EB("\033[4%dm", ESC_STR "[4%dm" )},      /* set background color (ANSI) */
++    {(int)KS_CAF,       IF_EB("\033[3%dm", ESC_STR "[3%dm" )},      /* set foreground color (ANSI) */
++    {(int)KS_CSB,       IF_EB("\033[102;%dm", ESC_STR "[102;%dm" )},    /* set screen background color */
++    {(int)KS_CSF,       IF_EB("\033[101;%dm", ESC_STR "[101;%dm" )},    /* set screen foreground color */
+     {(int)KS_MS,	"y"},
+     {(int)KS_UT,	"y"},
+     {(int)KS_LE,	"\b"},
+diff -Nru vim63/src/version.c vim63-new/src/version.c
+--- vim63/src/version.c	2004-06-07 11:07:34.000000000 +0200
++++ vim63-new/src/version.c	2005-03-25 00:44:30.878726408 +0100
+@@ -642,6 +642,124 @@
+ static int included_patches[] =
+ {   /* Add new patch number below this line */
+ /**/
++    68,
++/**/
++    67,
++/**/
++    66,
++/**/
++    65,
++/**/
++    64,
++/**/
++    63,
++/**/
++    62,
++/**/
++    61,
++/**/
++    60,
++/**/
++    59,
++/**/
++    58,
++/**/
++    57,
++/**/
++    56,
++/**/
++    55,
++/**/
++    54,
++/**/
++    53,
++/**/
++    51,
++/**/
++    50,
++/**/
++    49,
++/**/
++    46,
++/**/
++    45,
++/**/
++    43,
++/**/
++    42,
++/**/
++    40,
++/**/
++    39,
++/**/
++    37,
++/**/
++    36,
++/**/
++    34,
++/**/
++    33,
++/**/
++    32,
++/**/
++    31,
++/**/
++    30,
++/**/
++    29,
++/**/
++    28,
++/**/
++    27,
++/**/
++    26,
++/**/
++    24,
++/**/
++    23,
++/**/
++    21,
++/**/
++    20,
++/**/
++    19,
++/**/
++    18,
++/**/
++    17,
++/**/
++    16,
++/**/
++    15,
++/**/
++    14,
++/**/
++    13,
++/**/
++    12,
++/**/
++    11,
++/**/
++    10,
++/**/
++    9,
++/**/
++    8,
++/**/
++    7,
++/**/
++    6,
++/**/
++    5,
++/**/
++    4,
++/**/
++    3,
++/**/
++    2,
++/**/
++    1,
++/**/
+     0
+ };
+ 
+diff -Nru vim63/src/vim.h vim63-new/src/vim.h
+--- vim63/src/vim.h	2004-06-01 15:22:43.000000000 +0200
++++ vim63-new/src/vim.h	2005-03-25 00:44:30.710751944 +0100
+@@ -714,7 +714,6 @@
+ #define BLN_CURBUF	1	/* May re-use curbuf for new buffer */
+ #define BLN_LISTED	2	/* Put new buffer in buffer list */
+ #define BLN_DUMMY	4	/* Allocating dummy buffer */
+-#define BLN_FORCE	8	/* Don't abort on error */
+ 
+ /* Values for in_cinkeys() */
+ #define KEY_OPEN_FORW	0x101
+@@ -726,6 +725,7 @@
+ #define REMAP_YES	0	/* allow remapping */
+ #define REMAP_NONE	-1	/* no remapping */
+ #define REMAP_SCRIPT	-2	/* remap script-local mappings only */
++#define REMAP_SKIP	-3	/* no remapping for first char */
+ 
+ /* Values for mch_call_shell() second argument */
+ #define SHELL_FILTER	1	/* filtering text */

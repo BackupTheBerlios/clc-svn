@@ -1,0 +1,10 @@
+Dependencies:
+
+kdelibs			(required)
+cdrtools		(required)
+cdparanoia		(required)
+cdrdao			(recommended)
+id3lib			(recommended)
+flac			(recommended)
+normalize		(recommended)
+dvd+rw-tools	(optional)

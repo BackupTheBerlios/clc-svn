@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.2 2002/09/10 22:11:46 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=netkit-ftp
+version=0.17
+release=1
+source=(ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --installroot=$PKG
+    make
+    mkdir -p $PKG/usr/bin $PKG/usr/man/man1 $PKG/usr/man/man5
+    make install
+    rm $PKG/usr/bin/pftp $PKG/usr/man/man1/pftp.1
+}

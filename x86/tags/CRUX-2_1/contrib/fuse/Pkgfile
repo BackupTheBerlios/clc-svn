@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.6 2005/04/12 10:50:15 vector Exp $
+# Description: Interface for userspace filesystems
+# URL: http://sourceforge.net/projects/fuse/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Jukka Heino, jukka at karsikkopuu dot net
+# Depends on:
+
+name=fuse
+version=2.2.1
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    sed -i "s/^CFLAGS=\"-Wall -W -g -O2\"$/CFLAGS=\"-Wall -W -g $CFLAGS\"/" configure
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,25 @@
+# $Id: Pkgfile,v 1.3 2005/03/09 14:27:52 jaeger Exp $
+# Description: portable version of openbsd's ntpd implementation
+# URL: http://www.openntpd.org/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Packager: Han Boetes <han@mijncomputer.nl>
+
+name=openntpd
+version=3.6.1
+release=1
+source=(
+    ftp://ftp.openbsd.org/pub/OpenBSD/OpenNTPD/$name-${version}p$release.tar.gz
+    ntpd
+)
+
+build()
+{
+    install -D -m 0755 ntpd $PKG/etc/rc.d/ntpd
+    cd $name-${version}p$release
+    ./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc
+    make
+    make install DESTDIR=$PKG
+    install -d $PKG/var/empty
+}

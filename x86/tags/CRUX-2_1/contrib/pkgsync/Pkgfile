@@ -1,0 +1,27 @@
+# $Id: Pkgfile,v 1.8 2005/03/29 04:06:21 jdolan Exp $
+# Description: Maintain and sync with a package repository
+# Maintainer: Jay Dolan jasonthomasdolan at yahoo dot com
+# Url: http://jaydolan.com/pkgsync.html
+# Depends on: 
+
+name=pkgsync
+version=1.1
+release=1
+source=(pkgsync pkgsync.conf pkgsync.8 pkgdeploy pkgdeploy.conf pkgdeploy.8)
+
+build(){
+	
+	install -m 755 -d $PKG/etc
+	install -m 644 pkgsync.conf $PKG/etc
+	install -m 644 pkgdeploy.conf $PKG/etc
+	
+	install -m 755 -d $PKG/usr/bin
+	install -m 755 pkgsync $PKG/usr/bin
+	install -m 755 pkgdeploy $PKG/usr/bin
+	
+	install -m 755 -d $PKG/usr/man/man8
+	install -m 644 pkgsync.8 $PKG/usr/man/man8
+	install -m 644 pkgdeploy.8 $PKG/usr/man/man8
+	
+	install -m 755 -d $PKG/usr/packages/old
+}

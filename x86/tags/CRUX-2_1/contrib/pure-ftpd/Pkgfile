@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 19:00:01 jue Exp $
+# Description: Secure ftp server with chroot support
+# URL:         http://pureftpd.sourceforge.net
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=pure-ftpd
+version=1.0.20
+release=2
+source=(ftp://ftp.pureftpd.org/pub/$name/releases/$name-$version.tar.bz2 \
+        pure-ftpd pure-ftpd.conf)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr --with-everything --without-pam
+    make
+    make DESTDIR=$PKG install
+    mkdir -p $PKG/var/log
+    touch $PKG/var/log/pure-ftpd.log
+    install -D -m 755 ../pure-ftpd $PKG/etc/rc.d/pure-ftpd
+    install -m 644 ../pure-ftpd.conf $PKG/etc
+}

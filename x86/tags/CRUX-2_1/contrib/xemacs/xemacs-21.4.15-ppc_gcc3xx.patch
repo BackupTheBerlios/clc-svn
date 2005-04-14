@@ -1,0 +1,11 @@
+--- xemacs-21.4.15/configure.old	2004-12-10 01:03:23.643077944 +0100
++++ xemacs-21.4.15/configure	2004-12-10 01:03:28.356361416 +0100
+@@ -2990,8 +2990,6 @@
+ fi
+ 
+ 
+-test "$machine$opsys" = "powerpclinux" && start_flags="-T $srcdir/src/ppc.ldscript"
+-
+ if test "$unexec" = "unexaix.o"; then
+   if   test "$dynamic" = "no"; then
+   start_flags="-Wl,-bnso,-bnodelcsect"

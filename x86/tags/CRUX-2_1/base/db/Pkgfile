@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.10 2005/02/06 01:48:20 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=db
+version=4.3.27
+release=1
+source=(ftp://ftp.sleepycat.com/releases/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version/build_unix
+    LDFLAGS="-lpthread" \
+    ../dist/configure --prefix=/usr \
+		      --enable-compat185 \
+		      --enable-shared \
+		      --enable-static \
+		      --enable-cxx
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/docs
+    chmod -R +w $PKG
+}

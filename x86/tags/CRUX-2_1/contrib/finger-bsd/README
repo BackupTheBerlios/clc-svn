@@ -1,0 +1,5 @@
+# $Id: README,v 1.2 2005/03/30 20:49:11 danm Exp $
+
+To enable in.fingerd put the following into your /etc/inetd.conf file:
+
+# finger	stream	tcp	nowait	root	/usr/sbin/tcpd	in.fingerd -l -s -u

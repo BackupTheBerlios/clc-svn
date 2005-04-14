@@ -1,0 +1,17 @@
+Pkgsync 1.1
+
+Welcome to Pkgsync.  Hopefully you have read the online documentation 
+at http://jaydolan.com/pkgsync.html.  While I feel that this program is 
+stable and safe, it comes with no warranty.
+
+NOTES
+
+If you're upgrading from version 1.0 or lower, you'll need to modify
+/etc/pkgsync.conf.  Beginning in version 1.1, filters are now defined
+in /etc/pkgdeploy.conf as deploy_rules.  Cut and pase any filters 
+you've defined to pkgdeploy.conf.  You may remove the filters variable
+from /etc/pkgsync.conf.
+
+Version 1.1 also introduces httpup integration.  See the online 
+documentation mentioned above for details.
+

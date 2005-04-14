@@ -1,0 +1,12 @@
+diff -Nru fcron-2.9.6.orig/configure fcron-2.9.6/configure
+--- fcron-2.9.6.orig/configure	2005-03-14 08:51:21.000000000 +0100
++++ fcron-2.9.6/configure	2005-03-14 08:51:37.000000000 +0100
+@@ -11767,7 +11767,7 @@
+     fi
+     ;;
+   *)
+-    if test -d "$withval"; then
++    if test -n "$withval"; then
+       etcdir="$withval"
+       echo "$as_me:$LINENO: result: $withval" >&5
+ echo "${ECHO_T}$withval" >&6

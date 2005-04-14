@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 18:59:59 jue Exp $
+# Description: Command-line WebDAV client
+# URL:         http://www.webdav.org/cadaver
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  neon
+
+name=cadaver
+version=0.22.2
+release=1
+source=(http://www.webdav.org/$name/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr --with-neon=/usr 
+    make
+    make prefix=$PKG/usr install
+}

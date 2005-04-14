@@ -1,0 +1,11 @@
+--- work/src/OOo_1.1.3_LinuxIntel_install/setup.ins	2004-09-15 05:03:04.000000000 +0200
++++ fixed/src/OOo_1.1.3_LinuxIntel_install/setup.ins	2004-10-06 22:06:08.154074096 +0200
+@@ -7881,8 +7881,6 @@
+ 
+ 		linkName = "/usr/bin/soffice"
+ 
+-		shell("/bin/sh -c " & "'ln -s " & chr(34) & sofficeFile & chr(34) & " " & linkName & " >/dev/null 2>&1'")
+-
+ 	End Sub
+ 
+ };

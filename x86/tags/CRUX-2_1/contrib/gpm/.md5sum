@@ -1,0 +1,9 @@
+01db82e68a680a6f97043fc8f05a8256  gpm-1.20.1-gpmopen.patch
+b487717ec9a54321af69ab68c3fe8b5d  gpm-1.20.1-idie.patch
+436757b6159c5cfa91c3d44c8d05e2c6  gpm-1.20.1-math.patch
+723628c256e50d9e7b0a4375beb403a3  gpm-1.20.1-nodebug.patch
+523d66a03cee2c4bf4b36a96828d47d5  gpm-1.20.1-subscript.patch
+cf8c311e26c330113bbf20652a88ee04  gpm-1.20.1-weak-wgetch.patch
+2c63e827d755527950d9d13fe3d87692  gpm-1.20.1.tar.bz2
+74c22aae2bbd266b29f338d59f7c9fb5  gpm-evdev-cumulative.patch
+45f2cb37aab22f9742abeb218f0bc1b5  gpm.rc

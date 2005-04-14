@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.4 2005/03/09 19:00:07 jue Exp $
+# Description: Spam detection program that uses Bayesian analysis
+# URL:         http://spamprobe.sourceforge.net/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=spamprobe
+version=1.0a
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr \
+                --enable-default-8bit
+    make 
+    make DESTDIR=$PKG install
+}

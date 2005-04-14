@@ -1,0 +1,23 @@
+drwxr-xr-x	root/root	etc/
+-rw-r--r--	root/root	etc/dovecot.conf
+drwxr-xr-x	root/root	etc/rc.d/
+-rwxr-xr-x	root/root	etc/rc.d/dovecot
+drwxr-xr-x	root/root	etc/ssl/
+drwxr-xr-x	root/root	etc/ssl/certs/
+-rw-r--r--	root/root	etc/ssl/certs/dovecot.pem (EMPTY)
+drwxr-xr-x	root/root	etc/ssl/private/
+-rw-r--r--	root/root	etc/ssl/private/dovecot.pem (EMPTY)
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/lib/
+drwxr-xr-x	root/root	usr/lib/dovecot/
+-rwxr-xr-x	root/root	usr/lib/dovecot/dovecot-auth
+-rwxr-xr-x	root/root	usr/lib/dovecot/imap
+-rwxr-xr-x	root/root	usr/lib/dovecot/imap-login
+-rwxr-xr-x	root/root	usr/lib/dovecot/pop3
+-rwxr-xr-x	root/root	usr/lib/dovecot/pop3-login
+drwxr-xr-x	root/root	usr/sbin/
+-rwxr-xr-x	root/root	usr/sbin/dovecot
+drwxr-xr-x	root/root	var/
+drwxr-xr-x	root/root	var/run/
+drwx------	root/root	var/run/dovecot/
+drwxr-x---	root/dovecot	var/run/dovecot/login/

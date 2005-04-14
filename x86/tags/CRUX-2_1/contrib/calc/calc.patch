@@ -1,0 +1,12 @@
+diff -Nru calc-2.11.9.2.orig/Makefile calc-2.11.9.2/Makefile
+--- calc-2.11.9.2.orig/Makefile	2004-02-23 12:57:13.000000000 +0200
++++ calc-2.11.9.2/Makefile	2004-02-23 15:03:49.009273623 +0200
+@@ -660,7 +660,7 @@
+ CUSTOMCALDIR= ${CALC_SHAREDIR}/custom
+ CUSTOMHELPDIR= ${CALC_SHAREDIR}/custhelp
+ CUSTOMINCDIR= ${CALC_INCDIR}/custom
+-SCRIPTDIR= ${BINDIR}/cscript
++SCRIPTDIR= /usr/lib/calc
+ 
+ # T - top level directory under which calc will be installed
+ #

@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.3 2005/03/13 14:44:25 riemer Exp $
+# Description: Fast java source to bytecode compiler
+# URL:         http://ibm.com/developerworks/opensource/jikes
+# Maintainer:  Tilo Riemer, riemer at lincvs dot org
+# Depends on:  j2sdk
+
+name=jikes
+version=1.22
+release=1
+source=(ftp://www-126.ibm.com/pub/$name/$version/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/doc
+}

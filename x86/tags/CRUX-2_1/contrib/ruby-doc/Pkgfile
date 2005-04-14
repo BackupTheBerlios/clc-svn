@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 19:00:03 jue Exp $
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Description: Data files for the ri documentation system of Ruby 
+# URL:         http://www.ruby-lang.org
+# Depends on:  ruby
+
+name=ruby-doc
+version=1.8.2
+release=1
+source=(ftp://ftp.ruby-lang.org/pub/ruby/ruby-$version.tar.gz)
+
+build () {
+    cd ruby-$version
+    ./configure --prefix=/usr
+    make DESTDIR=$PKG install-doc
+}

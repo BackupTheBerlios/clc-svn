@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# /etc/rc.d/setkey: setup IPsec SA/SP database
+#
+
+SETKEY=/usr/sbin/setkey
+CONF=/etc/racoon/setkey.conf
+
+case $1 in
+start)
+	test -e $CONF && $SETKEY -f $CONF
+	;;
+stop)
+	$SETKEY -F
+	$SETKEY -F -P
+	;;
+restart)
+	$0 stop
+	$0 start
+	;;
+dump)
+	$SETKEY -D
+	$SETKEY -D -P
+	;;
+*)
+	echo "usage: $0 start|stop|restart|dump"
+	;;
+esac
+	
+# End of file

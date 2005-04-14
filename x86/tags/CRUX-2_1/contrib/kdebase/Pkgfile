@@ -1,0 +1,25 @@
+# $Id: Pkgfile,v 1.9 2005/03/17 23:30:22 sten Exp $
+# Description: Basic applications for the KDE system  
+# URL: http://www.kde.org
+# Maintainer: sten, nick dot steeves at shaw dot ca
+# Packager: 
+# Depends on: kdelibs, samba, ghostscript, xpdf, cdparanoia, lame 
+
+name=kdebase
+version=3.4.0
+release=1
+source=(http://download.kde.org/stable/3.4/src/$name-$version.tar.bz2 kdm)
+
+build () {
+    cd $name-$version
+	./configure --prefix=/usr \
+				--with-shadow \
+				--disable-debug \
+				--disable-dependency-tracking \
+				--enable-final
+    make 
+    make DESTDIR=$PKG GENKDMCONF_FLAGS="--no-old" install
+    mkdir -p $PKG/etc/rc.d
+    install -m 755 ../kdm $PKG/etc/rc.d/kdm
+    rm -rf $PKG/usr/share/doc 
+}

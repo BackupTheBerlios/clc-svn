@@ -1,0 +1,13 @@
+drwxr-xr-x	root/root	bin/
+-rwxr-xr-x	root/root	bin/zile
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man1/
+-rw-r--r--	root/root	usr/man/man1/zile.1.gz
+drwxr-xr-x	root/root	usr/share/
+drwxr-xr-x	root/root	usr/share/zile/
+-rw-r--r--	root/root	usr/share/zile/AUTODOC
+-rw-r--r--	root/root	usr/share/zile/FAQ
+-rw-r--r--	root/root	usr/share/zile/HELP
+-rw-r--r--	root/root	usr/share/zile/TUTORIAL
+-rw-r--r--	root/root	usr/share/zile/zilerc.sample

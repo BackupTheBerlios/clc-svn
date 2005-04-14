@@ -1,0 +1,93 @@
+--- /etc/rc.d/autofs	2004-04-17 21:00:10.000000000 +0200
++++ /etc/rc.d/autofs.new	2004-04-17 21:28:52.371060319 +0200
+@@ -41,6 +41,8 @@
+     system=debian
+ elif [ -f /etc/redhat-release ]; then
+     system=redhat
++elif [ -f /usr/bin/crux ]; then
++    system=crux
+ else
+     echo "$0: Unknown system, please port and contact autofs@linux.kernel.org" 1>&2
+     exit 1
+@@ -308,20 +310,20 @@
+ {
+ 	RETVAL=0
+ 	if [ -z "`signal_submounts`" ]; then
+-		pids="`/sbin/pidof $DAEMON`"
++		pids="`/bin/pidof $DAEMON`"
+ 		for one_pid in $pids ; do
+ 			kill -USR2 $one_pid 2 > /dev/null
+ 			count=0
+ 			while ps ax|grep -v grep|grep $one_pid >/dev/null; do
+-				usleep 200000 
++				sleep .3 
+ 				count=$(expr $count + 1)
+-				if [ $count -gt 20 ]; then
++				if [ $count -gt 5 ]; then
+ 					break;
+ 				fi
+ 			done
+ 		done
+ 	fi
+-	if [ -n "`/sbin/pidof $DAEMON`" ] ; then
++	if [ -n "`/bin/pidof $DAEMON`" ] ; then
+ 		RETVAL=1
+ 	fi
+ 	return $RETVAL
+@@ -485,11 +487,56 @@
+ esac
+ }
+ 
++
++
++
++# crux start/stop function.
++#
++function crux()
++{
++
++case "$1" in
++  start)
++        # Make sure the autofs filesystem type is available.
++        (grep -q autofs /proc/filesystems || /sbin/modprobe -k autofs4 || /sbin/modprobe -k autofs) 2> /dev/null
++        TMP=`mktemp /tmp/autofs.XXXXXX` || { echo $"could not make temp file" >& 2; exit 1; }
++        getmounts | tee $TMP | sh
++	RETVAL=$?
++	if [ ! -s $TMP ] ; then
++	    echo "No Mountpoints Defined" >& 2
++	fi
++	rm -f $TMP
++	;;
++  stop)
++	signal_automounts
++	RETVAL=$?
++	count=0
++	while [ -n "`/bin/pidof $DAEMON`" -a $count -lt 5 ] ; do
++	   killall -USR2 $DAEMON >& /dev/null
++	   RETVAL=$?
++	   [ $RETVAL = 0 -a -z "`/bin/pidof $DAEMON`" ] || sleep .3 
++	   count=`expr $count + 1`
++	done
++	umount -a -f -t autofs 2> /dev/null 
++	RETVAL=$?
++	;;
++  restart)
++	crux stop
++	crux start
++	;;
++  *)
++	echo $"Usage: $0 {start|stop|restart}"
++	RETVAL=0
++esac
++}
++
+ RETVAL=0
+ if [ $system = debian ]; then
+ 	debian "$@"
+ elif [ $system = redhat ]; then
+ 	redhat "$@"
++elif [ $system = crux ]; then
++	crux "$@"
+ fi
+ 
+ exit $RETVAL

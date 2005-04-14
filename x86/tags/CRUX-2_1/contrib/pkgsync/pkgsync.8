@@ -1,0 +1,102 @@
+.TH pkgsync 8 "" "pkgsync 1.1" ""
+.SH NAME
+pkgsync \- Maintain or synchronize with a package repository.
+
+.SH SYNOPSIS
+\fBpkgsync [options] command <arguments>\fP
+
+.SH DESCRIPTION
+\fBpkgsync\fP is a package management utility that allows a sysadmin to 
+maintain software installations across any number of CRUX Linux PCs.  
+\fBpkgsync\fP accesses a repository of binary packages maintained on a 
+"master" host.  \fBpkgsync\fP works natively with NFS or local filesystems, but can make 
+use of other transports like http with \fBhttpup\fP.  Pre/post install scripts are 
+supported, and packages are \fIsync\fPed according to their order of 
+dependence.  \fBprt-get\fP's \fIlock\fP mechanism is also honored so that 
+locked packages will never be changed upon \fIinstall\fP or \fIsync\fP.
+
+.SH OPTIONS
+.TP
+.B -r /alt/repository
+Override \fI$repository\fP with the specified path.
+.TP
+.B -v
+Print version and exit.
+
+.SH COMMANDS
+.TP
+.B commit pkgfile [pkgfile]...
+Commit specified packages to the repository, archiving any old versions.
+If \fBprt-get\fP is installed, pre/post install scripts and dependency information 
+will also be committed to the repository.
+.TP
+.B mkhttpup package [package]...
+Generates \fBhttpup\fP-compatible REPO file data for the specified packages
+to stdout.  No duplicate entries should appear.  This command may be easily
+wrapped by a cgi script so that clients may pick-and-choose which packages
+to sync via \fBhttpup\fP.  See httpup(8) for more information.
+.TP
+.B testinst package [package]...
+Simulate the installation of the specified packages.  No changes to the system 
+are made.  This is helpful when preparing to install packages from the 
+repository that have several dependencies.  i.e. \fBpkgsync testinst gnome\fP
+.TP
+.B install package [package]...
+Install/update the specified packages.  If present, pre/post install scripts will 
+be executed.  If available, dependency information will be parsed and used for 
+ordering the install process.
+.TP
+.B sysdiff
+Print upgrades that are available in the repository.  No changes to the system 
+are made.  This command gives a summary of what would happen at the 
+next issued \fIsysup\fP.  It is similar to \fBprt-get diff\fP.
+.TP
+.B sysup
+Installs any available upgrades from the repository.  No new packages are 
+installed.  This command was inspired by \fBprt-get sysup\fP, and behaves 
+very much the same way.
+.TP
+.B diff
+Print differences between the currently installed software base and the 
+repository.  No changes to the system are made.  This command gives a 
+summary of what would happen at the next issued \fIsync\fP.  
+.TP
+.B sync
+Force package synchronization with the repository.  All packages in the 
+repository will be installed or updated accordingly.
+
+.SH EXAMPLES
+.TP
+.B pkgsync commit pkg1#0.1-1.pkg.tar.gz pkg2#0.4-2.pkg.tar.gz
+Would add \fIpkg1\fP and \fIpkg2\fP to the repository defined in 
+\fI/etc/pkgsync.conf\fP, archiving any previous versions of \fIpkg1\fP and 
+\fIpkg2\fP for safety's sake.
+.TP
+.B pkgsync mkhttpup pkg1 pkg2 pkg3
+Would generate \fBhttpup\fP-compatible REPO file data to stdout for \fIpkg1\fP, 
+\fIpkg2\fP, and \fIpkg3\fP.  Included would be the package files, meta-data files, 
+and that of all dependencies present in the repository.
+.TP
+.B pkgsync install pkg1 pkg2
+Would install (or upgrade) packages \fIpkg1\fP and \fIpkg2\fP, and their
+dependencies, from the default repository.
+.TP
+.B pkgsync -r /mnt/packages sync
+Would synchronize the local installation with the repository \fI/mnt/packages\fP.
+
+.SH FILES
+.TP
+.B "/etc/pkgsync.conf"
+Defines where the package repository resides, and a list of packages for which
+\fBhttpup\fP REPO files should automatically be maintained.
+
+.SH SEE ALSO
+pkgdeploy(8), pkgmk(8), pkgadd(8), prt-get(8), httpup(8)
+
+.SH CREDITS
+Jay Dolan, Jukka Heino, Johannes Winkelmann
+
+.SH COPYRIGHT
+pkgsync (pkgsync) is Copyright (c) 2004 Jay Dolan and is licensed through
+the GNU General Public License.
+

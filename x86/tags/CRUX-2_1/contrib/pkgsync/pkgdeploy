@@ -1,0 +1,33 @@
+#!/bin/bash
+#
+#  Wrapper script for automating `pkgsync commit` with prt-get.
+#  Usage: pkgdeploy <arguments> package
+#
+
+. /etc/pkgsync.conf
+. /etc/pkgdeploy.conf
+
+#  Resolve the repository to which $1 should be committed, defaulting to $repository.
+resolve_repository(){	
+	
+	for rule in ${deploy_rules[@]}; do
+		echo $rule | grep "^$1:" >/dev/null && echo $rule | sed "s/.*://" && return 0
+	done
+	
+	echo $repository
+	
+	return 0
+}
+
+#
+#  Execution begins.  Resolve repository, and invoke "pkgadd" and "pkgsync commit".
+#
+
+eval pkg=\$$#
+
+name=`basename $pkg | sed "s/#.*//"`
+repo=`resolve_repository $name` 
+
+pkgadd $@ && pkgsync -r $repo commit $pkg
+
+#End of file

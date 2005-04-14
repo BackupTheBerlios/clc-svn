@@ -1,0 +1,21 @@
+diff -Nru espgs-7.07.1.orig/configure espgs-7.07.1/configure
+--- espgs-7.07.1.orig/configure	2003-10-10 08:59:33.000000000 +0200
++++ espgs-7.07.1/configure	2003-10-10 09:01:16.000000000 +0200
+@@ -5123,16 +5123,12 @@
+ 
+ if test "x$fontpath" = "x"; then
+ 	# These font directories are used by various Linux distributions...
+-	fontpath="$datadir/fonts/default/ghostscript"
+-	fontpath="${fontpath}:$datadir/fonts/default/Type1"
++	fontpath="$datadir/fonts/default/Type1"
+ 	fontpath="${fontpath}:$datadir/fonts/default/TrueType"
+ 
+ 	# These font directories are used by IRIX...
+-	fontpath="${fontpath}:/usr/lib/DPS/outline/base"
+ 
+ 	# These font directories are used by Solaris...
+-	fontpath="${fontpath}:/usr/openwin/lib/X11/fonts/Type1"
+-	fontpath="${fontpath}:/usr/openwin/lib/X11/fonts/TrueType"
+ fi
+ 
+ 

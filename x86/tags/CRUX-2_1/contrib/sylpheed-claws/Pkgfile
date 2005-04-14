@@ -1,0 +1,46 @@
+# $Id: Pkgfile,v 1.10 2005/03/24 19:20:23 danm Exp $
+# Description: A powerfull gtk email client and newsreader
+# URL: http://sylpheed-claws.sourceforge.net
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: gtk1, imlib, gdk-pixbuf, gnupg, gpgme03
+
+# Note: 
+# Sylpheed-claws supports several extensions:
+# openssl, openldap, aspell, dillo
+
+name=sylpheed-claws
+version=1.0.4
+release=1
+source=(http://dl.sourceforge.net/sourceforge/sylpheed-claws/$name-$version.tar.bz2)
+
+build () {
+	if [ "`pkginfo -i | grep '^gpgme03'`" ]; then
+		export PATH="/usr/lib/gpgme03/bin:$PATH"
+		export CFLAGS="-I/usr/lib/gpgme03/include $CFLAGS"
+		export CXXFLAGS="-I/usr/lib/gpgme03/include $CXXFLAGS"
+		export LDFLAGS="-L/usr/lib/gpgme03/lib $LDFLAGS"
+       		CLAWSOPTS="$CLAWSOPTS --enable-pgpmime-plugin"
+	fi
+	if [ "`pkginfo -i | grep '^openssl'`" ]; then
+		CLAWSOPTS="$CLAWSOPTS --enable-openssl"
+	fi
+	if [ "`pkginfo -i | grep '^openldap'`" ]; then
+		CLAWSOPTS="$CLAWSOPTS --enable-ldap"
+	fi
+	if [ "`pkginfo -i | grep '^aspell'`" ]; then
+		CLAWSOPTS="$CLAWSOPTS --enable-aspell"
+	fi
+	if [ "`pkginfo -i | grep '^dillo'`" ]; then
+		CLAWSOPTS="$CLAWSOPTS --enable-dillo-viewer-plugin"
+	fi
+	cd $name-$version
+		./configure \
+		--prefix=/usr \
+		--disable-nls \
+		--enable-ssl \
+		--enable-ipv6 \
+		$CLAWSOPTS
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/
+}

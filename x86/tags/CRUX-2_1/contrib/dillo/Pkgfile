@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.4 2005/03/09 18:59:59 jue Exp $
+# Description: A graphical web browser in less than 400KB
+# URL:         http://www.dillo.org
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  gtk1, libjpeg, libpng
+
+name=dillo
+version=0.8.4
+release=1
+source=(http://www.dillo.org/download/$name-$version.tar.bz2)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr --enable-ipv6
+    make
+    mkdir -p $PKG/usr/etc
+    make DESTDIR=$PKG install
+}

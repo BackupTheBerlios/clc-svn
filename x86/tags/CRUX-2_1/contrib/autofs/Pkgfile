@@ -1,0 +1,43 @@
+# $Id: Pkgfile,v 1.4 2005/03/09 21:15:30 danm Exp $
+# Description: A kernel-based automounter
+# URL: http://www.linux-consulting.com/Amd_AutoFS/autofs.html
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: portmap, nfs-utils
+
+name=autofs
+version=4.1.3
+release=3
+source=(ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/$name-$version.tar.bz2 \
+	ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/$name-$version-bad_chdir.patch \
+	ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/$name-$version-mtab_lock.patch \
+	ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/$name-$version-non_block_ping.patch \
+	ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/$name-$version-strict.patch \
+	ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/$name-$version-signal-race-fix.patch \
+	ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/$name-$version-sock-leak-fix.patch \
+	ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/$name-$version-replicated_server_select.patch \
+	ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/$name-$version-multi-over.patch \
+	$name-$version-umount.patch \
+	rc.autofs.patch)
+
+build () {
+	cd $name-$version
+	patch -p1 < $SRC/$name-$version-strict.patch
+	patch -p1 < $SRC/$name-$version-non_block_ping.patch
+	patch -p1 < $SRC/$name-$version-mtab_lock.patch
+	patch -p1 < $SRC/$name-$version-bad_chdir.patch
+	patch -p1 < $SRC/$name-$version-signal-race-fix.patch 
+	patch -p1 < $SRC/$name-$version-sock-leak-fix.patch
+	patch -p1 < $SRC/$name-$version-replicated_server_select.patch
+	patch -p1 < $SRC/$name-$version-multi-over.patch
+	patch -p1 < $SRC/$name-$version-umount.patch
+	patch samples/rc.autofs.in < ../rc.autofs.patch
+
+	./configure --prefix=/usr --without-openldap
+
+	make initdir=/etc/rc.d
+
+	mkdir -p $PKG/usr/sbin $PKG/etc/rc.d $PKG/misc $PKG/net
+	mkdir -p $PKG/usr/man/{man5,man8} $PKG/usr/lib/autofs
+
+	make install INSTALLROOT=$PKG initdir=/etc/rc.d
+}

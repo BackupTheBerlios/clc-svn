@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 19:00:00 jue Exp $
+# Description: GhostView, Postscript/PDF viewer
+# URL:         http://wino.physik.uni-mainz.de/~plass/gv/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  xaw3d, ghostscript
+
+name=gv
+version=3.5.8
+release=3
+source=(ftp://ftpthep.physik.uni-mainz.de/pub/gv/unix/$name-$version.tar.gz \
+        $name-$version.patch)
+
+build () {
+    cd $name-$version
+    patch -p1 < ../$name-$version.patch
+    xmkmf
+    make Makefiles
+    (cd source; make gv)
+    make DESTDIR=$PKG install
+    make DESTDIR=$PKG install.man
+    rm -r $PKG/usr/X11R6
+}

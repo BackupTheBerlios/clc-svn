@@ -1,0 +1,43 @@
+# $Id: Pkgfile,v 1.8 2005/03/11 18:58:05 danm Exp $
+# Description: Berkeley Internet Name Domain Service. 
+# URL: http://www.isc.org/products/BIND/
+# Maintainer: Daniel Mueller, daniel at danm dot de
+
+name=bind
+version=9.3.1
+release=1
+source=(ftp://ftp.isc.org/isc/bind9/$version/$name-$version.tar.gz \
+	ftp://ftp.rs.internic.net/domain/named.root \
+	db.0.0.127 db.localhost db.ip6.arpa named named.conf)
+
+build() {
+    cd $name-$version
+    sed -i -e 's|\@LN\@ \${man3}/|ln -s |g' lib/lwres/man/Makefile.in
+    ./configure --prefix=/usr \
+		--enable-ipv6 \
+		--enable-threads \
+		--with-openssl=yes \
+		--sysconfdir=/etc
+
+    make
+    make DESTDIR=$PKG install
+    
+    mkdir -p $PKG/etc/rc.d $PKG/var/{named,run/named}
+
+    install -m 755 $SRC/named $PKG/etc/rc.d/
+    install -g named -m 640 $SRC/named.conf $PKG/etc/
+    install -g named -m 640 $SRC/named.root $SRC/db.* $PKG/var/named/    
+
+    chown root:named $PKG/var/named
+    chmod 1770 $PKG/var/named
+    
+    touch $PKG/etc/rndc.{conf,key}
+    chown root:named $PKG/var/run/named $PKG/etc/rndc.{conf,key}
+    chmod 770 $PKG/var/run/named 
+    chmod 640 $PKG/etc/rndc.{conf,key}
+    touch $PKG/var/run/named/named.pid
+    chown named:named $PKG/var/run/named/named.pid 
+    
+    rm -f $PKG/usr/bin/{dig,host}
+    rm -rf $PKG/usr/man/man1
+}

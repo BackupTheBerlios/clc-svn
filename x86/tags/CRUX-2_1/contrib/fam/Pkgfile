@@ -1,0 +1,38 @@
+# $Id: Pkgfile,v 1.4 2005/03/08 22:06:39 danm Exp $
+# Description: File Alteration Monitor
+# URL: http://oss.sgi.com/projects/fam/
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: portmap
+
+name=fam
+version=2.7.0
+release=4
+source=(ftp://oss.sgi.com/projects/fam/download/stable/$name-$version.tar.gz \
+	http://ftp.debian.org/debian/pool/main/f/$name/${name}_$version-6.diff.gz \
+	famd)
+
+build () {
+	chmod u+w -R $name-$version
+
+	cd $name-$version
+	zcat $SRC/${name}_$version-6.diff | patch -p1
+
+	patch -p1 < debian/patches/00_maintainer-mode.patch
+	patch -p1 < debian/patches/01_dnotify.patch
+	patch -p1 < debian/patches/02_cleanup.patch
+	patch -p1 < debian/patches/03_getgrouplist.patch
+
+	libtoolize -f; aclocal; automake; autoconf -f
+
+	./configure --prefix=/usr \
+		    --sysconfdir=/etc/fam
+
+	make
+	make DESTDIR=$PKG install
+
+	# Make it a bit more secure
+	sed -i -e 's|^local_only.*|local_only = true|g' $PKG/etc/fam/fam.conf
+
+	mkdir -p $PKG/etc/rc.d
+	install -m 755 ../famd $PKG/etc/rc.d
+}

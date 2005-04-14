@@ -1,0 +1,19 @@
+$Id: README,v 1.1.1.1 2004/08/17 20:01:42 crux Exp $
+
+REQUIREMENTS
+
+PRE-INSTALL
+
+POST-INSTALL
+
+	From: Nick Steeves
+	To: Daniel Mueller 
+	Date: Mon, 21 Jun 2004 22:40:17 -0600
+
+	After observing that my music was often skipping, I noticed 
+	that /usr/bin/artswrapper isn't setuid.
+	http://www.arts-project.org/doc/handbook/artswrapper.html
+
+
+PRECAUTION
+

@@ -1,0 +1,14 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/mgp
+-rwxr-xr-x	root/root	usr/bin/mgp2ps
+-rwxr-xr-x	root/root	usr/bin/mgpembed
+-rwxr-xr-x	root/root	usr/bin/mgpnet
+-rwxr-xr-x	root/root	usr/bin/xwintoppm
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man1/
+-r--r--r--	root/root	usr/man/man1/mgp.1x.gz
+-r--r--r--	root/root	usr/man/man1/mgp2ps.1x.gz
+-r--r--r--	root/root	usr/man/man1/mgpembed.1x.gz
+-r--r--r--	root/root	usr/man/man1/mgpnet.1x.gz
+-r--r--r--	root/root	usr/man/man1/xwintoppm.1x.gz

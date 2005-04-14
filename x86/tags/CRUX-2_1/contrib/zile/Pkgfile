@@ -1,0 +1,33 @@
+# $Id: Pkgfile,v 1.6 2005/04/04 17:15:48 sip Exp $
+# Description: zile is lossy emacs
+# URL: http://zile.sourceforge.net
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Han Boetes <han@mijncomputer.nl>
+# Depends on:
+# Nice to have: texinfo
+
+name=zile
+version=2.0.3
+release=1
+source=(
+    http://dl.sourceforge.net/$name/zile-$version.tar.gz
+    HELP.gz
+)
+
+build ()
+{
+    cd zile-$version
+    # Nice hack to avoid texinfo dependency
+    if ! type -p makeinfo; then
+	zcat $SRC/HELP.gz > doc/HELP
+    fi
+    sed -i s/termcap/ncurses/g configure
+    ./configure \
+        --prefix=/usr \
+        --enable-xterm-support \
+        --exec-prefix=/
+    make LDFLAGS=-static
+    install -d $PKG/usr/info
+    make install DESTDIR=$PKG
+    rm -rf $PKG/usr/info
+}

@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.4 2004/11/04 21:14:51 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=xfsprogs
+version=2.6.25
+release=1
+source=(ftp://oss.sgi.com/projects/xfs/cmd_tars/$name-$version.src.tar.gz)
+
+build() {
+    cd $name-$version
+    DEBUG=-DNDEBUG ./configure --prefix=/usr
+    make
+    make prefix=$PKG/usr install
+    mv $PKG/usr/{bin,sbin,lib} $PKG
+    rm -rf $PKG/usr/share
+}

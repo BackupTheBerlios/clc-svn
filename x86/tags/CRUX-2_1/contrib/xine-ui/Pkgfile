@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.4 2005/03/10 09:26:56 sten Exp $
+# Description: a free, GPL-licensed video player for UNIX-like systems
+# URL: http://xine.sourceforge.net
+# Maintainer: sten, nick dot steeves at shaw dot ca
+# Packager: 
+# Depends on: xine-lib
+
+name=xine-ui
+version=0.99.3
+release=1
+source=(http://dl.sourceforge.net/sourceforge/xine/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --disable-nls
+    make
+    make DESTDIR=$PKG install
+    rm -r $PKG/usr/{man/{??,man1/aaxine*},share/doc}
+}

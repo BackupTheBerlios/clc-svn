@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.6 2005/03/20 09:00:42 jue Exp $
+# Description: SOcket CAT - netcat-like utility with many enhancements
+# URL:         http://www.dest-unreach.org/socat
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=socat
+version=1.4.2.0
+release=1
+source=(http://www.dest-unreach.org/socat/download/$name-$version.tar.gz)
+
+build () {
+    cd $name-1.4
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+}

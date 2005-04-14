@@ -1,0 +1,173 @@
+Index: lib/server.c
+--- lib/server.c.orig	2004-07-06 15:42:23 +0200
++++ lib/server.c	2004-07-14 19:38:16 +0200
+@@ -470,16 +470,8 @@
+       return SASL_CONTINUE;
+   }
+ 
+-  /* get the path to the plugins; for now the config file will reside there */
+-  getpath_cb=_sasl_find_getpath_callback( global_callbacks.callbacks );
+-  if (getpath_cb==NULL) return SASL_BADPARAM;
+-
+-  /* getpath_cb->proc MUST be a sasl_getpath_t; if only c had a type
+-     system */
+-  result = ((sasl_getpath_t *)(getpath_cb->proc))(getpath_cb->context,
+-						  &path_to_config);
+-  if (result!=SASL_OK) goto done;
+-  if (path_to_config == NULL) path_to_config = "";
++  result = SASL_OK;
++  path_to_config = "@l_sysconfdir@";
+ 
+   c = strchr(path_to_config, PATHS_DELIMITER);
+ 
+Index: saslauthd/lak.c
+--- saslauthd/lak.c.orig	2003-10-30 18:21:47.000000000 +0100
++++ saslauthd/lak.c	2004-02-08 11:56:59.000000000 +0100
+@@ -47,6 +47,7 @@
+ #include <crypt.h>
+ #endif
+ 
++#include "saslauthd.h" /* get strlcpy macro for non-BSD; get HAVE_OPENSSL from config.h */
+ #ifdef HAVE_OPENSSL
+ #ifndef OPENSSL_DISABLE_OLD_DES_SUPPORT
+ #define OPENSSL_DISABLE_OLD_DES_SUPPORT
+@@ -57,7 +58,7 @@
+ 
+ #include <ldap.h>
+ #include <lber.h>
+-#include <sasl.h>
++#include "sasl.h"
+ #include "lak.h"
+ 
+ typedef struct lak_auth_method {
+Index: configure
+--- configure.orig	2005-03-21 15:33:01 +0100
++++ configure	2005-03-21 15:36:05 +0100
+@@ -5129,7 +5129,7 @@
+ 	fi
+ 
+ 	saved_LIBS=$LIBS
+-        for dbname in db-4.2 db4.2 db42 db-4.1 db4.1 db41 db-4.0 db4.0 db-4 db40 db4 db-3.3 db3.3 db33 db-3.2 db3.2 db32 db-3.1 db3.1 db31 db-3 db30 db3 db
++        for dbname in db
+           do
+ 	    LIBS="$saved_LIBS -l$dbname"
+ 	    cat >conftest.$ac_ext <<_ACEOF
+@@ -5208,6 +5208,54 @@
+ fi
+ rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+         fi
++        if test "$dblib" = "no"; then
++	    cat >conftest.$ac_ext <<_ACEOF
++/* confdefs.h.  */
++_ACEOF
++cat confdefs.h >>conftest.$ac_ext
++cat >>conftest.$ac_ext <<_ACEOF
++/* end confdefs.h.  */
++#include <db.h>
++int
++main ()
++{
++dbm_open(NULL, 0, 0, 0, NULL, NULL, NULL);
++  ;
++  return 0;
++}
++_ACEOF
++rm -f conftest.$ac_objext conftest$ac_exeext
++if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
++  (eval $ac_link) 2>conftest.er1
++  ac_status=$?
++  grep -v '^ *+' conftest.er1 >conftest.err
++  rm -f conftest.er1
++  cat conftest.err >&5
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); } &&
++	 { ac_try='test -z "$ac_c_werror_flag"
++			 || test ! -s conftest.err'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; } &&
++	 { ac_try='test -s conftest$ac_exeext'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }; then
++  BDB_LIBADD="$BDB_LIBADD -ldb"; dblib="berkeley"; dbname=db
++else
++  echo "$as_me: failed program was:" >&5
++sed 's/^/| /' conftest.$ac_ext >&5
++
++dblib="no"
++fi
++rm -f conftest.err conftest.$ac_objext \
++      conftest$ac_exeext conftest.$ac_ext
++        fi
+ 	LIBS=$saved_LIBS
+ 
+ 	LDFLAGS=$BDB_SAVE_LDFLAGS
+@@ -5885,7 +5933,7 @@
+ 	fi
+ 
+ 	saved_LIBS=$LIBS
+-        for dbname in db-4.2 db4.2 db42 db-4.1 db4.1 db41 db-4.0 db4.0 db-4 db40 db4 db-3.3 db3.3 db33 db-3.2 db3.2 db32 db-3.1 db3.1 db31 db-3 db30 db3 db
++        for dbname in db
+           do
+ 	    LIBS="$saved_LIBS -l$dbname"
+ 	    cat >conftest.$ac_ext <<_ACEOF
+@@ -5964,6 +6012,54 @@
+ fi
+ rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+         fi
++        if test "$dblib" = "no"; then
++	    cat >conftest.$ac_ext <<_ACEOF
++/* confdefs.h.  */
++_ACEOF
++cat confdefs.h >>conftest.$ac_ext
++cat >>conftest.$ac_ext <<_ACEOF
++/* end confdefs.h.  */
++#include <db.h>
++int
++main ()
++{
++dbm_open(NULL, 0, 0, 0, NULL, NULL, NULL);
++  ;
++  return 0;
++}
++_ACEOF
++rm -f conftest.$ac_objext conftest$ac_exeext
++if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
++  (eval $ac_link) 2>conftest.er1
++  ac_status=$?
++  grep -v '^ *+' conftest.er1 >conftest.err
++  rm -f conftest.er1
++  cat conftest.err >&5
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); } &&
++	 { ac_try='test -z "$ac_c_werror_flag"
++			 || test ! -s conftest.err'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; } &&
++	 { ac_try='test -s conftest$ac_exeext'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }; then
++  BDB_LIBADD="$BDB_LIBADD -ldb"; dblib="berkeley"; dbname=db
++else
++  echo "$as_me: failed program was:" >&5
++sed 's/^/| /' conftest.$ac_ext >&5
++
++dblib="no"
++fi
++rm -f conftest.err conftest.$ac_objext \
++      conftest$ac_exeext conftest.$ac_ext
++        fi
+ 	LIBS=$saved_LIBS
+ 
+ 	LDFLAGS=$BDB_SAVE_LDFLAGS

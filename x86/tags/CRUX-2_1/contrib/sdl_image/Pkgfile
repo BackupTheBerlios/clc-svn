@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.3 2005/03/29 04:06:21 jdolan Exp $
+# Description: SDL_image
+# Packager: Antonio Musumeci <bile@landofbile.com>
+# Maintainer: Jay Dolan jasonthomasdolan at yahoo dot com
+# URL: http://jcatki.no-ip.org/SDL_image/
+# Depends on: libjpeg,libpng,zlib,libsdl
+
+name=sdl_image
+version=1.2.4
+release=1
+source=(http://www.libsdl.org/projects/SDL_image/release/SDL_image-$version.tar.gz)
+
+build () {
+	cd SDL_image-$version
+	./configure --prefix=/usr
+	make && make DESTDIR=$PKG install
+}

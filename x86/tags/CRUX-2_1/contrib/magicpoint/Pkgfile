@@ -1,0 +1,25 @@
+# $Id: Pkgfile,v 1.5 2005/03/08 23:13:49 sip Exp $
+# Description: Tiny Presentation tool
+# URL: http://member.wide.ad.jp/wg/mgp/
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Simone Rota, sip at varlock dot com
+# Depends on: ghostscript
+
+name=magicpoint
+version=1.11b
+release=1
+source=(ftp://sh.wide.ad.jp/WIDE/free-ware/mgp/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr
+	xmkmf
+	make Makefiles
+	make
+	make DESTDIR=$PKG install
+	make DESTDIR=$PKG install.man
+	mv $PKG/usr/X11R6/* $PKG/usr
+	rm $PKG/usr/X11R6 -rf
+	rm -rf $PKG/usr/lib
+    
+}

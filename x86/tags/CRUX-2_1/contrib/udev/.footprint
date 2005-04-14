@@ -1,0 +1,41 @@
+drwxr-xr-x	root/root	dev/
+drwxr-xr-x	root/root	etc/
+drwxr-xr-x	root/root	etc/dev.d/
+drwxr-xr-x	root/root	etc/dev.d/default/
+drwxr-xr-x	root/root	etc/dev.d/net/
+-rwxr-xr-x	root/root	etc/dev.d/net/hotplug.dev
+drwxr-xr-x	root/root	etc/hotplug.d/
+drwxr-xr-x	root/root	etc/hotplug.d/default/
+lrwxrwxrwx	root/root	etc/hotplug.d/default/10-udev.hotplug -> /sbin/udevsend
+-rw-r--r--	root/root	etc/scsi_id.config
+drwxr-xr-x	root/root	etc/udev/
+-rwxr-xr-x	root/root	etc/udev/cdsymlinks.conf
+drwxr-xr-x	root/root	etc/udev/rules.d/
+-rw-r--r--	root/root	etc/udev/rules.d/50-udev.rules
+drwxr-xr-x	root/root	etc/udev/scripts/
+-rwxr-xr-x	root/root	etc/udev/scripts/cdsymlinks.sh
+-rwxr-xr-x	root/root	etc/udev/scripts/dvb.sh
+-rwxr-xr-x	root/root	etc/udev/scripts/ide-devfs.sh
+-rwxr-xr-x	root/root	etc/udev/scripts/scsi-devfs.sh
+-rw-r--r--	root/root	etc/udev/udev.conf
+drwxr-xr-x	root/root	sbin/
+-rwxr-xr-x	root/root	sbin/scsi_id
+-rwxr-xr-x	root/root	sbin/start_udev
+-rwxr-xr-x	root/root	sbin/udev
+-rwxr-xr-x	root/root	sbin/udev_volume_id
+-rwxr-xr-x	root/root	sbin/udevd
+-rwxr-xr-x	root/root	sbin/udevsend
+lrwxrwxrwx	root/root	sbin/udevstart -> /sbin/udev
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/udevinfo
+-rwxr-xr-x	root/root	usr/bin/udevtest
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man8/
+-rw-r--r--	root/root	usr/man/man8/scsi_id.8.gz
+-rw-r--r--	root/root	usr/man/man8/udev.8.gz
+-rw-r--r--	root/root	usr/man/man8/udevd.8.gz
+-rw-r--r--	root/root	usr/man/man8/udevinfo.8.gz
+lrwxrwxrwx	root/root	usr/man/man8/udevsend.8.gz -> udevd.8.gz
+-rw-r--r--	root/root	usr/man/man8/udevstart.8.gz
+-rw-r--r--	root/root	usr/man/man8/udevtest.8.gz

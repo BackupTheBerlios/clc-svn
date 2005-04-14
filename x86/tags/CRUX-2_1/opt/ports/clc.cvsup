@@ -1,0 +1,17 @@
+#
+# /etc/ports/clc.cvsup: CLC ports (http:/clc.morpheus.net/)
+#
+
+# Default settings
+*default host=clc.morpheus.net
+*default release=cvs
+*default delete
+*default use-rel-suffix
+*default compress
+*default base=/usr/ports
+*default prefix=/usr/ports
+
+# Official contrib ports
+contrib tag=CONTRIB-2_1
+
+# End of file

@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.5 2005/03/17 18:38:59 jue Exp $
+# Description: Objective CAML Compiler
+# URL:         http://caml.inria.fr/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Packager:    Erlend Bergsås Mikkelsen, howl at online dot no
+# Depends on:  x11
+
+name=ocaml
+version=3.08.3
+release=1
+source=(http://caml.inria.fr/pub/distrib/$name-3.08/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure -prefix /usr -with-pthread --no-tk 
+    make world opt
+    make PREFIX=$PKG/usr install installopt
+    sed -i "s|$PKG||" $PKG/usr/lib/ocaml/ld.conf
+}

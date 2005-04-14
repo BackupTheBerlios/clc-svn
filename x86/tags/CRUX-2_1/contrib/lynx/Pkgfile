@@ -1,0 +1,25 @@
+# $Id: Pkgfile,v 1.2 2005/03/08 22:06:39 danm Exp $
+# Description: Lynx, a text WWW browser
+# URL: http://lynx.browser.org
+# Packager: Jussi Mäki <valen@ihanaa.org>
+# Maintainer: Daniel Mueller, daniel at danm dot de
+
+name=lynx
+version=2.8.5
+release=1
+source=(http://lynx.isc.org/release/$name$version.tar.bz2)
+
+build () {
+    cd lynx`echo $version | sed -e 's/\./-/g'`
+    ./configure --prefix=/usr \
+		--libdir=/usr/lib/lynx \
+		--disable-nls \
+		--with-ssl \
+		--enable-color-style \
+		--enable-default-colors \
+		--enable-prettysrc \
+		--disable-finger \
+		--enable-ipv6
+    make
+    make DESTDIR=$PKG install 
+}

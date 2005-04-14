@@ -1,0 +1,29 @@
+# $Id: Pkgfile,v 1.5 2005/03/01 20:15:41 jaeger Exp $
+# Description: Linux USB/PCI Hotplug scripts
+# URL: http://linux-hotplug.sourceforge.net/
+# Maintainer: Matt Housh <jaeger at morpheus dot net>
+# Depends on: pciutils, usbutils
+
+name=hotplug
+version=2004_09_23
+release=5
+source=(ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	install -D sbin/hotplug $PKG/sbin/hotplug
+	mkdir -p $PKG/etc/hotplug/{pci,usb} $PKG/lib/firmware
+	install -D etc/hotplug.d/default/default.hotplug \
+		$PKG/etc/hotplug.d/default/default.hotplug
+	for i in etc/hotplug/{*.{agent,rc},hotplug.functions}
+	do
+		install $i $PKG/etc/hotplug/
+	done
+	for i in etc/hotplug/{blacklist,usb.{user,hand,dist}map}
+	do
+		install -m 0644 $i $PKG/etc/hotplug/
+	done
+	install -D $name.8 $PKG/usr/man/man8/$name.8
+	mkdir -p $PKG/var/log/hotplug $PKG/var/run
+	install -d -m 0700 $PKG/var/run/usb
+}

@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.3 2005/03/08 22:06:39 danm Exp $
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Description: Little CMS. A free color management engine.
+# URL: http://www.littlecms.com
+# Depends on: zlib, libtiff, libjpeg
+
+name=lcms
+version=1.14
+release=1
+source=(http://www.littlecms.com/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	mkdir -p $PKG/usr/bin
+	./configure --prefix=/usr \
+			--without-python
+	make
+	make DESTDIR=$PKG install
+}

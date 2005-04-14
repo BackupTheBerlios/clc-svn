@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.5 2005/04/01 16:27:43 sip Exp $
+# Packager: Simone Rota, sip at varlock dot com
+# Maintainer: Simone Rota, sip at varlock dot com
+# Description: an integrated development environment
+# URL: http://www.eclipse.org 
+# Depends on: gtk, j2sdk
+name=eclipse-sdk
+version=3.0.2
+release=1
+source=(http://mirror.switch.ch/mirror/eclipse/downloads/drops/R-3.0.2-200503110845/eclipse-SDK-3.0.2-linux-gtk.zip \
+	eclipse.sh)
+
+build() {
+    mkdir -p $PKG/usr/lib
+    mv eclipse $PKG/usr/lib/
+    
+    mkdir -p $PKG/usr/bin
+    cp eclipse.sh $PKG/usr/bin/eclipse
+    chmod a+x $PKG/usr/bin/eclipse
+}

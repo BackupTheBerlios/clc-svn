@@ -1,0 +1,14 @@
+#
+# /etc/maradns/db.localhost
+#
+
+# SOA
+Slocalhost.|86400|localhost.|root@localhost.|1|7200|3600|604800|1800
+
+# NS
+Nlocalhost.|86400|localhost.
+
+# A 
+Alocalhost.|86400|127.0.0.1
+
+# End of file

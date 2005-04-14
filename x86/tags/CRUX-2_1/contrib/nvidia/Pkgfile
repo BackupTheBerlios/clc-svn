@@ -1,0 +1,48 @@
+# $Id: Pkgfile,v 1.12 2005/04/01 18:29:21 jaeger Exp $
+# Description: nVIDIA Linux Display Driver
+# URL: http://www.nvidia.com/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: x11
+
+name=nvidia
+version=1.0-7174
+release=1
+source=(http://download.nvidia.com/XFree86/Linux-x86/$version/NVIDIA-Linux-x86-$version-pkg0.run \
+	$name-$version-makefiles.patch)
+
+build() {
+	sh NVIDIA-Linux-x86-$version-pkg0.run --extract-only
+	cd NVIDIA-Linux-x86-$version-pkg0
+
+	# patch Makefiles for normal users and no load during build
+	patch -p1 < $SRC/$name-$version-makefiles.patch
+
+	# create directories the Makefile expects
+	mkdir -p $PKG/usr/lib \
+		$PKG/usr/X11R6/lib/modules/drivers \
+		$PKG/usr/X11R6/lib/modules/extensions \
+		$PKG/usr/bin
+
+	# build/install libraries
+	make ROOT=$PKG install
+	install -m 0644 usr/lib/libGL.la $PKG/usr/lib/
+	sed -i -e 's|__LIBGL_PATH__|/usr/lib|' $PKG/usr/lib/libGL.la
+
+	# remove the documentation
+	rm -rf $PKG/usr/share
+
+	# copy includes
+	mkdir -p $PKG/usr/include/nvidia
+	cp -r usr/include/GL $PKG/usr/include/nvidia/
+
+	# install settings program
+	install -m 0755 usr/bin/nvidia-settings $PKG/usr/bin/
+
+	# build the module
+	cd usr/src/nv
+	IGNORE_CC_MISMATCH=1 make -f Makefile.kbuild module
+
+	# install it
+	install -m 0644 -D nvidia.ko \
+		$PKG/lib/modules/`uname -r`/kernel/drivers/video/nvidia.ko
+}

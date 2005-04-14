@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.3 2005/04/13 10:45:20 vector Exp $
+# Description: Fast, lightweight image viewer
+# URL: http://www.linuxbrit.co.uk/feh/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Eduardo Lopes, eduol at gmx dot net
+# Dependencies: giblib
+
+name=feh
+version=1.3.0
+release=1
+source=(http://www.linuxbrit.co.uk/downloads/$name-$version.tar.gz)
+
+build() {
+     cd $name-$version
+     ./configure --prefix=/usr
+     make
+     make DESTDIR=$PKG install
+     rm -rf $PKG/usr/doc
+}

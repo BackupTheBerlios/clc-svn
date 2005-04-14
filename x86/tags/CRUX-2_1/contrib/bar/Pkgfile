@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.2 2005/04/07 05:35:47 vector Exp $
+# Description: Displays a progress bar in command line pipes
+# URL: http://clpbar.sourceforge.net/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Jukka Heino, jukka at karsikkopuu dot net
+# Depends on: 
+
+name=bar
+version=1.10.4
+release=2
+source=(http://dl.sourceforge.net/sourceforge/clpbar/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    sed -i "s/-O2/$CFLAGS/g" Makefile.in
+    ./configure --prefix=/usr --disable-use-memalign
+    make
+    make DESTDIR=$PKG install
+}

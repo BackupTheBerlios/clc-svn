@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.4 2004/10/17 03:23:44 jdolan Exp $
+# Maintainer: Jay Dolan <jasonthomasdolan@yahoo.com>
+# Description: OpenGL extension to GTK 2.0
+# Url: http://gtkglext.sf.net
+# Depends on: gtk
+
+name=gtkglext
+version=1.0.6
+release=1
+source=(http://dl.sf.net/$name/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr --disable-gtk-doc
+	make && make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share
+}

@@ -1,0 +1,41 @@
+# $Id: Pkgfile,v 1.4 2005/03/29 20:30:31 danm Exp $
+# Description: Telnet server and client application with ipv6 support.
+# URL: ftp://sunsite.cnlab-switch.ch/mirror/SuSE/people/kukuk/ipv6/
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Group: ipv6
+
+name=telnet-bsd
+version=1.1
+release=1
+source=(http://www.danm.de/files/src/telnet-bsd/1.1/telnet-bsd-1.1.tar.bz2 \
+	http://www.danm.de/files/src/telnet-bsd/1.1/telnet-bsd-1.1.diff \
+	http://www.danm.de/files/src/telnet-bsd/1.1/telnet-bsd-1.1-nodeadlock.diff \
+	http://www.danm.de/files/src/telnet-bsd/1.1/telnet-bsd-1.1-SLC+ENV-fix.diff \
+	issue.net)
+
+build () {
+	cd $name-$version
+
+	# SuSE patches
+	patch -p0 < $SRC/$name-$version.diff
+	(cd telnetd; patch -p0 < $SRC/$name-$version-nodeadlock.diff)
+	patch -p1 < $SRC/$name-$version-SLC+ENV-fix.diff
+
+	./configure --prefix=/usr \
+		--disable-nls \
+		--sysconfdir=/etc
+
+	make
+
+	mkdir -p $PKG/{usr,etc}
+
+	make DESTDIR=$PKG install 
+
+	install -m 644 $SRC/issue.net $PKG/etc/
+
+	mv $PKG/usr/share/man $PKG/usr
+	rm -rf $PKG/usr/share
+
+	(cd $PKG/usr/bin; mv telnet telnet6)
+	(cd $PKG/usr/man/man1; mv telnet.1 telnet6.1)
+}

@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.2 2005/03/08 22:06:39 danm Exp $
+# Description: A high-level API to construct and inject network packets
+# URL: http://www.packetfactory.net/Projects/Libnet/
+# Maintainer: Daniel Mueller, daniel at danm dot de
+
+name=libnet
+version=1.1.2.1
+release=1
+source=(http://www.packetfactory.net/libnet/dist/$name-$version.tar.gz)
+
+build() {
+	cd $name
+	./configure --prefix=/usr
+	make
+	mkdir -p $PKG/usr/man/man3 $PKG/usr/{bin,include} $PKG/usr/lib/libnet
+	make prefix=$PKG/usr install
+	install -m 644 doc/man/man3/*.3 $PKG/usr/man/man3
+	install -m 755 libnet-config $PKG/usr/bin
+	find sample -perm +111 -type f \
+		-exec install -m 755 {} $PKG/usr/lib/libnet/ \;
+}

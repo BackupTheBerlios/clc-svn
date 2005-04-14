@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.5 2005/03/08 23:13:49 sip Exp $
+# Description: Use various apps as plugins for firefox
+# URL: http://mozplugger.mozdev.org/
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Simone Rota, sip at varlock dot com
+# Depends on: firefox
+
+name=firefox-plugger
+version=1.7.1
+release=1
+source=(http://mozdev.mirrors.nyphp.org/mozplugger/mozplugger-$version.tar.gz)
+
+build() {
+	cd mozplugger-$version
+	bunzip2 mozplugger.7.bz2
+	make linux
+	sed -i 's/mozplugger\.7\.bz2/mozplugger\.7/g' Makefile
+	make root=$PKG/ prefix=usr install
+	mv $PKG/usr/lib/mozilla $PKG/usr/lib/firefox
+
+}

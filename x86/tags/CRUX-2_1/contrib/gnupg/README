@@ -1,0 +1,18 @@
+$Id: README,v 1.1.1.1 2004/08/17 20:01:42 crux Exp $
+
+REQUIREMENTS
+	
+	GnuPG requires a sendmail compatibility link '/usr/sbin/sendmail'.
+	Be sure that you have installed one of the following:
+
+	- esmtp
+	- masqmail
+	- postfix
+	- sendmail
+
+PRE-INSTALL
+
+POST-INSTALL
+
+PRECAUTION
+

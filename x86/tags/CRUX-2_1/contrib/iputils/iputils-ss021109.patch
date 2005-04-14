@@ -1,0 +1,583 @@
+diff -Nru iputils-old/Makefile iputils/Makefile
+--- iputils-old/Makefile	2002-11-09 04:01:11.000000000 +0100
++++ iputils/Makefile	2004-12-28 12:08:44.200691874 +0100
+@@ -64,8 +64,7 @@
+ ifneq ($(SUBDIRS),)
+ 	@set -e; \
+ 	for i in $(SUBDIRS); \
+-	do $(MAKE) -C $$i; done; \
+-	cd racoon; ./configure; make
++	do $(MAKE) -C $$i; done;
+ endif
+ 
+ 
+@@ -85,8 +84,6 @@
+ ifneq ($(SUBDIRS),)
+ 	@for i in $(SUBDIRS); \
+ 	do $(MAKE) -C $$i clean; done
+-	@if [ -f racoon/Makefile ]; then \
+-	$(MAKE) -C racoon distclean; fi
+ endif
+ 
+ snapshot: clean
+diff -Nru iputils-old/arping.c iputils/arping.c
+--- iputils-old/arping.c	2001-10-06 00:42:47.000000000 +0200
++++ iputils/arping.c	2004-12-28 11:45:54.599927787 +0100
+@@ -17,8 +17,10 @@
+ #include <sys/time.h>
+ #include <sys/signal.h>
+ #include <sys/ioctl.h>
+-#include <linux/if.h>
+-#include <linux/if_arp.h>
++#include <net/if.h>
++#include <net/if_arp.h>
++#include <netpacket/packet.h>
++#include <linux/if_ether.h>
+ #include <sys/uio.h>
+ 
+ #include <netdb.h>
+diff -Nru iputils-old/doc/ping.8 iputils/doc/ping.8
+--- iputils-old/doc/ping.8	2002-11-09 05:56:20.000000000 +0100
++++ iputils/doc/ping.8	2004-12-28 11:45:16.576131597 +0100
+@@ -118,7 +118,7 @@
+ when finished.
+ .TP
+ \fB-R\fR
+-Record route.
++Record route. (IPv4 only)
+ Includes the RECORD_ROUTE option in the ECHO_REQUEST
+ packet and displays the route buffer on returned packets.
+ Note that the IP header is only large enough for nine such routes.
+diff -Nru iputils-old/doc/ping.sgml iputils/doc/ping.sgml
+--- iputils-old/doc/ping.sgml	2002-11-07 23:53:12.000000000 +0100
++++ iputils/doc/ping.sgml	2004-12-28 11:45:16.577131408 +0100
+@@ -200,7 +200,7 @@
+  <varlistentry>
+   <term><option/-R/</term>
+   <listitem><para>
+-Record route.
++Record route. (IPv4 only)
+ Includes the RECORD_ROUTE option in the ECHO_REQUEST
+ packet and displays the route buffer on returned packets.
+ Note that the IP header is only large enough for nine such routes.
+diff -Nru iputils-old/include-glibc/net/pfkeyv2.h iputils/include-glibc/net/pfkeyv2.h
+--- iputils-old/include-glibc/net/pfkeyv2.h	2002-11-09 03:45:52.000000000 +0100
++++ iputils/include-glibc/net/pfkeyv2.h	2004-12-28 12:04:32.521875521 +0100
+@@ -4,54 +4,117 @@
+ #include <stdint.h>
+ #include <linux/pfkeyv2.h>
+ 
+-#define SADB_X_AALG_NULL	5	/*251*/	/* null authentication */
+-#define SADB_AALG_SHA2_256           5
+-#define SADB_AALG_SHA2_384           6
+-#define SADB_AALG_SHA2_512           7
+-#define SADB_X_AALG_SHA2_256		SADB_AALG_SHA2_256
+-#define SADB_X_AALG_SHA2_384		SADB_AALG_SHA2_384
+-#define SADB_X_AALG_SHA2_512		SADB_AALG_SHA2_512
+-#define SADB_AALG_RIPEMD160HMAC      8
+-#define SADB_X_AALG_MD5              249
+-#define SADB_X_AALG_SHA              250
++#ifndef SADB_X_AALG_NULL
++#  define SADB_X_AALG_NULL	5	/*251*/	/* null authentication */
++#endif
++#ifndef SADB_AALG_SHA2_256
++#  define SADB_AALG_SHA2_256           5
++#endif
++#ifndef SADB_AALG_SHA2_384
++#  define SADB_AALG_SHA2_384           6
++#endif
++#ifndef SADB_AALG_SHA2_512
++#  define SADB_AALG_SHA2_512           7
++#endif
++#ifndef SADB_X_AALG_SHA2_256
++#  define SADB_X_AALG_SHA2_256		SADB_AALG_SHA2_256
++#endif
++#ifndef SADB_X_AALG_SHA2_384
++#  define SADB_X_AALG_SHA2_384		SADB_AALG_SHA2_384
++#endif
++#ifndef SADB_X_AALG_SHA2_512
++#  define SADB_X_AALG_SHA2_512		SADB_AALG_SHA2_512
++#endif
++#ifndef SADB_AALG_RIPEMD160HMAC
++#  define SADB_AALG_RIPEMD160HMAC      8
++#endif
++#ifndef SADB_X_AALG_MD5
++#  define SADB_X_AALG_MD5              249
++#endif
++#ifndef SADB_X_AALG_SHA
++#  define SADB_X_AALG_SHA              250
++#endif
+ 
+ /* private allocations - based on RFC2407/IANA assignment */
+-#define SADB_X_EALG_CAST128CBC	5	/*6*/
+-#define SADB_X_EALG_BLOWFISHCBC	4	/*7*/
+-#define SADB_X_EALG_RIJNDAELCBC	12
+-#define SADB_X_EALG_AES		12
+-
+-
+-#define SADB_X_CALG_NONE	0
+-#define SADB_X_CALG_OUI		1
+-#define SADB_X_CALG_DEFLATE	2
+-#define SADB_X_CALG_LZS		3
+-#define SADB_X_CALG_MAX		4
++#ifndef SADB_X_EALG_CAST128CBC
++#  define SADB_X_EALG_CAST128CBC	5	/*6*/
++#endif
++#ifndef SADB_X_EALG_BLOWFISHCBC
++#  define SADB_X_EALG_BLOWFISHCBC	4	/*7*/
++#endif
++#ifndef SADB_X_EALG_RIJNDAELCBC
++#  define SADB_X_EALG_RIJNDAELCBC	12
++#endif
++#ifndef SADB_X_EALG_AES
++#  define SADB_X_EALG_AES		12
++#endif
+ 
++#ifndef SADB_X_CALG_NONE
++#  define SADB_X_CALG_NONE	0
++#endif
++#ifndef SADB_X_CALG_OUI
++#  define SADB_X_CALG_OUI		1
++#endif
++#ifndef SADB_X_CALG_DEFLATE
++#  define SADB_X_CALG_DEFLATE	2
++#endif
++#ifndef SADB_X_CALG_LZS
++#  define SADB_X_CALG_LZS		3
++#endif
++#ifndef SADB_X_CALG_MAX
++#  define SADB_X_CALG_MAX		4
++#endif
+ 
+-#define SADB_X_EXT_NONE		0x0000	/* i.e. new format. */
+-#define SADB_X_EXT_OLD		0x0001	/* old format. */
++#ifndef SADB_X_ENT_NONE
++#  define SADB_X_EXT_NONE		0x0000	/* i.e. new format. */
++#endif
++#ifndef SADB_X_EXT_OLD
++#  define SADB_X_EXT_OLD		0x0001	/* old format. */
++#endif
+ 
+-#define SADB_X_EXT_IV4B		0x0010	/* IV length of 4 bytes in use */
+-#define SADB_X_EXT_DERIV	0x0020	/* DES derived */
+-#define SADB_X_EXT_CYCSEQ	0x0040	/* allowing to cyclic sequence. */
++#ifndef SADB_X_EXT_IV48
++#  define SADB_X_EXT_IV4B		0x0010	/* IV length of 4 bytes in use */
++#endif
++#ifndef SADB_X_EXT_DERIV
++#  define SADB_X_EXT_DERIV	0x0020	/* DES derived */
++#endif
++#ifndef SADB_X_EXT_CYCSEQ
++#  define SADB_X_EXT_CYCSEQ	0x0040	/* allowing to cyclic sequence. */
++#endif
+ 
+ 	/* three of followings are exclusive flags each them */
+-#define SADB_X_EXT_PSEQ		0x0000	/* sequencial padding for ESP */
+-#define SADB_X_EXT_PRAND	0x0100	/* random padding for ESP */
+-#define SADB_X_EXT_PZERO	0x0200	/* zero padding for ESP */
+-#define SADB_X_EXT_PMASK	0x0300	/* mask for padding flag */
+-
+-#define SADB_X_EXT_RAWCPI	0x0080	/* use well known CPI (IPComp) */
+-
+-
+-#define PFKEY_SOFT_LIFETIME_RATE	80
++#ifndef SADB_X_EXT_PSEQ
++#  define SADB_X_EXT_PSEQ		0x0000	/* sequencial padding for ESP */
++#endif
++#ifndef SADB_X_EXT_PRAND
++#  define SADB_X_EXT_PRAND	0x0100	/* random padding for ESP */
++#endif
++#ifndef SADB_X_EXT_PZERO
++#  define SADB_X_EXT_PZERO	0x0200	/* zero padding for ESP */
++#endif
++#ifndef SADB_X_EXT_PMASK
++#  define SADB_X_EXT_PMASK	0x0300	/* mask for padding flag */
++#endif
++#ifndef SADB_X_EXT_RAWCPI
++#  define SADB_X_EXT_RAWCPI	0x0080	/* use well known CPI (IPComp) */
++#endif
+ 
+-#define SADB_X_LIFETIME_ALLOCATIONS	0
+-#define SADB_X_LIFETIME_BYTES		1
+-#define SADB_X_LIFETIME_ADDTIME		2
+-#define SADB_X_LIFETIME_USETIME		3
++#ifndef PFKEY_SOFT_LIFETIME_RATE
++#  define PFKEY_SOFT_LIFETIME_RATE	80
++#endif
+ 
++#ifndef SADB_X_LIFETIME_ALLOCATIONS
++#  define SADB_X_LIFETIME_ALLOCATIONS	0
++#endif
++#ifndef SADB_X_LIFETIME_BYTES
++#  define SADB_X_LIFETIME_BYTES		1
++#endif
++#ifndef SADB_X_LIFETIME_ADDTIME
++#  define SADB_X_LIFETIME_ADDTIME		2
++#endif
++#ifndef SADB_X_LIFETIME_USETIME
++#  define SADB_X_LIFETIME_USETIME		3
++#endif
+ 
+ #define PFKEY_ALIGN8(a) (1 + (((a) - 1) | (8 - 1)))
+ #define	PFKEY_EXTLEN(msg) \
+diff -Nru iputils-old/include-glibc/netinet/ip.h iputils/include-glibc/netinet/ip.h
+--- iputils-old/include-glibc/netinet/ip.h	2000-06-18 20:57:25.000000000 +0200
++++ iputils/include-glibc/netinet/ip.h	2004-12-28 11:43:13.166156295 +0100
+@@ -6,6 +6,10 @@
+ 
+ #include <linux/ip.h>
+ 
++/* From glibc, most of the time it is a bad idea to copy not complete
++   header files */
++#define       IP_MAXPACKET    65535           /* maximum packet size */
++
+ #ifdef __USE_BSD
+ /*
+  * Copyright (c) 1982, 1986, 1993
+diff -Nru iputils-old/ping.c iputils/ping.c
+--- iputils-old/ping.c	2002-11-07 23:53:21.000000000 +0100
++++ iputils/ping.c	2004-12-28 11:48:25.173400841 +0100
+@@ -125,7 +125,11 @@
+ 	socket_errno = errno;
+ 
+ 	uid = getuid();
+-	setuid(uid);
++	if(setuid(uid) != 0)
++	{
++		perror("ping: setuid()");
++		exit(-1);
++	}
+ 
+ 	source.sin_family = AF_INET;
+ 
+@@ -389,8 +393,7 @@
+ 	}
+ 
+ 	hold = 1;
+-	if (setsockopt(icmp_sock, SOL_IP, IP_RECVERR, (char *)&hold, sizeof(hold)))
+-		fprintf(stderr, "WARNING: your kernel is veeery old. No problems.\n");
++	setsockopt(icmp_sock, SOL_IP, IP_RECVERR, (char *)&hold, sizeof(hold));
+ 
+ 	/* record route option */
+ 	if (options & F_RROUTE) {
+@@ -750,16 +753,6 @@
+ 					acknowledge(ntohs(icp1->un.echo.sequence));
+ 					if (working_recverr) {
+ 						return 0;
+-					} else {
+-						static int once;
+-						/* Sigh, IP_RECVERR for raw socket
+-						 * was broken until 2.4.9. So, we ignore
+-						 * the first error and warn on the second.
+-						 */
+-						if (once++ == 1)
+-							fprintf(stderr, "\rWARNING: kernel is not very fresh, upgrade is recommended.\n");
+-						if (once == 1)
+-							return 0;
+ 					}
+ 				}
+ 				nerrors+=error_pkt;
+@@ -1148,15 +1141,24 @@
+ char *
+ pr_addr(__u32 addr)
+ {
+-	struct hostent *hp;
++	struct hostent *hp = NULL;
++	static __u32 last_addr;
+ 	static char buf[4096];
+ 
+-	if ((options & F_NUMERIC) ||
+-	    !(hp = gethostbyaddr((char *)&addr, 4, AF_INET)))
+-		sprintf(buf, "%s", inet_ntoa(*(struct in_addr *)&addr));
+-	else
++	if (!(options & F_NUMERIC)) {
++		if (buf[0] && addr == last_addr)
++			return buf;
++	    	hp = gethostbyaddr((char *)&addr, 4, AF_INET);
++	}
++
++	if (hp) {
+ 		snprintf(buf, sizeof(buf), "%s (%s)", hp->h_name,
+ 			 inet_ntoa(*(struct in_addr *)&addr));
++	} else {
++		sprintf(buf, "%s", inet_ntoa(*(struct in_addr *)&addr));
++	}
++
++	last_addr = addr;
+ 	return(buf);
+ }
+ 
+diff -Nru iputils-old/ping6.c iputils/ping6.c
+--- iputils-old/ping6.c	2002-09-20 17:08:11.000000000 +0200
++++ iputils/ping6.c	2004-12-28 11:48:25.176400273 +0100
+@@ -187,7 +187,11 @@
+ 	socket_errno = errno;
+ 
+ 	uid = getuid();
+-	setuid(uid);
++	if(setuid(uid) != 0)
++	{
++		perror("ping: setuid()");
++		exit(-1);
++	}
+ 
+ 	source.sin6_family = AF_INET6;
+ 	memset(&firsthop, 0, sizeof(firsthop));
+@@ -894,11 +898,22 @@
+ char * pr_addr(struct in6_addr *addr)
+ {
+ 	struct hostent *hp = NULL;
++	static struct in6_addr last_addr;
++	static char buf[1024];
+ 
+-	if (!(options&F_NUMERIC))
++	if (!(options&F_NUMERIC)) {
++		if (buf[0] && !memcmp(&last_addr, addr, sizeof(*addr)))
++			return buf;
+ 		hp = gethostbyaddr((__u8*)addr, sizeof(struct in6_addr), AF_INET6);
++	}
+ 
+-	return hp ? hp->h_name : pr_addr_n(addr);
++	if (hp && strlen(hp->h_name) < sizeof(buf)) {
++		strcpy(buf, hp->h_name);
++	} else {
++		inet_ntop(AF_INET6, addr, buf, sizeof(buf));
++	}
++	last_addr = *addr;
++	return buf;
+ }
+ 
+ char * pr_addr_n(struct in6_addr *addr)
+diff -Nru iputils-old/ping_common.c iputils/ping_common.c
+--- iputils-old/ping_common.c	2002-09-20 18:02:32.000000000 +0200
++++ iputils/ping_common.c	2004-12-28 11:43:13.171154159 +0100
+@@ -39,16 +39,16 @@
+ int working_recverr;
+ 
+ /* timing */
+-int timing;			/* flag to do timing */
+-long tmin = LONG_MAX;		/* minimum round trip time */
+-long tmax;			/* maximum round trip time */
++unsigned long long timing;		/* flag to do timing */
++unsigned long long tmin = LONG_MAX;	/* minimum round trip time */
++unsigned long long tmax;		/* maximum round trip time */
+ /* Message for rpm maintainers: have _shame_. If you want
+  * to fix something send the patch to me for sanity checking.
+  * "sparcfix" patch is a complete non-sense, apparenly the person
+  * prepared it was stoned.
+  */
+-long long tsum;			/* sum of all times, for doing average */
+-long long tsum2;
++unsigned long long tsum;	/* sum of all times, for doing average */
++unsigned long long tsum2;
+ int  pipesize = -1;
+ 
+ int datalen = DEFDATALEN;
+@@ -662,7 +662,6 @@
+ 		tvsub(tv, &tmp_tv);
+ 		triptime = tv->tv_sec * 1000000 + tv->tv_usec;
+ 		if (triptime < 0) {
+-			fprintf(stderr, "Warning: time of day goes back (%ldus), taking countermeasures.\n", triptime);
+ 			triptime = 0;
+ 			if (!(options & F_LATENCY)) {
+ 				gettimeofday(tv, NULL);
+@@ -809,10 +808,10 @@
+ 		tmdev = llsqrt(tsum2 - tsum * tsum);
+ 
+ 		printf("rtt min/avg/max/mdev = %ld.%03ld/%lu.%03ld/%ld.%03ld/%ld.%03ld ms",
+-		       tmin/1000, tmin%1000,
++		       (long)tmin/1000, (long)tmin%1000,
+ 		       (unsigned long)(tsum/1000), (long)(tsum%1000),
+-		       tmax/1000, tmax%1000,
+-		       tmdev/1000, tmdev%1000
++		       (long)tmax/1000, (long)tmax%1000,
++		       (long)tmdev/1000, (long)tmdev%1000
+ 		       );
+ 	}
+ 	if (pipesize > 1)
+@@ -843,10 +842,10 @@
+ 		tavg = tsum / (nreceived + nrepeats);
+ 
+ 		fprintf(stderr, ", min/avg/ewma/max = %ld.%03ld/%lu.%03ld/%d.%03d/%ld.%03ld ms",
+-		       tmin/1000, tmin%1000,
++		       (long)tmin/1000, (long)tmin%1000,
+ 		       tavg/1000, tavg%1000,
+ 		       rtt/8000, (rtt/8)%1000,
+-		       tmax/1000, tmax%1000
++		       (long)tmax/1000, (long)tmax%1000
+ 		       );
+ 	}
+ 	fprintf(stderr, "\n");
+diff -Nru iputils-old/ping_common.h iputils/ping_common.h
+--- iputils-old/ping_common.h	2002-09-20 17:08:11.000000000 +0200
++++ iputils/ping_common.h	2004-12-28 11:43:13.171154159 +0100
+@@ -103,11 +103,11 @@
+ 
+ 
+ /* timing */
+-extern int timing;			/* flag to do timing */
+-extern long tmin;			/* minimum round trip time */
+-extern long tmax;			/* maximum round trip time */
+-extern long long tsum;			/* sum of all times, for doing average */
+-extern long long tsum2;
++extern unsigned long long timing;			/* flag to do timing */
++extern unsigned long long tmin;			/* minimum round trip time */
++extern unsigned long long tmax;			/* maximum round trip time */
++extern unsigned long long tsum;			/* sum of all times, for doing average */
++extern unsigned long long tsum2;
+ extern int rtt;
+ extern __u16 acked;
+ extern int pipesize;
+diff -Nru iputils-old/rarpd.c iputils/rarpd.c
+--- iputils-old/rarpd.c	2001-12-02 19:45:06.000000000 +0100
++++ iputils/rarpd.c	2004-12-28 11:46:13.626323135 +0100
+@@ -24,10 +24,11 @@
+ #include <sys/fcntl.h>
+ #include <sys/socket.h>
+ #include <sys/signal.h>
+-#include <linux/if.h>
+-#include <linux/if_arp.h>
++#include <net/if.h>
++#include <net/if_arp.h>
+ #include <netinet/in.h>
+-#include <linux/if_packet.h>
++#include <netpacket/packet.h>
++#include <linux/if_ether.h>
+ #include <linux/filter.h>
+ 
+ int do_reload = 1;
+@@ -45,6 +46,8 @@
+ extern int ether_ntohost(char *name, unsigned char *ea);
+ void usage(void) __attribute__((noreturn));
+ 
++#define ifaddr if_addr
++
+ struct iflink
+ {
+ 	struct iflink	*next;
+diff -Nru iputils-old/rdisc.c iputils/rdisc.c
+--- iputils-old/rdisc.c	2001-08-24 19:39:00.000000000 +0200
++++ iputils/rdisc.c	2004-12-28 11:43:32.920708325 +0100
+@@ -63,6 +63,8 @@
+ 
+ #include "SNAPSHOT.h"
+ 
++#define RDISC_SERVER
++
+ struct interface
+ {
+ 	struct in_addr 	address;	/* Used to identify the interface */
+@@ -163,11 +165,8 @@
+ int debugfile;
+ 
+ char usage[] =
+-"Usage:	rdisc [-b] [-d] [-s] [-v] [-f] [-a] [-V] [send_address] [receive_address]\n"
+-#ifdef RDISC_SERVER
+-"       rdisc -r [-b] [-d] [-s] [-v] [-f] [-a] [-V] [-p <preference>] [-T <secs>] \n"
+-"		 [send_address] [receive_address]\n"
+-#endif
++"Usage:	rdisc -r [-b] [-d] [-s] [-v] [-f] [-a] [-V] [-p <preference>] [-T <secs>] \n"
++"                 [send_address] [receive_address]\n"
+ ;
+ 
+ 
+@@ -875,7 +874,9 @@
+ 				((max_adv_int - min_adv_int) 
+ 				 * (random() % 1000)/1000);
+ 		} else {
+-			if (!is_directly_connected(ip->saddr)) {
++			struct in_addr tmp;
++			tmp.s_addr = ip->saddr;
++			if (!is_directly_connected(tmp)) {
+ 				if (verbose)
+ 					logtrace("ICMP %s from %s: source not directly connected\n",
+ 						      pr_type((int)icp->type),
+@@ -945,7 +946,6 @@
+ {
+ #ifdef RDISC_SERVER
+ 	if (responder) {
+-		int i;
+ 
+ 		/* Send out a packet with a preference so that all
+ 		 * hosts will know that we are dead.
+diff -Nru iputils-old/setkey/Makefile iputils/setkey/Makefile
+--- iputils-old/setkey/Makefile	2002-11-08 08:59:31.000000000 +0100
++++ iputils/setkey/Makefile	2004-12-28 11:57:11.200871959 +0100
+@@ -7,7 +7,7 @@
+ OBJ=setkey.o parse.o token.o pfkey.o pfkey_dump.o key_debug.o ipsec_strerror.o
+ 
+ setkey: $(OBJ)
+-	$(CC) -o $@ $(OBJ) -L../libipsec -lipsec -ll
++	$(CC) -o $@ $(OBJ) -L../libipsec -lipsec -lfl
+ 
+ token.o: parse.h
+ 
+diff -Nru iputils-old/tracepath.c iputils/tracepath.c
+--- iputils-old/tracepath.c	2002-11-09 05:54:46.000000000 +0100
++++ iputils/tracepath.c	2004-12-28 11:43:13.171154159 +0100
+@@ -75,7 +75,7 @@
+ 	int sndhops;
+ 	int progress = -1;
+ 	int broken_router;
+-	
++
+ restart:
+ 	memset(&rcvbuf, -1, sizeof(rcvbuf));
+ 	iov.iov_base = &rcvbuf;
+@@ -124,8 +124,8 @@
+ 				e = (struct sock_extended_err *) CMSG_DATA(cmsg);
+ 			} else if (cmsg->cmsg_type == IP_TTL) {
+ 				rethops = *(int*)CMSG_DATA(cmsg);
+-			} else { 
+-				printf("cmsg:%d\n ", cmsg->cmsg_type); 
++			} else {
++				printf("cmsg:%d\n ", cmsg->cmsg_type);
+ 			}
+ 		}
+ 	}
+@@ -330,7 +330,7 @@
+ 	}
+ 
+ 	for (ttl=1; ttl<32; ttl++) {
+-		int res;
++		int res = 0;
+ 		int i;
+ 
+ 		on = ttl;
+diff -Nru iputils-old/tracepath6.c iputils/tracepath6.c
+--- iputils-old/tracepath6.c	2001-09-02 04:03:46.000000000 +0200
++++ iputils/tracepath6.c	2004-12-28 11:43:13.174152877 +0100
+@@ -364,7 +364,7 @@
+ 	}
+ 
+ 	for (ttl=1; ttl<32; ttl++) {
+-		int res;
++		int res = 0;
+ 		int i;
+ 
+ 		on = ttl;
+diff -Nru iputils-old/traceroute6.c iputils/traceroute6.c
+--- iputils-old/traceroute6.c	2002-10-03 05:29:23.000000000 +0200
++++ iputils/traceroute6.c	2004-12-28 11:48:48.063064273 +0100
+@@ -230,6 +230,7 @@
+  *     Tue Dec 20 03:50:13 PST 1988
+  */
+ 
++#include <stdint.h>
+ #include <sys/param.h>
+ #include <sys/time.h>
+ #include <sys/socket.h>
+@@ -337,8 +338,11 @@
+ 	icmp_sock = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+ 	socket_errno = errno;
+ 
+-	setuid(getuid());
+-
++	if(setuid(getuid()) != 0)
++	{
++		Fprintf(stderr, "traceroute: setuid()\n");
++		exit(-1);
++	}
+ 	on = 1;
+ 	seq = tos = 0;
+ 	to = (struct sockaddr_in6 *)&whereto;

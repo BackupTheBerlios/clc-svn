@@ -1,0 +1,15 @@
+# $Id: Pkgfile,v 1.6 2005/03/21 20:49:53 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=atk
+version=1.9.1
+release=1
+source=(ftp://ftp.gnome.org/pub/gnome/sources/$name/1.9/$name-$version.tar.bz2)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+    rm -r $PKG/usr/share
+}

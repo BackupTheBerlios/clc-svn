@@ -1,0 +1,14 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/ROX/
+drwxr-xr-x	root/root	usr/ROX/Apps/
+drwxr-xr-x	root/root	usr/ROX/Apps/LinCVS/
+-rw-r--r--	root/root	usr/ROX/Apps/LinCVS/AppIcon.xpm
+-rw-r--r--	root/root	usr/ROX/Apps/LinCVS/AppInfo.xml
+-rwxr-xr-x	root/root	usr/ROX/Apps/LinCVS/AppRun
+drwxr-xr-x	root/root	usr/ROX/Apps/LinCVS/Tools/
+-rwxr-xr-x	root/root	usr/ROX/Apps/LinCVS/Tools/start-ssh-agent.sh
+-rwxr-xr-x	root/root	usr/ROX/Apps/LinCVS/Tools/ssh-askpass.bin
+-rwxr-xr-x	root/root	usr/ROX/Apps/LinCVS/Tools/rshwrapper
+-rwxr-xr-x	root/root	usr/ROX/Apps/LinCVS/lincvs.bin
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/lincvs

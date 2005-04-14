@@ -1,0 +1,12 @@
+If you installed bittorrent with wxpython you can add
+
+  application/x-bittorrent; /usr/bin/btdownloadgui.py %s; test=test -n "$DISPLAY"
+
+to the file ``/etc/mailcap'', and you can click and download files with bittorrent.
+
+You may have to restart your web browser for it to start using BitTorrent.
+
+If you're using a web browser which doesn't respect /etc/mailcap you can go into
+the mimetype configuration for your web browser and manually associate
+application/x-bittorrent with btdownloadgui.py (with the appropriate path, of
+course.)

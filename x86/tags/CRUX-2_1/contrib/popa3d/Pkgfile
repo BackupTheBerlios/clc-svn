@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 19:00:01 jue Exp $
+# Description: A tiny pop3 daemon designed with security as the primary goal
+# URL:         http://www.openwall.com/popa3d
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=popa3d
+version=0.6.4.1
+release=1
+source=(http://www.openwall.com/popa3d/$name-$version.tar.gz \
+        $name-$version.patch popa3d)
+
+build () {
+    cd $name-$version
+    patch -p1 < ../$name-$version.patch
+    make
+    make DESTDIR=$PKG install
+    mkdir -p $PKG/var/lib
+    install -d -m 555 $PKG/var/lib/empty
+    install -D -m 755 ../popa3d $PKG/etc/rc.d/popa3d
+}

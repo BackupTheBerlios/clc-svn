@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.3 2005/03/09 19:00:04 jue Exp $
+# Description: Scanner Access Now Easy - Scanner driver for Linux
+# URL:         http://www.sane-project.org/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  libusb, libjpeg
+
+name=sane
+version=1.0.15
+release=1
+source=(ftp://ftp.mostang.com/pub/$name/$name-backends-$version/$name-backends-$version.tar.gz)
+
+build () {
+    cd $name-backends-$version    
+    ./configure --prefix=/usr --disable-translations 
+    make
+    make prefix=$PKG/usr install
+    rm -r $PKG/usr/{doc,share}
+}

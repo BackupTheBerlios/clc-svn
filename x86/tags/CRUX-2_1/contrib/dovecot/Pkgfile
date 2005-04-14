@@ -1,0 +1,37 @@
+# $Id: Pkgfile,v 1.6 2005/03/09 18:59:59 jue Exp $
+# Description: IMAP and POP3 server with ssl/ipv6 support, written with security primarily in mind
+# URL:         http://dovecot.org
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  openssl
+
+name=dovecot
+version=0.99.14
+release=1
+source=(http://dovecot.org/releases/$name-$version.tar.gz \
+        $name-config.patch dovecot)
+
+build () {
+    cd $name-$version
+    patch -p1 < ../$name-config.patch
+    ./configure --prefix=/usr \
+                --libexecdir=/usr/lib \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+                --enable-ipv6 \
+                --with-ssl=openssl \
+		--with-pop3d
+    make
+    make DESTDIR=$PKG install
+    
+    rm -r $PKG/usr/share
+    mv $PKG/etc/dovecot-example.conf $PKG/etc/dovecot.conf
+    install -D -m 755 ../dovecot $PKG/etc/rc.d/dovecot
+    
+    mkdir -p $PKG/etc/ssl/{certs,private}
+    touch $PKG/etc/ssl/{certs,private}/dovecot.pem
+    
+    mkdir -p $PKG/var/run/dovecot/login
+    chmod 0700 $PKG/var/run/dovecot
+    chmod 0750 $PKG/var/run/dovecot/login
+    chown root.dovecot $PKG/var/run/dovecot/login
+}

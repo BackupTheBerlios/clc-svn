@@ -1,0 +1,7 @@
+This a CVS snapshot of bbpager, compatible with Blackbox 0.7.0,
+the sources are hosted on my private site.
+
+It is provided as a temporary solution until bbpager 0.4.0
+is released.
+
+Note that the config file has been renamed to ~/.bbtools/bbpager.rc

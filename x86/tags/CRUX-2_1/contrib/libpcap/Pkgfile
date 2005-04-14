@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 19:00:00 jue Exp $
+# Description: Packet capture library
+# URL:         http://www.tcpdump.org
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=libpcap
+version=0.8.3
+release=1
+source=(http://www.tcpdump.org/release/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr --enable-ipv6
+    make
+    make DESTDIR=$PKG install
+}

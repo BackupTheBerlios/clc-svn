@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 14:27:52 jaeger Exp $
+# Description: tools used to create/alter ogg/vorbis files
+# Packager: Matt Housh, jaeger at morpheus dot net
+# Maintainer: Tilman Sauerbeck <tilman@code-monkey.de>
+# URL: http://www.vorbis.com/
+# Depends on: libao, libogg, libvorbis, curl
+
+name=vorbis-tools
+version=1.0.1
+release=2
+source=(http://www.vorbis.com/files/$version/unix/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr --disable-nls
+	make
+	make DESTDIR=$PKG install
+
+	mkdir $PKG/usr/etc
+	mv $PKG/usr/share/doc/$name-$version/ogg123rc-example $PKG/usr/etc
+	rm -rf $PKG/usr/share
+}

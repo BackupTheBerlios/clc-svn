@@ -1,0 +1,90 @@
+.Dd 2001-04-03
+.Dt IFENSLAVE 8
+.Os "Debian GNU/Linux"
+.\" Manual page created by Guus Sliepen <guus@sliepen.warande.net>
+.Sh NAME
+.Nm ifenslave
+.Nd Attach and detach slave network devices to a bonding device.
+.Sh SYNOPSIS
+.Nm
+.Op Fl dDeEfhrvV
+.Op Fl -detach
+.Op Fl -really-detach
+.Op Fl -enslave
+.Op Fl -really-enslave
+.Op Fl -force
+.Op Fl -help
+.Op Fl -verbose
+.Op Fl -version
+.Ar master
+.Ar slave Op metric Ar N
+.No ...
+.Sh DESCRIPTION
+.Nm
+is a tool to attach and detach slave network devices to a bonding device.
+A bonding device will act like a normal Ethernet network device to the kernel,
+but will send out the packets via the slave devices using a simple round-robin scheduler.
+This allows for simple load-balancing,
+identical to "channel bonding" or "trunking" techniques used in switches.
+.Pp
+The kernel must have support for bonding devices for
+.Nm
+to be useful.
+.Sh OPTIONS
+.Bl -tag -width indent
+.It Fl d, -detach
+Removes slave interfaces from the bonding device.
+.It Fl D, -really-detach
+Removes slave interfaces from the bonding device and configures them to be down.
+This prevents the slave devices from interfering with the bonding device.
+.It Fl e, -enslave
+Adds slave interfaces to the bonding device.
+This is the default operation.
+.It Fl E, -really-enslave
+Adds slave interfaces to the bonding device and
+copy the configuration of the master interface to the slave interfaces.
+If the MAC address of the master interface is unset,
+copy the MAC address of the first slave interface to the master.
+.It Fl f, -force
+Force actions to be taken if one of the specified interfaces appears not to belong to an Ethernet device.
+.It Fl h, -help
+Display a help message and exit.
+.It Fl v, -verbose
+Print warning and debug messages.
+.It Fl V, -version
+Show version information and exit.
+.El
+.Sh EXAMPLE
+The following example shows how to setup a bonding device and
+enslave two real Ethernet devices to it:
+.Bd -literal
+# modprobe bonding
+# ifconfig bond0 192.168.0.1 netmask 255.255.0.0
+# ifenslave bond0 eth0 eth1
+.Ed
+.Sh NOTES
+Although the intention of the original
+.Nm
+program was to make the slave interfaces completely subordinate to the master interface,
+this version will allow the bonding device to be set up without
+interfering with the working of the slave devices.
+To revert to the original behaviour, use the
+.Fl E
+option.
+.Pp
+It is possible to configure the master and slave interfaces
+with different MAC and IP addresses.
+If a packet is routed to a slave interface,
+the ordinary action of sending it out via that interface will be taken.
+The source address (both MAC and IP) will be inherited from that interface.
+If a packet is routed to the master interface,
+the packet is sent out via one of the corresponding slave interfaces,
+but the source address (MAC and IP) will be inherited from the master interface.
+.Sh AUTHOR
+.Nm
+was originally written by
+.An Donald Becker Aq becker@cesdis.gsfc.nasa.gov .
+.Pp
+This manual page was written by
+.An Guus Sliepen Aq guus@sliepen.warande.net
+for the Debian GNU/Linux system.

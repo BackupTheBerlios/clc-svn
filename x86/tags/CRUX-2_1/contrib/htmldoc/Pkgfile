@@ -1,0 +1,27 @@
+# $Id: Pkgfile,v 1.3 2005/04/04 17:21:59 sip Exp $
+# Description: Convert HTML files to pdf/postscript
+# URL: http://www.easysw.com/htmldoc/
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Simone Rota, sip at varlock dot com
+# Depends on:
+
+name=htmldoc
+version=1.8.24
+release=1
+source=(ftp://ftp.funet.fi/pub/mirrors/ftp.easysw.com/ftp.easysw.com/pub/htmldoc/$version/htmldoc-$version-source.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr
+	make
+
+	mkdir -p $PKG/usr/bin
+	mkdir -p $PKG/usr/man/man1
+	mkdir -p $PKG/usr/share/htmldoc
+
+	install -m 755 htmldoc/htmldoc $PKG/usr/bin
+	install -m 644 doc/htmldoc.1 $PKG/usr/man/man1
+	cp -R {data,fonts} $PKG/usr/share/htmldoc
+	rm $PKG/usr/share/htmldoc/{data,fonts}/Makefile
+	
+}

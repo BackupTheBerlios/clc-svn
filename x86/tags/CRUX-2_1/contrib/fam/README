@@ -1,0 +1,33 @@
+$Id: README,v 1.1.1.1 2004/08/17 20:01:42 crux Exp $
+
+1.) If you use inetd, add this line to /etc/inetd.conf
+
+sgi_fam/1-2 stream  rpc/tcp wait    root    /usr/sbin/famd      famd
+
+then tell inetd to reread its configuration file:
+pkill -HUP inetd
+
+2.) If you use xinetd, add a file similar to the following in 
+    /etc/xinetd.d/
+
+--8<-----8<-----8<-----8<-----8<-----8<-----8<-----8<-----8<--
+# default: on
+# description: FAM - file alteration monitor
+service sgi_fam
+{
+	type		= RPC UNLISTED
+	socket_type	= stream
+	user		= root
+	group		= nobody
+	server		= /usr/sbin/famd
+	wait		= yes
+	protocol	= tcp
+	rpc_version	= 2
+	rpc_number	= 391002
+}
+--8<-----8<-----8<-----8<-----8<-----8<-----8<-----8<-----8<--
+
+3.) If you do not want to use either, start FAM with the crux 
+rc-script '/etc/rc.d/famd start'	
+
+Daniel Mueller

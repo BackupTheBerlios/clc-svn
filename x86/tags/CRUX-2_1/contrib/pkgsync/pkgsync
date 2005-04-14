@@ -1,0 +1,235 @@
+#!/bin/bash
+#
+#  Synchronize installed software packages with a repository.
+#  Usage: pkgsync [options] command <arguments>
+#
+
+. /etc/pkgsync.conf
+
+version="1.1"; simulate=""; diff=""; sysup=""; locked=(`cat /var/lib/pkg/prt-get.locker 2>/dev/null`)
+
+#  Print a warning.
+warn(){
+	echo "=======> WARNING: $1" >&2
+}
+
+#  Print an error and exit.
+error(){
+	echo "=======> ERROR: $1" >&2 && exit 1
+}
+
+#  Executes $1 if it exists and is executable.
+execute_script(){
+	test -f $1 && echo "  Executing `basename $1`.." && sh $1 >/dev/null 2>&1
+}
+
+#  Ensure $1 is a directory and is readable or writeable, depending on the optional parameter $2.
+ensure_path(){
+	
+	test -d "$1" || error "$1 is not a directory."
+
+	if [ "$2" = "r" -a ! -r "$1" ]; then
+		error "$1 is not readable."
+	elif [ "$2" = "w" -a ! -w "$1" ]; then
+		error "$1 is not writeable."
+	fi
+}
+
+#  Generate an httpup REPO file for the specified package $1 containing all of its dependencies and 
+#  their meta-data.  The file is written to $2 if it is provided, or stdout otherwise.
+generate_httpup_repofile(){
+		
+	test "$2" && rm -f $2 2>/dev/null  #begin with clean file before writing output
+
+	dependencies=" $1 `cat $repository/$1#*-deps 2>/dev/null`"  #resolve deps for httpup package
+	
+	for dep in $dependencies; do
+		
+		files=`ls $repository/$dep#* 2>/dev/null`  #resolve relevent files for dependency
+		
+		test "$files" || continue  #if package does not live in repository, quietly continue
+		
+		for f in $files; do  #append md5sum to REPO file or stdout
+			md5=`md5sum $f | sed 's/ .*$//'`; file=`basename $f`; line="f:$md5:$file"
+			test "$2" && echo $line >> $2 || echo $line
+		done
+		
+	done
+	
+	return 0
+}
+
+#  Commit the specified package file $1 to the repository, archiving old versions.  Metadata such as
+#  pre/post install scripts and dependency information are also committed to the repository.
+commit_package(){
+	
+	local name=`basename $1 | sed "s/#.*$//"`
+	
+	mv -f $repository/$name#* $repository/old 2>/dev/null  #archive old version(s)
+	
+	install -m 644 $1 $repository  #copy package to repository	
+	
+	if [[ `which prt-get 2>/dev/null` ]]; then  #copy install scripts, build dependency list, update httpup repo files
+	
+		path=`prt-get path $name 2>/dev/null`  #resolve path for package
+		test -z "$path" && warn "No port for $name.  Could not resolve meta-data." && return 0
+		
+		install -m 755 $path/pre-install $repository/`basename $1`-pre-install >/dev/null 2>&1
+		install -m 755 $path/post-install $repository/`basename $1`-post-install >/dev/null 2>&1
+		
+		dependencies=`prt-get quickdep $name 2>/dev/null | sed "s/$name $//"`  #resolve dependencies
+		
+		test "$dependencies" && echo $dependencies > $repository/`basename $1`-deps  #dump dependencies
+		
+	else
+		warn "prt-get not installed.  Could not resolve meta-data."
+	fi
+	
+	for hp in ${httpup_packages[@]}; do  #update httpup REPO files if necessary
+		echo " $hp `cat $repository/$hp#*-deps 2>/dev/null`" | grep " $name " >/dev/null &&
+			generate_httpup_repofile $hp $repository/$hp.REPO
+	done
+	
+	return 0
+}
+
+#  Install or update the specified package file $1.  This function is recursive, and may invoke itself to install
+#  dependencies of $1.  The globals $simulate, $diff, and $sysup determine what action this function takes.
+install_package(){
+	
+	local pkg=$1; local name=`basename $pkg | sed "s/#.*$//"`
+	local version=`basename $pkg .pkg.tar.gz | sed "s/^.*#//"`
+	
+	echo " ${locked[@]} " | grep " $name " >/dev/null && return 0  #package locked by prt-get
+	
+	echo "$installed" | grep " $name " >/dev/null && return 0  #package was just installed
+	
+	packages=`prt-get listinst -v 2>/dev/null || pkginfo -i`	
+	local current=`echo "$packages" | grep "^$name " | sed "s/^$name //"`
+	
+	test "$sysup" = "true" -a -z "$current" && return 0  #sysup and package not installed, return
+	
+	test "$version" = "$current" && return 0  #package is up to date, return
+	
+	local dependencies=`cat $pkg-deps 2>/dev/null`  #read dependency information
+	
+	local dep; for dep in $dependencies; do  #resolve dependencies recurssively
+		
+		local deppkg=`ls $repository/$dep#* 2>/dev/null`  #resolve dependent package
+		
+		test "$deppkg" && install_package $deppkg && continue  #install dependent package from repo
+		
+		if [ `echo "$packages" | grep -c "^$dep "` -eq 0 ]; then  #or look for previously installed version
+			error "$name: dependency $dep not found."
+		fi
+	done
+	
+	alert="Installing" && flag="" && test "$current" && alert="Upgrading" && flag="-u"  #initialize alerts and flags
+	
+	test "$diff" = "true" && printf "%- 20s%- 20s%- 20s\n" "$name" "$current" "$version" || echo $alert $name $version..
+		
+	installed="$installed $name "  #append name to installed
+	
+	test "$simulate" = "true" && return 0  #simulate only, do not run scripts or install package
+	
+	execute_script $pkg-pre-install; pkgadd $flag $pkg; execute_script $pkg-post-install  #do it
+	
+	return 0
+}
+
+#
+#  Execution begins.  Process arguments and dispatch function calls.
+#
+
+test "$1" = "-r" && repository=$2 && shift && shift  #override repository
+
+case "$1" in
+	"-v")  #print version and exit
+		echo "Pkgsync $version, Copyright Jay Dolan 2004"; exit 0
+		;;
+		
+	"commit")  #commit specified packages to repository
+		ensure_path $repository "r"; ensure_path $repository "w"; ensure_path $repository/old "w"
+		
+		shift && for i in $@; do
+			test -f $i && commit_package $i || error "$i does not exist."
+		done
+		;;
+		
+	"mkhttpup")	#generate httpup REPO file for specified packages to stdout
+		ensure_path $repository "r"
+		
+		shift && for i in $@; do
+			package=`ls $repository/$i#*.pkg.tar.gz 2>/dev/null`
+			test "$package" && generate_httpup_repofile $i || error "Package $i not found."
+		done | sort -u  #filter out duplicates
+		;;
+		
+	"testinst")  #simulate install/update of specified packages from repository
+		ensure_path $repository "r"; simulate="true"; shift
+		
+		echo; echo "Testing installation of $@.."; echo
+				
+		for i in $@; do
+			package=`ls $repository/$i#*.pkg.tar.gz 2>/dev/null`
+			test "$package" && install_package $package || error "package $i not found."
+		done
+		;;
+		
+	"install")  #install/update specified packages from repository
+		ensure_path $repository  "r"
+		
+		shift && for i in $@; do
+			package=`ls $repository/$i#*.pkg.tar.gz 2>/dev/null`
+			test "$package" && install_package $package || error "package $i not found."
+		done
+		;;
+		
+	"sysdiff")  #diff only installed packages in repository
+		ensure_path $repository "r"; simulate="true"; sysup="true"; diff="true";
+		
+		echo "Differences between installed packages and repository:"; echo
+		echo "Packages            Installed           Available in $repository"; echo
+		
+		for i in $repository/*.pkg.tar.gz; do
+			install_package $i
+		done
+		;;
+		
+	"sysup")  #update only installed packages in repository
+		ensure_path $repository "r"; sysup="true";
+		
+		ensure_path $repository "r"; echo; echo "Performing sysup in $repository.."; echo
+		
+		for i in $repository/*.pkg.tar.gz; do
+			install_package $i
+		done
+		;;
+		
+	"diff")  #diff all packages in repository
+		ensure_path $repository "r"; simulate="true"; diff="true"
+		
+		echo "Differences between installed packages and repository:"; echo
+		echo "Packages            Installed           Available in $repository"; echo
+		
+		for i in $repository/*.pkg.tar.gz; do
+			install_package $i
+		done
+		;;
+	
+	"sync")  #sync all packages in repository
+		ensure_path $repository "r"; echo; echo "Syncing all in $repository.."; echo
+		
+		for i in $repository/*.pkg.tar.gz; do
+			install_package $i
+		done
+		;;
+	
+	*)  #show usage and exit
+		echo "Usage: pkgsync [options] command <arguments>" >&2; exit 1
+		;;
+esac
+
+exit 0
+
+#End of file

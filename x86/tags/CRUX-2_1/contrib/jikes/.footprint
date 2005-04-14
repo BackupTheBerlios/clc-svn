@@ -1,0 +1,12 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/jikes
+drwxr-xr-x	root/root	usr/include/
+-rw-r--r--	root/root	usr/include/jikesapi.h
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man1/
+-rw-r--r--	root/root	usr/man/man1/jikes.1.gz
+drwxr-xr-x	root/root	usr/share/
+drwxr-xr-x	root/root	usr/share/doc/
+drwxr-xr-x	root/root	usr/share/doc/jikes-1.22/
+-rw-r--r--	root/root	usr/share/doc/jikes-1.22/license.htm

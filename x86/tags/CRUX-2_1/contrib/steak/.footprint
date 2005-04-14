@@ -1,0 +1,25 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+lrwxrwxrwx	root/root	usr/bin/steak -> ../lib/Steak/woerterbuch
+lrwxrwxrwx	root/root	usr/bin/xsteak -> ../lib/Steak/Xsteak/xsteak
+drwxr-xr-x	root/root	usr/lib/
+drwxr-xr-x	root/root	usr/lib/Steak/
+-rw-r--r--	root/root	usr/lib/Steak/.Steakconfig
+drwxr-xr-x	root/root	usr/lib/Steak/Datensatz/
+-rw-r--r--	root/root	usr/lib/Steak/Datensatz/README
+-rwxr-xr-x	root/root	usr/lib/Steak/Datensatz/datenbankaktualisieren.sh
+-rw-r--r--	root/root	usr/lib/Steak/Datensatz/ger-eng.txt
+-rw-r--r--	root/root	usr/lib/Steak/Datensatz/insert_my_words.txt (EMPTY)
+drwxr-xr-x	root/root	usr/lib/Steak/Xsteak/
+-rw-r--r--	root/root	usr/lib/Steak/Xsteak/steak.xpm
+-rwxr-xr-x	root/root	usr/lib/Steak/Xsteak/xsteak
+-rw-r--r--	root/root	usr/lib/Steak/copyrights.txt
+-rw-r--r--	root/root	usr/lib/Steak/help.txt
+-rw-r--r--	root/root	usr/lib/Steak/iso2txt
+-rw-r--r--	root/root	usr/lib/Steak/mini_steak_icon.xpm
+-rw-r--r--	root/root	usr/lib/Steak/pinguin_steak_icon.xpm
+-rwxr-xr-x	root/root	usr/lib/Steak/poll
+-rwxr-xr-x	root/root	usr/lib/Steak/printbuffer
+-rwxr-xr-x	root/root	usr/lib/Steak/spacefilter
+-rw-r--r--	root/root	usr/lib/Steak/version.txt
+-rwxr-xr-x	root/root	usr/lib/Steak/woerterbuch

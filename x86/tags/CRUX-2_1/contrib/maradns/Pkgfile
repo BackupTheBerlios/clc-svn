@@ -1,0 +1,26 @@
+# $Id: Pkgfile,v 1.5 2005/03/27 10:01:42 jue Exp $
+# Description: A authoritative,recursive (caching) DNS server that strives to be secure and fast
+# URL:         http://www.maradns.org/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=maradns
+version=1.0.26
+release=1
+source=(http://www.maradns.org/download/$name-$version.tar.bz2 \
+        mararc maradns db.localhost db.0.0.127)
+
+build () {
+    cd $name-$version
+    mkdir -p $PKG/usr/{bin,sbin,man/man{1,5,8}}
+    mkdir -p $PKG/{etc/{rc.d,maradns},var/log}
+
+    FLAGS="$CFLAGS -Wall" make -e  
+    make PREFIX=$PKG/usr RPM_BUILD_ROOT=$PKG install
+
+    rm -r $PKG/usr/doc
+    mv $PKG/etc/mararc $PKG/etc/mararc.sample
+    touch $PKG/var/log/maradns.log
+    install -m 644 $SRC/mararc $PKG/etc
+    install -m 644 $SRC/db.* $PKG/etc/maradns
+    install -m 755 $SRC/maradns $PKG/etc/rc.d
+}

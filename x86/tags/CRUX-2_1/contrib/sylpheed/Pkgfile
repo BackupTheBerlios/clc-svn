@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.9 2005/04/03 11:46:39 jue Exp $
+# Description: GTK+ email client and news reader
+# URL:         http://sylpheed.good-day.net
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  gtk, openssl
+
+name=sylpheed
+version=1.9.7
+release=1
+source=(http://sylpheed.good-day.net/sylpheed/v1.9/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr \
+                --disable-nls \
+                --enable-ssl \
+                --enable-ipv6 \
+                --enable-gpgme
+    make
+    make DESTDIR=$PKG install
+    rm -r $PKG/usr/share
+}

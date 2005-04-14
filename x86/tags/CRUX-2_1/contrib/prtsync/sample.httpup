@@ -1,0 +1,10 @@
+#
+#  sample.httpup - Jay Dolan's (mainly useless) ports
+#
+
+ROOT_DIR=/usr/ports/jdolan
+URL=http://jdolan.dyndns.org/jaydolan/ports
+
+EMAIL=jasonthomasdolan@yahoo.com
+
+#End of file

@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.6 2004/08/13 15:54:26 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=esound
+version=0.2.35
+release=1
+source=(http://ftp.gnome.org/pub/GNOME/sources/esound/0.2/$name-$version.tar.gz \
+	esound)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr --with-audiofile
+    make
+    make DESTDIR=$PKG install
+    install -D -m 755 ../esound $PKG/etc/rc.d/esound
+}

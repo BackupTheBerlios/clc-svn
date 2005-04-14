@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.4 2005/03/28 13:27:06 danm Exp $
+# Description: GTK+ system monitor and more
+# URL: http://www.gkrellm.net
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: gtk
+
+name=gkrellm
+version=2.2.5
+release=1
+source=(ftp://ftp.freebsd.org/pub/FreeBSD/ports/local-distfiles/ume/$name-$version.tar.bz2)
+
+build () {
+    cd gkrellm-$version
+    sed -i 's/enable_nls=1/enable_nls=0/g' Makefile
+    sed -i 's/STRIP ?= -s//' src/Makefile
+    make 
+    make DESTDIR=$PKG/usr MANDIR=$PKG/usr/man/man1 install
+    mkdir -p $PKG/usr/lib/gkrellm2/plugins 
+    sed -i 's/\/local//g' $PKG/usr/lib/pkgconfig/gkrellm.pc
+}

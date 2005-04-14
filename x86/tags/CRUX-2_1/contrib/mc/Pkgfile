@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.3 2005/03/09 19:00:00 jue Exp $
+# Description: GNU Midnight Commander
+# URL:         http://www.ibiblio.org/mc/ 
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  glib
+
+name=mc
+version=4.6.0
+release=3
+source=(http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/$name-$version.tar.gz \
+        $name-$version.patch)
+
+build () {
+    cd $name-$version
+    patch -p1 < ../$name-$version.patch
+    ./configure --prefix=/usr --disable-nls 
+    make
+    make DESTDIR=$PKG install
+    rm $PKG/usr/share/mc/mc.hint.*
+    rm -r $PKG/usr/{sbin,man/man8}
+}

@@ -1,0 +1,31 @@
+diff -Nru Steak/SpaceFilter/spacefilter.C Steak.new/SpaceFilter/spacefilter.C
+--- Steak/SpaceFilter/spacefilter.C	2001-01-12 16:53:23.000000000 +0100
++++ Steak.new/SpaceFilter/spacefilter.C	2002-09-15 00:50:04.000000000 +0200
+@@ -3,7 +3,7 @@
+ #include <ctype.h>
+ #include <string.h>
+ 
+-void main(int argc, char **argv) {
++int main(int argc, char **argv) {
+ //    for (int i=0; i<argc; i++) {
+ //      cout << i << "-te Argument:" << argv[i] << endl;
+ //    }
+diff -Nru Steak/woerterbuch Steak.new/woerterbuch
+--- Steak/woerterbuch	2000-01-04 03:37:16.000000000 +0100
++++ Steak.new/woerterbuch	2002-09-15 00:50:28.000000000 +0200
+@@ -6,13 +6,13 @@
+ ################################################################
+ #
+ # Unter diesem Verzeichnis ist die Woerterbuch-Datei zu finden  
+-SteakDIR=$HOME/bin/Steak/Datensatz
++SteakDIR=/usr/lib/Steak/Datensatz
+ #SteakDIR=$HOME/bin/Steak/Datensatz
+ # Der Name der Woerterbuch-Datei
+ SteakFILE=ger-eng.txt
+ #SteakFILE=Datenbank.txt
+ # Unter diesem Verzeichnis ist die ausfuehrbaren Dateien zu finden  
+-BINDIR=$HOME/bin/Steak
++BINDIR=/usr/lib/Steak
+ #BINDIR=$HOME/bin/Steak
+ # Temp-Dir
+ TMPDIR=/tmp

@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.2 2005/02/06 01:49:02 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=module-init-tools
+version=3.1
+release=1
+source=(http://www.kernel.org/pub/linux/kernel/people/rusty/modules/$name-$version.tar.bz2 \
+	modprobe.conf)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr \
+		--bindir=/sbin \
+		--sbindir=/sbin
+    touch *.5 *.8
+    make
+    make DESTDIR=$PKG install
+    install -D -m 644 modprobe.devfs $PKG/etc/modprobe.devfs
+    install -D -m 644 ../modprobe.conf $PKG/etc/modprobe.conf
+    rm -f $PKG/sbin/generate-modprobe.conf
+}

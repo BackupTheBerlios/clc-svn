@@ -1,0 +1,60 @@
+diff -Nru finger-bsd-1.0/finger/finger.c finger-bsd-1.1/finger/finger.c
+--- finger-bsd-1.0/finger/finger.c	2001-03-09 11:43:56.000000000 +0100
++++ finger-bsd-1.1/finger/finger.c	2002-02-20 13:47:06.000000000 +0100
+@@ -96,7 +96,7 @@
+   char domain[MAXHOSTNAMELEN];
+   struct stat sb;
+ 
+-  setlocale (LC_MESSAGES, "");
++  setlocale (LC_ALL, "");
+   bindtextdomain (PACKAGE, LOCALEDIR);
+   textdomain (PACKAGE);
+ 
+diff -Nru finger-bsd-1.0/finger/util.c finger-bsd-1.1/finger/util.c
+--- finger-bsd-1.0/finger/util.c	2001-03-09 15:25:04.000000000 +0100
++++ finger-bsd-1.1/finger/util.c	2002-02-22 15:01:12.000000000 +0100
+@@ -49,7 +49,6 @@
+ #include <errno.h>
+ #include <unistd.h>
+ #include <paths.h>
+-#include <vis.h>
+ #include <err.h>
+ #include "finger.h"
+ #include "extern.h"
+@@ -386,20 +385,25 @@
+ 	return(pbuf);
+ }
+ 
+-/* Like strvis(), but use malloc() to get the space and return a pointer
+- * to the beginning of the converted string, not the end.
+- *
+- * The caller is responsible for free()'ing the returned string.
++/* Use malloc() to get the space and return a pointer
++ * to the beginning of the converted string.
+  */
+ char *
+-vs(src)
+-	char *src;
++vs(char *src)
+ {
+-	char *dst;
++  char *dst;
++  size_t i;
+ 
+-	if ((dst = malloc((4 * strlen(src)) + 1)) == NULL)
+-		err(1, "malloc failed");
++  if ((dst = calloc(1, strlen(src) + 1)) == NULL)
++    err(1, "malloc failed");
+ 
+-	strvis(dst, src, VIS_SAFE|VIS_NOSLASH);
+-	return(dst);
++  for (i = 0; i < strlen (src); i++)
++    {
++      if (!isprint (src[i]))
++	dst[i] = '?';
++      else
++	dst[i] = src[i];
++    }
++
++  return dst;
+ }

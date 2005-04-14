@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# /etc/rc.d/dovecot: start/stop dovecot IMAP/POP3 daemon
+#
+
+
+KEY=/etc/ssl/private/dovecot.pem
+CRT=/etc/ssl/certs/dovecot.pem
+
+make_cert () {
+	HOST=`hostname -s` || HOST=localhost
+	DOMAIN=`hostname -d` || DOMAIN=localdomain
+	echo "Creating SSL certificate for host $HOST.$DOMAIN"
+	INFO=".\n.\n.\n$DOMAIN\n$HOST\n$HOST.$DOMAIN\nroot@$HOST.$DOMAIN"
+	openssl genrsa -rand /proc/meminfo 1024 > $KEY 2> /dev/null
+	echo -e $INFO | openssl req -new -key $KEY -x509 -days 365 -out $CRT 2> /dev/null
+	chmod 0600 $KEY $CRT
+}
+
+
+case $1 in
+start)
+	if [ ! -s $KEY -o ! -s $CRT ]; then 
+		make_cert
+	fi
+	/usr/sbin/dovecot
+	;;
+stop)
+	killall -q /usr/sbin/dovecot
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+reload)
+	kill -s SIGHUP `pidof dovecot`
+	;;
+*)
+	echo "usage: $0 [start|stop|restart|reload]"
+	;;
+esac
+
+# End of file

@@ -1,0 +1,36 @@
+#!/bin/bash
+# 
+# /etc/rc.d/racoon: Start/Stop the racoon IKE daemon
+#
+
+RACOON_BIN=/usr/sbin/racoon
+RACOON_CTL=/usr/sbin/racoonctl
+RACOON_CONF=/etc/racoon/racoon.conf
+
+case $1 in
+start)
+	if [ -e $RACOON_CONF ]; then
+		$RACOON_BIN -v -f $RACOON_CONF
+	else
+		echo "Couldn't find Racoon's configuration file: Exiting."
+		exit 1
+	fi
+	;;
+stop)
+	killall $RACOON_BIN 
+	;;
+restart)
+	$0 stop
+	sleep 5
+	$0 start
+	;;
+reload)
+	$RACOON_CTL reload-config
+	;;
+*)
+	echo "Usage: $0 (start|stop|restart|reload)"
+	exit 1
+	;;
+esac
+
+# End of file

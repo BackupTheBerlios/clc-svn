@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.15 2005/03/25 00:36:16 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=binutils
+version=2.15.94.0.2.2
+release=1
+source=(http://www.kernel.org/pub/linux/devel/binutils/$name-$version.tar.bz2)
+
+build() {
+    mkdir build
+    cd build
+    ../$name-$version/configure --prefix=/usr \
+				--enable-shared \
+				--disable-nls
+    make tooldir=$PKG/usr
+    make check
+    make prefix=$PKG/usr tooldir=$PKG/usr install
+    cp ../$name-$version/include/libiberty.h $PKG/usr/include
+    rm -rf $PKG/usr/info
+    sed -i "s|-L$SRC[^ ]* ||g" $PKG/usr/lib/libbfd.la
+}

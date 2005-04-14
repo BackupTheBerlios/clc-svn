@@ -1,0 +1,43 @@
+#
+# /etc/mararc
+#
+
+hide_disclaimer = "YES"
+chroot_dir = "/etc/maradns"
+maradns_uid = 99
+maxprocs = 96
+default_rrany_set = 3
+verbose_level = 3
+random_seed_file = "/dev/urandom"
+maximum_cache_elements = 1024
+bind_address = "0.0.0.0"
+timeout_seconds = 5
+
+# The various zones we support
+csv1 = {}
+csv1["localhost."] = "db.localhost"
+csv1["0.0.127.in-addr.arpa."] = "db.0.0.127"
+# csv1["example.com."] = "db.example.com"
+
+# ACL for localhost, localnet
+ipv4_alias = {}
+ipv4_alias["localhost"] = "127.0.0.0/8"
+ipv4_alias["localnet"] = "192.168.0.0/24"
+recursive_acl = "localhost,localnet"
+
+# Block 64.94.110.11 to resolve the Verisign issue
+deny_ip = "64.94.110.11"
+
+# The root servers which we use when making recursive queries.
+# http://www.icann.org
+ipv4_alias["icann"] = "198.41.0.4,192.228.79.201,192.33.4.12,128.8.10.90,192.203.230.10,192.5.5.241,192.112.36.4,128.63.2.53,192.36.148.17,192.58.128.30,193.0.14.129,198.32.64.12,202.12.27.33"
+# http://www.open-rsc.org/
+ipv4_alias["orsc"] = "199.166.24.1,205.189.73.102,199.166.24.3,207.126.103.16,195.117.6.10,205.189.73.10,204.57.55.100,213.196.2.97"
+
+root_servers = {}
+root_servers["."] = "icann"
+
+# upstream_servers = {}
+# upstream_servers["."] = "usually_your_isps_dns_servers"
+
+# End of file

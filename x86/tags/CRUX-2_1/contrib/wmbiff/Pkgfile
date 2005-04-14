@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.3 2005/03/08 23:13:49 sip Exp $
+# Description: Mailchecking dockapp
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Olle Gustafsson, ogg at linux dot se
+# URL: http://sourceforge.net/projects/wmbiff/
+
+name=wmbiff
+version=0.4.26
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
+
+build ()
+{
+  cd $name-$version
+  ./configure --prefix=/usr --disable-nls
+  make
+  make prefix=$PKG/usr install
+  mkdir -p $PKG/usr/share/wmbiff
+  install -m 644 $name/sample.wmbiffrc $PKG/usr/share/wmbiff/wmbiffrc.sample
+  rm -r $PKG/usr/lib
+}

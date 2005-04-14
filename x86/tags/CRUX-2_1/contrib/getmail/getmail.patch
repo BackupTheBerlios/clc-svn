@@ -1,0 +1,12 @@
+Binary files getmail-4.3.6.orig/getmailcore/__init__.pyc and getmail-4.3.6/getmailcore/__init__.pyc differ
+diff -Nru getmail-4.3.6.orig/setup.py getmail-4.3.6/setup.py
+--- getmail-4.3.6.orig/setup.py	2005-03-14 21:17:17.000000000 +0200
++++ getmail-4.3.6/setup.py	2005-04-12 18:31:35.000000000 +0300
+@@ -44,7 +44,6 @@
+ 
+ GETMAILMANDIR = os.path.join(
+     datadir or prefix,
+-    'share',
+     'man',
+     'man1'
+ )

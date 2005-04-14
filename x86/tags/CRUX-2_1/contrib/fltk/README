@@ -1,0 +1,5 @@
+If you want to use anti-aliased fonts activate the second configure statement:
+./configure --enable-xft --prefix=/usr
+
+Note that you must add -lxft to the Makefiles of your projects (causing 
+dependencies to more libs like freetype).

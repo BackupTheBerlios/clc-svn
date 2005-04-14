@@ -1,0 +1,25 @@
+# $Id: Pkgfile,v 1.8 2005/03/12 15:25:49 jw Exp $
+# Packager: 
+# Maintainer: Johannes Winkelmann, jw at tks6 dot net
+# Description: A tool to distribute compilations
+# URL: http://distcc.samba.org 
+
+name=distcc
+version=2.18.3
+release=1
+source=(http://${name}.samba.org/ftp/${name}/${name}-${version}.tar.bz2) 
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --disable-nls --without-gtk
+    make
+    make prefix=$PKG/usr install
+
+    mkdir -p $PKG/usr/lib/$name
+    for c in cc c++ gcc g++; do
+        cd $PKG/usr/lib/$name && ln -s ../../bin/distcc $c
+    done
+    
+    rm -rf $PKG/usr/share/doc
+    rm -rf $PKG/usr/info/
+}

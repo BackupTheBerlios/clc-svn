@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.6 2005/03/09 18:59:59 jue Exp $
+# Description: GNU aspell is a spell checker designed to replace ispell
+# URL:         http://aspell.net
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=aspell
+version=0.60.2
+release=1
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    rm -R $PKG/usr/{info,share}
+}

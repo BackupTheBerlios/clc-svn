@@ -1,0 +1,14 @@
+diff -ru sed-4.1.4/configure sed-4.1.4-new/configure
+--- sed-4.1.4/configure	2005-01-25 09:30:37.000000000 +0100
++++ sed-4.1.4-new/configure	2005-01-30 20:29:51.980826408 +0100
+@@ -6791,6 +6791,10 @@
+ 
+ 
+ 
++TEXI2HTML_HTML_TRUE='#'
++TEXI2HTML_HTML_FALSE=
++MAKEINFO_HTML_TRUE='#'
++MAKEINFO_HTML_FALSE=
+ 
+ 
+ MKINSTALLDIRS="$mkdir_p"

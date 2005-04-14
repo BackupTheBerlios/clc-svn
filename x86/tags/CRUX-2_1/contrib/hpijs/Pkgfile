@@ -1,0 +1,25 @@
+# $Id: Pkgfile,v 1.5 2005/03/09 19:00:00 jue Exp $
+# Description: Ghostscript add-on for HP inkjet/laserjet printers
+# URL:         http://hpinkjet.sourceforge.net/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  ghostscript, foomatic-filters
+
+name=hpijs
+version=1.7.1
+release=1
+source=(http://dl.sourceforge.net/sourceforge/hpinkjet/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    sed -i '/^CXXFLAGS/s/=/+=/' Makefile.in
+    
+    ./configure --prefix=/usr 
+    make 
+    make DESTDIR=$PKG install
+    mv $PKG/usr/share/{ppd/HP,cups/model}
+    
+    rm $PKG/usr/bin/foomatic-rip
+    rm $PKG/usr/share/cups/model/foomatic-ppds
+    rm -r $PKG/usr/{lib,share/{ppd,doc}}
+    chown -R root:root $PKG
+}

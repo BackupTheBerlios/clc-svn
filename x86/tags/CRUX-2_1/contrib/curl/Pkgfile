@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.7 2005/03/12 15:25:48 jw Exp $
+# Description: A tool for transfering files with URL syntax
+# Maintainer: Johannes Winkelmann, jw at tks6 dot net
+# URL: http://curl.haxx.se 
+# Depends: openssl
+
+name=curl
+version=7.13.1
+release=2
+source=(http://curl.haxx.se/download/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --enable-ipv6
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/info
+}

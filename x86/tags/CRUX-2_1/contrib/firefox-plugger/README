@@ -1,0 +1,7 @@
+README file for firefox-plugger
+
+I left the default configuration file /etc/mozpluggerrc
+untouched, you'll probably want to trim it down to enable
+only wanted plugins.
+
+This is also reccommended for security reasons.

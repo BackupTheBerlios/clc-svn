@@ -1,0 +1,41 @@
+Disclaimer:
+
+Koffice is really behind KDE3 development at this time.  Spellcheck, in
+particular is severely broken.  This unsupported Koffice ports is the latest,
+very lacking version available.  Known bugs include completely broken
+spellcheck.  I'm keeping this port at CLC primarily for the kthesaurus program,
+which I use regularly--it works flawlessly.
+
+Recommended dependencies:
+
+libwv2		(needed for anything resembling decent .doc support)
+wordnet		(run-time dependency of kthesaurus.  It's very, very useful imho)
+imagemagick (adds image support proper)
+
+Optional dependencies:
+
+tetex		(needed for writing of TeX documents)
+			(as of koffice-1.3.3, reading TeX documents was not supported)
+
+
+Here's an example of WordNet's output:
+There are another NINE types of output. (many of which are closer to a "normal"
+thesaurus)
+
+--
+Synonyms/Hypernyms of noun crux
+
+Sense 1
+Southern Cross, Crux, Crux Australis -- (a small conspicuous constellation in the southern hemisphere in the Milky Way near Centaurus)
+	=> constellation (a configuration of stars as seen from the earth)
+
+Sense 2
+crux, crux of the matter -- (the most important point)
+	=> point (a brief version of the essential meaning of something; "get to the point"; "he missed the point of the joke"; "life has lost its point")
+
+
+Holonyms of noun crux
+Sense 1
+Southern Cross, Crux, Crux Australis -- (a small conspicuous constellation in the southern hemisphere in the Milky Way near Centaurus)
+
+	MEMBER OF: Milky Way, Milky Way Galaxy, Milky Way System -- (the galaxy containing the solar system; consists of millions of stars that can be seen as a diffuse band of light stretching across the night sky)

@@ -1,0 +1,27 @@
+diff -Nru Mesa-6.2.1.orig/configs/linux-x86 Mesa-6.2.1/configs/linux-x86
+--- Mesa-6.2.1.orig/configs/linux-x86	2004-12-29 02:30:53.461547814 +0100
++++ Mesa-6.2.1/configs/linux-x86	2004-12-29 02:32:57.702256046 +0100
+@@ -8,9 +8,9 @@
+ CC = gcc
+ CXX = g++
+ 
+-CFLAGS = -Wall -O3 -ansi -pedantic -fPIC -D_POSIX_SOURCE -D_POSIX_C_SOURCE=199309L -D_SVID_SOURCE -D_BSD_SOURCE -DUSE_XSHM -DUSE_X86_ASM -DUSE_MMX_ASM -DUSE_3DNOW_ASM -DUSE_SSE_ASM -DPTHREADS -I/usr/X11R6/include
++CFLAGS = $(A_CFLAGS) -ansi -pedantic -fPIC -D_POSIX_SOURCE -D_POSIX_C_SOURCE=199309L -D_SVID_SOURCE -D_BSD_SOURCE -DUSE_XSHM -DUSE_X86_ASM -DUSE_MMX_ASM -DUSE_3DNOW_ASM -DUSE_SSE_ASM -DPTHREADS -I/usr/X11R6/include
+ 
+-CXXFLAGS = -Wall -O3 -ansi -pedantic -fPIC -D_POSIX_SOURCE -D_POSIX_C_SOURCE=199309L -D_SVID_SOURCE -D_BSD_SOURCE
++CXXFLAGS = $(A_CXXFLAGS) -ansi -pedantic -fPIC -D_POSIX_SOURCE -D_POSIX_C_SOURCE=199309L -D_SVID_SOURCE -D_BSD_SOURCE
+ 
+ GLUT_CFLAGS = -fexceptions
+ 
+@@ -18,7 +18,7 @@
+ ASM_SOURCES = $(X86_SOURCES) $(X86_API)
+ 
+ # Library/program dependencies
+-GL_LIB_DEPS = -L/usr/X11R6/lib -lX11 -lXext -lm -lpthread
+-GLUT_LIB_DEPS = -L$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) -L/usr/X11R6/lib -lX11 -lXmu -lXt -lXi -lm
+-GLW_LIB_DEPS = -L$(LIB_DIR) -l$(GL_LIB) -L/usr/X11R6/lib -lXt -lX11
+-APP_LIB_DEPS = -L$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm
++GL_LIB_DEPS = $(A_LDFLAGS) -L/usr/X11R6/lib -lX11 -lXext -lm -lpthread
++GLUT_LIB_DEPS = $(A_LDFLAGS) -L$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) -L/usr/X11R6/lib -lX11 -lXmu -lXt -lXi -lm
++GLW_LIB_DEPS = $(A_LDFLAGS) -L$(LIB_DIR) -l$(GL_LIB) -L/usr/X11R6/lib -lXt -lX11
++APP_LIB_DEPS = $(A_LDFLAGS) -L$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) -lm

@@ -1,0 +1,17 @@
+$Id: README,v 1.1.1.1 2004/08/17 20:01:42 crux Exp $
+
+README for rss-glx 0.7.6
+
+REQUIREMENTS
+
+1. xscreensaver
+
+PRE-INSTALL
+
+POST-INSTALL
+
+1. Run /usr/bin/rss-glx_install.pl to add the new screensavers to your
+   .xscreensaver file (disable xscreensaver before running this.)
+
+PRECAUTION
+

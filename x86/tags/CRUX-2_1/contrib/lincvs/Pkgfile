@@ -1,0 +1,29 @@
+# $Id: Pkgfile,v 1.8 2005/03/13 14:45:48 riemer Exp $
+# Description: Graphical interface for the cvs client commandline tool
+# URL:         http://www.lincvs.org
+# Maintainer:  Tilo Riemer, riemer at lincvs dot org
+# Packager:    Tilo Riemer, riemer at lincvs dot org
+# Depends on:  cvs, qt3
+
+name=lincvs
+version=1.4.0
+release=0
+source=(http://lincvs.com/download/$name-$version-$release-generic-src.tgz)
+
+build () {
+    cd $name-$version
+    export QTDIR=/usr/share/qt
+    export QMAKESPEC=linux-g++
+    qmake -o Makefile lincvs.pro
+    make
+
+    ROXDIR=/usr/ROX/Apps/LinCVS
+    mkdir -p $PKG$ROXDIR/Tools $PKG/usr/bin
+    install -m 755 lincvs.bin LinCVS/AppRun $PKG$ROXDIR
+    install -m 755 tools/start*.sh $PKG$ROXDIR/Tools
+    install -m 644 LinCVS/{AppIcon.xpm,AppInfo.xml} $PKG$ROXDIR
+    install -m 755 contrib/ssh-askpass/ssh-askpass.bin $PKG$ROXDIR/Tools
+    install -m 755 contrib/rshwrapper/rshwrapper $PKG$ROXDIR/Tools
+    echo exec $ROXDIR/AppRun '"$@"' > $PKG/usr/bin/lincvs
+    chmod 755 $PKG/usr/bin/lincvs
+}

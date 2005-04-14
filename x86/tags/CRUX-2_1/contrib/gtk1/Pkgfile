@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.2 2005/04/07 15:12:58 danm Exp $
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Description: Library for creating graphical user interfaces for X
+# URL: http://www.gtk.org/
+# Depends on: x11, glib1
+
+name=gtk1
+version=1.2.10
+release=1
+source=(ftp://ftp.gtk.org/pub/gtk/v1.2/gtk+-$version.tar.gz)
+
+build () {
+	cd gtk+-$version
+	./configure --prefix=/usr \
+		    --with-xinput=xfree \
+		    --disable-nls
+	make
+	make DESTDIR=$PKG install
+	rm -r $PKG/usr/info
+}

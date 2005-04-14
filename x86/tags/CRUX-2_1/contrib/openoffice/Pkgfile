@@ -1,0 +1,34 @@
+# $Id: Pkgfile,v 1.7 2005/03/08 23:13:49 sip Exp $
+# Description: A full featured cross platform office suite (binary)
+# URL: http://www.openoffice.org
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Simone Rota, sip at varlock dot com
+# Depends on: x11
+
+name=openoffice
+version=1.1.4
+release=1
+source=(ftp://ftp-stud.fht-esslingen.de/pub/Mirrors/ftp.openoffice.org/stable/${version}/OOo_${version}_LinuxIntel_install.tar.gz
+	$name-symlink.patch)
+
+build() {
+	cd OOo_${version}_LinuxIntel_install
+	patch -p3 < ../$name-symlink.patch
+	mkdir -p $PKG/usr/lib
+	./install --prefix=$PKG/usr/lib
+	mv $PKG/usr/lib/Open* $PKG/usr/lib/openoffice
+
+	rm -rf $PKG/usr/lib/openoffice/share/cde
+	sed -i "s|$PKG||g" $PKG/usr/lib/openoffice/share/config/javarc
+	find $PKG/usr/lib/openoffice/share/gnome -regex '.*.desktop\|.*.directory' |xargs -i sed -i "s|$PKG||g" {}
+	find $PKG/usr/lib/openoffice/share/kde -regex '.*.desktop\|.*.directory' |xargs -i sed -i "s|$PKG||g" {}
+	find $PKG/usr/lib/openoffice/share/kde -regex '.*.desktop\|.*.directory' |xargs -i sed -i "s|/lib/OpenOffice.org$version|/lib/openoffice|g" {}
+	find $PKG/usr/lib/openoffice/share/gnome -regex '.*.desktop\|.*.directory' |xargs -i sed -i "s|/lib/OpenOffice.org$version|/lib/openoffice|g" {}
+
+	# Make jdolan happy
+	mkdir -p $PKG/usr/bin
+	for f in swriter scalc simpress soffice spadmin ; do
+		ln -sf /usr/lib/openoffice/program/$f $PKG/usr/bin/$f
+	done
+
+}

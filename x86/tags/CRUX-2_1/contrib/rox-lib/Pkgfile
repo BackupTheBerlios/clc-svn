@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.6 2005/03/26 13:58:31 sip Exp $
+# Description: Support library for ROX apps
+# URL: http://rox.sourceforge.net/phpwiki/index.php/ROX-Lib
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Simone Rota, sip at varlock dot com
+# Depends on: pygtk
+
+name=rox-lib
+version=1.9.18
+release=1
+source=(http://dl.sourceforge.net/sourceforge/rox/$name-$version.tgz)
+
+build() {
+	mkdir -p $PKG/usr/lib
+	cd $name-$version
+	rm -rf ROX-Lib2/{Help,Messages}
+	cp -rf ROX-Lib2 $PKG/usr/lib
+}

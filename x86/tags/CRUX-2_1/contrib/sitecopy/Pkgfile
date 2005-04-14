@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.6 2005/03/09 19:00:04 jue Exp $
+# Description: Utility for maintaining remote web sites via FTP or WebDAV
+# URL:         http://www.lyra.org/sitecopy
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  neon
+
+name=sitecopy
+version=0.15.0
+release=1
+source=(http://www.lyra.org/$name/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr \
+                --with-neon=/usr \
+                --disable-nls \
+                --disable-debug
+    make
+    make prefix=$PKG/usr install
+    rm -r $PKG/usr/{doc,share,man/fr} 
+}

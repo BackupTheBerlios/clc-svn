@@ -1,0 +1,60 @@
+# $Id: Pkgfile,v 1.9 2005/04/05 16:05:07 danm Exp $
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# URL: http://www.openldap.org/
+# Description: Lightweight Directory Access Protocol (LDAP) Toolkit
+# Depends on: perl, openssl, cyrus-sasl
+
+name=openldap
+version=2.2.24
+release=1
+source=(http://www.PlanetMirror.com/pub/openldap/openldap-release/$name-$version.tgz \
+	$name-$version.patch \
+	slurpd \
+	slapd)
+
+build(){
+	cd $name-$version
+	patch -p0 < $SRC/$name-$version.patch
+
+	./configure --prefix=/usr 		--sysconfdir=/etc \
+		--libexecdir=/usr/sbin		--localstatedir=/var/openldap \
+		--disable-nls			--enable-syslog \
+		--with-threads			--with-tls \
+		--with-cyrus-sasl		--enable-spasswd \
+		--enable-dynamic		--enable-ipv6 \
+		--enable-modules		--enable-crypt \
+		--enable-rewrite		--enable-ldbm \
+		--with-ldbm-api=berkeley	--with-ldbm-type=btree \
+		--enable-bdb			--enable-hdb \
+		--enable-ldap			--enable-meta \
+		--enable-monitor		--enable-dnssrv \
+		--enable-null			--enable-perl \
+		--with-dyngroup 		--with-proxycache \
+		--enable-wrappers 		--enable-slurpd \
+		--enable-aci			--enable-shared
+
+	make depend
+	make
+	make DESTDIR=$PKG install	
+
+	sed -i -e "s|-L${PKG}/usr/lib||g" $PKG/usr/lib/*.la
+	/sbin/ldconfig -n $PKG/usr/lib
+
+	# compatiblity links
+	( cd $PKG/usr/lib; 
+	ln -s liblber.so liblber.so.2;
+	ln -s libldap.so libldap.so.2;
+	ln -s libldap_r.so libldap_r.so.2 ) || exit 1
+
+	( cd $PKG/usr/sbin; 
+	for binsymlink in slapadd slapcat slapdn slapindex slappasswd slaptest; do
+		rm -f $binsymlink;
+		ln -s slapd $binsymlink;
+	done ) || exit 1
+
+	mkdir -p $PKG/etc/rc.d
+	install -m 755 $SRC/slapd $PKG/etc/rc.d/slapd
+	install -m 755 $SRC/slurpd $PKG/etc/rc.d/slurpd
+
+	rm -f $PKG/etc/openldap/schema/README
+}

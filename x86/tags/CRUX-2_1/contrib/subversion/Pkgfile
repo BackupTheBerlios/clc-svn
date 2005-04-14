@@ -1,0 +1,29 @@
+# $Id: Pkgfile,v 1.9 2005/04/05 07:04:25 jw Exp $
+# Packager:    Johannes Winkelmann, jw at tks6 dot net
+# Maintainer:  Johannes Winkelmann, jw at tks6 dot net
+# Description: A version control system (CVS replacement)
+# URL:         http://subversion.tigris.org
+# Depends on:  apr, neon, expat
+
+name=subversion
+version=1.1.4
+release=1
+source=(http://subversion.tigris.org/tarballs/subversion-$version.tar.bz2)
+
+build() {
+
+    if [ "`pkginfo -i|grep '^apache'`" ]; then
+        ln -sf .footprint-apache $PKGMK_ROOT/.footprint
+    else
+        ln -sf .footprint-no-apache $PKGMK_ROOT/.footprint
+    fi
+
+    cd $name-$version
+    LDFLAGS="-L$PKG/usr/lib" \
+        ./configure --prefix=/usr \
+           --with-apr=/usr --with-apr-util=/usr --with-neon=/usr \
+           --disable-mod-activation --without-swig --disable-nls
+
+    make
+    make DESTDIR=$PKG external-install local-install 
+}

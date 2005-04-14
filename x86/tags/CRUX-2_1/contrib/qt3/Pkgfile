@@ -1,0 +1,78 @@
+# $Id: Pkgfile,v 1.9 2005/03/19 20:36:26 danm Exp $
+# Description: Qt Free Edition
+# URL: http://www.trolltech.com
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: x11, freetype, libjpeg, libmng, libpng, fontconfig, expat
+
+name=qt3
+version=3.3.4
+release=1
+source=(http://sunsite.rediris.es/mirror/Qt/source/qt-x11-free-$version.tar.bz2 \
+	$name-$version-$release.patch)
+
+build () {
+    cd qt-x11-free-$version
+    
+    patch -p1 < $SRC/$name-$version-$release.patch
+
+    # fix qmake installation
+    sed -i -e 's/-cp -P -f/-cp -L -f/' qmake/Makefile.unix
+
+    local SQL
+    if [ "`pkginfo -i | grep mysql`" ];then
+	SQL="-qt-sql-mysql -I/usr/include/mysql -L/usr/lib/mysql"
+    fi
+
+    if [ -d /usr/include/nvidia ]; then
+	export CFLAGS="$CFLAGS -I/usr/include/nvidia"
+	export CXXFLAGS="$CXXFLAGS -I/usr/include/nvidia"
+    fi
+
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:`pwd`/lib"
+    rm -rf {doc/html,examples,tutorial}
+    sed -i "s|sub-tutorial sub-examples| |" Makefile
+    sed -i "s|-O2|$CXXFLAGS|" mkspecs/linux-g++/qmake.conf
+    sed -i "s|-I. |$CXXFLAGS -I. |" qmake/Makefile.unix
+    sed -i "s|read acceptance|acceptance=yes|" configure
+
+    ./configure -prefix /usr/share/qt \
+		-bindir /usr/bin \
+		-headerdir /usr/include/qt \
+		-libdir /usr/lib \
+		-plugindir /usr/lib/qt \
+		-platform linux-g++ -release -shared -thread -sm \
+		-tablet -nis -verbose -qt-gif -system-zlib \
+		-{system-lib,plugin-imgfmt-}{png,jpeg,mng} \
+		-no-{cups,fast,exceptions,nas-sound} \
+		-x{cursor,ft,inerama,kb,randr,render} \
+		$SQL
+
+    make src-moc sub-src 
+    find . -name Makefile -exec sed -i "s|,/usr/lib|,`pwd`/lib|" {} \;
+    make sub-tools 
+    make INSTALL_ROOT=$PKG install
+
+    for i in mergetr msg2qm qconfig qembed qvfb; do
+	(cd tools/$i/;make SUBLIBS="-lpng -lmng";mv $i $PKG/usr/bin/)
+    done
+    mv bin/{findtr,qtrename140} $PKG/usr/bin/
+
+    mkdir $PKG/usr/man
+    mv doc/man/man1 $PKG/usr/man
+
+    rm -rf `find $PKG/usr/share/qt/mkspecs/* | grep -v linux-g++` \
+	   $PKG/usr/share/qt/{phrasebooks,templates,translations} \
+	   $PKG/usr/include/qt/{j,n}*
+    rm -f $PKG/usr/share/qt/mkspecs/linux-g++/linux-g++
+
+    ln -s ../../bin        $PKG/usr/share/qt/bin
+    ln -s ../../include/qt $PKG/usr/share/qt/include
+    ln -s ../../lib        $PKG/usr/share/qt/lib
+    ln -s ../../lib/qt     $PKG/usr/share/qt/plugins
+    ln -s linux-g++        $PKG/usr/share/qt/mkspecs/default
+
+    sed -i "s|-L$SRC/qt-x11-free-$version/lib ||g" $PKG/usr/lib/*.prl
+
+    chmod -R u+w,g-sw  $PKG
+    chown -R root:root $PKG
+}

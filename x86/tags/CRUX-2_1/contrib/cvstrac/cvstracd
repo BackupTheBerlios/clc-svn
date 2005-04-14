@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# /etc/rc.d/cvstrac: start/stop cvstrac http daemon
+#
+
+USER=nobody
+PORT=8008
+DB=/var/lib/cvstrac
+PROJ=MyProject
+
+case $1 in
+start)
+	/usr/bin/cvstrac chroot / $USER server $PORT $DB $PROJ &
+	;;
+stop)
+	killall -q /usr/bin/cvstrac
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file

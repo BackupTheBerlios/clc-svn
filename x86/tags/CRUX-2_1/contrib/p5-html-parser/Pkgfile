@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 14:27:52 jaeger Exp $
+# Description: HTML::Parser
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: p5-html-tagset
+
+name=p5-html-parser
+version=3.36
+release=1
+source=(http://www.cpan.org/authors/id/G/GA/GAAS/HTML-Parser-$version.tar.gz)
+
+build() {
+	cd HTML-Parser-$version
+	echo "no" | perl Makefile.PL
+	make OPTIMIZE="$CFLAGS"
+	make DESTDIR=$PKG install
+	find ${PKG} -name perllocal.pod -exec rm '{}' \;
+	find ${PKG} -name .packlist -exec rm '{}' \;
+}

@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 19:00:00 jue Exp $
+# Description: Real-time bandwidth usage information on a network interface 
+# URL:         http://www.ex-parrot.com/~pdw/iftop/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  libpcap
+
+name=iftop
+version=0.16
+release=1
+source=(http://www.ex-parrot.com/~pdw/iftop/download/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make 
+    make DESTDIR=$PKG install
+}

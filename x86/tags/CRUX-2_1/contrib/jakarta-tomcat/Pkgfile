@@ -1,0 +1,27 @@
+# $Id: Pkgfile,v 1.3 2005/03/08 23:13:49 sip Exp $
+# Description: Java Servlet container (binary version)
+# URL: http://jakarta.apache.org/tomcat/index.html
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Simone Rota, sip at varlock dot com
+# Depends on: j2sdk
+
+name=jakarta-tomcat
+version=5.0.28
+release=1
+source=(http://markoer.org/apache/jakarta/tomcat-5/v$version/bin/$name-$version.tar.gz
+    tomcat)
+
+build() {
+  
+  mkdir -p $PKG/usr/lib/tomcat	
+  cp -r $name-$version/* $PKG/usr/lib/tomcat
+  rm -r $PKG/usr/lib/tomcat/webapps/jsp-examples
+  rm -r $PKG/usr/lib/tomcat/webapps/servlets-examples/ 
+  rm -r $PKG/usr/lib/tomcat/webapps/tomcat-docs
+  rm $PKG/usr/lib/tomcat/{RUNNING.txt,LICENSE,RELEASE-NOTES}
+  find $PKG -name *.bat|xargs rm
+  find $PKG -name *.exe|xargs rm 
+
+  mkdir -p $PKG/etc/rc.d
+  install -m 755 tomcat $PKG/etc/rc.d
+}

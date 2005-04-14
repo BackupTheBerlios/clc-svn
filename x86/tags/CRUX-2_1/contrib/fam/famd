@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# /etc/rc.d/fam: start/stop fam rpc daemon
+#
+
+case $1 in
+start)
+	/usr/sbin/famd -T 0
+	;;
+stop)
+	killall -q /usr/sbin/famd
+	;;
+restart)
+	$0 stop
+	$0 start
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file

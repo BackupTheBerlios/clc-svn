@@ -1,0 +1,27 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 19:00:00 jue Exp $
+# Description: Postscript interpreter
+# URL:         http://www.cs.wisc.edu/~ghost/doc/gnu/index.htm
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  x11, libjpeg, libpng, cups
+
+name=ghostscript
+version=7.07.1
+release=2
+source=(http://dl.sourceforge.net/sourceforge/espgs/espgs-$version-source.tar.bz2 \
+        http://mirrors.sunsite.dk/gnu/ghostscript/gnu-gs-fonts-std-6.0.tar.gz \
+        $name-$version.patch) 
+
+build () {
+    cd espgs-$version
+    patch -p1 < ../$name-$version.patch
+    ./configure --prefix=/usr \
+                --enable-cups \
+                --with-gimp-print \
+                --with-drivers=ALL
+    make
+    make prefix=$PKG/usr datadir=$PKG/usr/share install_prefix=$PKG install
+    rm -r $PKG/usr/man/de
+    rm -r $PKG/usr/share/ghostscript/7.07/{examples,doc}
+    mv ../fonts $PKG/usr/share/ghostscript
+    chown -R root:root $PKG
+}

@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.2 2005/03/08 22:06:39 danm Exp $
+# Description: GnuPG Made Easy - 0.3.x API for GnuPG 
+# URL:         http://www.gnupg.org/gpgme.html
+# Maintainer:  Daniel Mueller, daniel at danm dot de
+# Depends on:  gnupg
+
+name=gpgme03
+version=0.3.16
+release=1
+source=(ftp://ftp.gnupg.org/gcrypt/gpgme/gpgme-$version.tar.gz)
+
+build () {
+    cd gpgme-$version
+    ./configure --prefix=/usr/lib/$name
+    make
+    make DESTDIR=$PKG install
+    rm -r $PKG/usr/lib/$name/info
+    (cd $PKG/usr/lib; ln -s $name/lib/*.so.6* .)
+}

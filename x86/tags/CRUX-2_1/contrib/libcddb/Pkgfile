@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.2 2005/03/08 23:13:49 sip Exp $
+# Description: C library to access and submit data on a CDDB server
+# URL: http://libcddb.sf.net
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Han Boetes, han at mijncomputer dot nl
+# Depends on:
+
+name=libcddb
+version=0.9.6
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure \
+        --prefix=/usr \
+        --disable-nls
+    make
+    make install DESTDIR=$PKG
+}

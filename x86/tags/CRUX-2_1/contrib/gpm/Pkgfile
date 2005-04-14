@@ -1,0 +1,45 @@
+# $Id: Pkgfile,v 1.4 2005/04/12 09:26:15 vector Exp $ 
+# Description: Enables mouse support in console
+# URL: http://linux.schottelius.org/gpm/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Eduardo Lopes, eduol at gmx dot net
+# Depends on:
+
+name=gpm
+version=1.20.1
+release=3
+source=(ftp://arcana.linux.it/pub/$name/$name-$version.tar.bz2 \
+        $name-$version-gpmopen.patch \
+        $name-$version-idie.patch \
+        $name-$version-math.patch \
+        $name-$version-nodebug.patch \
+        $name-$version-subscript.patch \
+        $name-$version-weak-wgetch.patch \
+        $name-evdev-cumulative.patch \
+        $name.rc)
+
+build ()
+{
+    cd $name-$version
+    patch -p1 < $SRC/$name-evdev-cumulative.patch
+    patch -p1 < $SRC/$name-$version-math.patch
+    patch -p1 < $SRC/$name-$version-weak-wgetch.patch
+    patch -p1 < $SRC/$name-$version-nodebug.patch
+    patch -p1 < $SRC/$name-$version-gpmopen.patch
+    patch -p1 < $SRC/$name-$version-idie.patch
+    patch -p1 < $SRC/$name-$version-subscript.patch
+
+    autoconf
+
+    # Fix error in the Makefile design that stops installation
+    # if texinfo is not installed
+    sed -i s/.'"$(MAKEINFO)" != "no"'/' "$(MAKEINFO)" != "no --no-split"'/ doc/Makefile.in
+
+    ./configure --prefix=/usr
+    make CFLAGS="$CFLAGS -DHAVE_INPUT_ID -DHAVE_INPUT_ABSINFO"
+    make ROOT=$PKG install
+    install -D -m 755 $SRC/$name.rc $PKG/etc/rc.d/$name
+    ln -s libgpm.so.1.19.0 $PKG/usr/lib/libgpm.so.1
+
+    rm -rf $PKG/usr/{info,share}
+}

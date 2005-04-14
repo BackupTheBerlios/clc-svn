@@ -1,0 +1,1557 @@
+diff -Nru gv-3.5.8.orig/config.Unix gv-3.5.8/config.Unix
+--- gv-3.5.8.orig/config.Unix	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/config.Unix	2002-10-11 16:42:07.000000000 +0200
+@@ -32,10 +32,10 @@
+ XCOMM --------------------------------------------------------------------
+ XCOMM  Destination directories.
+ XCOMM --------------------------------------------------------------------
+-      GV_BINDIR    = /usr/local/bin/
+-      GV_DOCDIR    = /usr/local/doc/gv/
+-      GV_LIBDIR    = /usr/local/lib/gv/
+-      GV_MANDIR    = /usr/local/man/man1/
++      GV_BINDIR    = /usr/bin/
++      GV_DOCDIR    = /usr/doc/gv/
++      GV_LIBDIR    = /usr/lib/gv/
++      GV_MANDIR    = /usr/man/man1/
+ 
+ XCOMM --------------------------------------------------------------------
+ XCOMM --- The name of the Xaw3d library.
+diff -Nru gv-3.5.8.orig/source/Aaa.c gv-3.5.8/source/Aaa.c
+--- gv-3.5.8.orig/source/Aaa.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Aaa.c	2002-10-11 16:42:07.000000000 +0200
+@@ -47,7 +47,7 @@
+ 
+ #include "stdc.h"
+ #include "Aaa_intern.h"
+-#include INC_XMU(Converters.h)
++#include <X11/Xmu/Converters.h>
+ 
+ #define ForAllChildren(pw, childP)						\
+   for ( (childP) = (pw)->composite.children ;					\
+diff -Nru gv-3.5.8.orig/source/Aaa.h gv-3.5.8/source/Aaa.h
+--- gv-3.5.8.orig/source/Aaa.h	1997-04-15 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Aaa.h	2002-10-11 16:42:07.000000000 +0200
+@@ -33,8 +33,8 @@
+ #define _Layout_h
+ 
+ #include "paths.h"
+-#include INC_X11(Constraint.h)
+-#include INC_X11(Xfuncproto.h)
++#include <X11/Constraint.h>
++#include <X11/Xfuncproto.h>
+ 
+ /****************************************************************
+  *
+diff -Nru gv-3.5.8.orig/source/AaaP.h gv-3.5.8/source/AaaP.h
+--- gv-3.5.8.orig/source/AaaP.h	1997-04-15 00:00:00.000000000 +0200
++++ gv-3.5.8/source/AaaP.h	2002-10-11 16:42:07.000000000 +0200
+@@ -33,7 +33,7 @@
+ 
+ #include "paths.h"
+ #include "Aaa.h"
+-#include INC_X11(ConstrainP.h)
++#include <X11/ConstrainP.h>
+ 
+ typedef enum _BoxType { BoxBox, WidgetBox, GlueBox, VariableBox } BoxType;
+     
+diff -Nru gv-3.5.8.orig/source/Aaa_intern.h gv-3.5.8/source/Aaa_intern.h
+--- gv-3.5.8.orig/source/Aaa_intern.h	1997-04-06 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Aaa_intern.h	2002-10-11 16:42:07.000000000 +0200
+@@ -41,14 +41,14 @@
+ #include    <stdlib.h>
+ 
+ #include    "paths.h"
+-#include    INC_X11(Xlib.h)
+-#include    INC_X11(Xresource.h)
+-#include    INC_X11(IntrinsicP.h)
+-#include    INC_X11(cursorfont.h)
+-#include    INC_X11(StringDefs.h)
++#include    <X11/Xlib.h>
++#include    <X11/Xresource.h>
++#include    <X11/IntrinsicP.h>
++#include    <X11/cursorfont.h>
++#include    <X11/StringDefs.h>
+ 
+-#include    INC_XMU(Misc.h)
+-#include    INC_XMU(Converters.h)
++#include    <X11/Xmu/Misc.h>
++#include    <X11/Xmu/Converters.h>
+ #define DESTROY_EXPLICITLY
+ #include    "AaaP.h"
+ 
+diff -Nru gv-3.5.8.orig/source/Button.c gv-3.5.8/source/Button.c
+--- gv-3.5.8.orig/source/Button.c	1997-04-06 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Button.c	2002-10-11 16:42:07.000000000 +0200
+@@ -32,13 +32,13 @@
+ #include "message.h"
+ 
+ #include "paths.h"
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XMU(Misc.h)
+-#include INC_XAW(XawInit.h)
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xmu/Misc.h>
++#include <X11/Xaw3d/XawInit.h>
+ #include "ButtonP.h"
+-#include INC_XMU(Converters.h)
+-#include INC_XMU(CharSet.h)
++#include <X11/Xmu/Converters.h>
++#include <X11/Xmu/CharSet.h>
+ 
+ static void ClassInitialize(),Initialize(),Redisplay(),Destroy();
+ static void PaintButtonWidget();
+diff -Nru gv-3.5.8.orig/source/Button.h gv-3.5.8/source/Button.h
+--- gv-3.5.8.orig/source/Button.h	1997-04-06 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Button.h	2002-10-11 16:42:07.000000000 +0200
+@@ -29,7 +29,7 @@
+ #define _Button_h_
+ 
+ #include "paths.h"
+-#include INC_XAW(Command.h)
++#include <X11/Xaw3d/Command.h>
+ #include "Frame.h"
+ 
+ #define XtNsetFrameStyle "setFrameStyle"
+diff -Nru gv-3.5.8.orig/source/ButtonP.h gv-3.5.8/source/ButtonP.h
+--- gv-3.5.8.orig/source/ButtonP.h	1997-04-06 00:00:00.000000000 +0200
++++ gv-3.5.8/source/ButtonP.h	2002-10-11 16:42:07.000000000 +0200
+@@ -30,7 +30,7 @@
+ 
+ #include "paths.h"
+ #include "Button.h"
+-#include INC_XAW(CommandP.h)
++#include <X11/Xaw3d/CommandP.h>
+ #include "Frame.h"
+ 
+ typedef struct _ButtonClass {
+diff -Nru gv-3.5.8.orig/source/Clip.c gv-3.5.8/source/Clip.c
+--- gv-3.5.8.orig/source/Clip.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Clip.c	2002-10-11 16:42:07.000000000 +0200
+@@ -31,10 +31,10 @@
+ #include "message.h"
+ 
+ #include "paths.h"
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(XawInit.h)
+-#include INC_XMU(Misc.h)
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/XawInit.h>
++#include <X11/Xmu/Misc.h>
+ #include "ClipP.h"
+ 
+ #include <stdio.h>
+diff -Nru gv-3.5.8.orig/source/Clip.h gv-3.5.8/source/Clip.h
+--- gv-3.5.8.orig/source/Clip.h	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Clip.h	2002-10-11 16:42:07.000000000 +0200
+@@ -28,7 +28,7 @@
+ #ifndef _XawClip_h
+ #define _XawClip_h
+ 
+-#include INC_XAW(Reports.h)
++#include <X11/Xaw3d/Reports.h>
+ 
+ /*****************************************************************************
+  * 
+diff -Nru gv-3.5.8.orig/source/ClipP.h gv-3.5.8/source/ClipP.h
+--- gv-3.5.8.orig/source/ClipP.h	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/ClipP.h	2002-10-11 16:42:07.000000000 +0200
+@@ -29,7 +29,7 @@
+ #ifndef _XawClipP_h
+ #define _XawClipP_h
+ 
+-#include INC_X11(CompositeP.h)
++#include <X11/CompositeP.h>
+ #include "Clip.h"
+ 
+ typedef struct {			/* new fields in widget class */
+diff -Nru gv-3.5.8.orig/source/FileSel.c gv-3.5.8/source/FileSel.c
+--- gv-3.5.8.orig/source/FileSel.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/FileSel.c	2002-10-11 16:42:07.000000000 +0200
+@@ -48,17 +48,17 @@
+ #endif
+ 
+ #include "paths.h"
+-#include INC_X11(Xlib.h)
+-#include INC_X11(Xos.h)
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XMU(Misc.h)
+-#include INC_XMU(CharSet.h)		/* for XmuCompareISOLatin1() */
+-#include INC_XAW(XawInit.h)
+-#include INC_XAW(AsciiText.h)
+-#include INC_XAW(Scrollbar.h)
+-#include INC_XAW(SimpleMenu.h)
+-#include INC_XAW(SmeBSB.h)
++#include <X11/Xlib.h>
++#include <X11/Xos.h>
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xmu/Misc.h>
++#include <X11/Xmu/CharSet.h>		/* for XmuCompareISOLatin1() */
++#include <X11/Xaw3d/XawInit.h>
++#include <X11/Xaw3d/AsciiText.h>
++#include <X11/Xaw3d/Scrollbar.h>
++#include <X11/Xaw3d/SimpleMenu.h>
++#include <X11/Xaw3d/SmeBSB.h>
+ #include "Button.h"
+ #include "Clip.h"
+ #include "Frame.h"
+diff -Nru gv-3.5.8.orig/source/FileSel.h gv-3.5.8/source/FileSel.h
+--- gv-3.5.8.orig/source/FileSel.h	1997-04-06 00:00:00.000000000 +0200
++++ gv-3.5.8/source/FileSel.h	2002-10-11 16:42:07.000000000 +0200
+@@ -29,7 +29,7 @@
+ #ifndef _XawFileSelection_h
+ #define _XawFileSelection_h
+ 
+-#include INC_X11(Xfuncproto.h)
++#include <X11/Xfuncproto.h>
+ 
+ #define XawFileSelectionRescan 	        (1<<0)
+ #define XawFileSelectionFilter 	        (1<<1)
+diff -Nru gv-3.5.8.orig/source/Frame.c gv-3.5.8/source/Frame.c
+--- gv-3.5.8.orig/source/Frame.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Frame.c	2002-10-11 16:42:07.000000000 +0200
+@@ -6,11 +6,11 @@
+ #include <stdio.h>
+ 
+ #include "paths.h"
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XMU(Converters.h)
+-#include INC_XMU(CharSet.h)
+-#include INC_XAW(XawInit.h)
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xmu/Converters.h>
++#include <X11/Xmu/CharSet.h>
++#include <X11/Xaw3d/XawInit.h>
+ #include "FrameP.h"
+ 
+ /*
+diff -Nru gv-3.5.8.orig/source/Frame.h gv-3.5.8/source/Frame.h
+--- gv-3.5.8.orig/source/Frame.h	1997-04-06 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Frame.h	2002-10-11 16:42:07.000000000 +0200
+@@ -3,7 +3,7 @@
+ #define _XawFrame_h
+ 
+ #include "paths.h"
+-#include INC_X11(Xfuncproto.h)
++#include <X11/Xfuncproto.h>
+ 
+ #define XtNshadowWidth "shadowWidth"
+ #define XtCShadowWidth "ShadowWidth"
+diff -Nru gv-3.5.8.orig/source/FrameP.h gv-3.5.8/source/FrameP.h
+--- gv-3.5.8.orig/source/FrameP.h	1997-04-06 00:00:00.000000000 +0200
++++ gv-3.5.8/source/FrameP.h	2002-10-11 16:42:07.000000000 +0200
+@@ -15,7 +15,7 @@
+ #ifndef _XawFrameP_h
+ #define _XawFrameP_h
+ 
+-#include INC_X11(ConstrainP.h)
++#include <X11/ConstrainP.h>
+ #include "Frame.h"
+ 
+ 
+diff -Nru gv-3.5.8.orig/source/Ghostview.c gv-3.5.8/source/Ghostview.c
+--- gv-3.5.8.orig/source/Ghostview.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Ghostview.c	2002-10-11 16:42:07.000000000 +0200
+@@ -38,12 +38,12 @@
+ #include "config.h"
+ 
+ #include "paths.h"
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Xatom.h)
+-#include INC_X11(Xproto.h)
+-#include INC_X11(Xos.h)
+-#include INC_X11(Xfuncs.h)
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xatom.h>
++#include <X11/Xproto.h>
++#include <X11/Xos.h>
++#include <X11/Xfuncs.h>
+ #include "GhostviewP.h"
+ 
+ #ifdef VMS
+diff -Nru gv-3.5.8.orig/source/GhostviewP.h gv-3.5.8/source/GhostviewP.h
+--- gv-3.5.8.orig/source/GhostviewP.h	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/GhostviewP.h	2002-10-11 16:42:07.000000000 +0200
+@@ -28,8 +28,8 @@
+ 
+ #include "paths.h"
+ #include "Ghostview.h"
+-#include INC_XMU(Atoms.h)
+-#include INC_XMU(CharSet.h)
++#include <X11/Xmu/Atoms.h>
++#include <X11/Xmu/CharSet.h>
+ #include <stdio.h>
+ 
+ typedef struct {
+diff -Nru gv-3.5.8.orig/source/Imakefile gv-3.5.8/source/Imakefile
+--- gv-3.5.8.orig/source/Imakefile	1997-06-21 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Imakefile	2002-10-11 16:41:11.000000000 +0200
+@@ -311,8 +311,8 @@
+ 	@echo "!########## gv_intern_res.dat (generated by makefile)" >> $(GV_INTERN_RES_DAT)
+ 	@echo ""							>> $(GV_INTERN_RES_DAT)
+ 	@echo "GV.gsInterpreter:	gs" >> $(GV_INTERN_RES_DAT)
+-	@echo "GV.gsCmdScanPDF:	gs -dNODISPLAY -dQUIET -sPDFname=%s -sDSCname=%s pdf2dsc.ps -c quit" >> $(GV_INTERN_RES_DAT)
+-	@echo "GV.gsCmdConvPDF:	gs -dNODISPLAY -dQUIET $(PS_LEVEL) -dNOPAUSE -sPSFile=%s %s -c quit" >> $(GV_INTERN_RES_DAT)
++	@echo "GV.gsCmdScanPDF:	pdf2dsc %pdf %dsc" >> $(GV_INTERN_RES_DAT)
++	@echo "GV.gsCmdConvPDF:	pdf2ps $(PS_LEVEL) %pdf %ps" >> $(GV_INTERN_RES_DAT)
+ 	@echo "GV.gsX11Device:		-sDEVICE=x11" >> $(GV_INTERN_RES_DAT)
+ 	@echo "GV.gsX11AlphaDevice:	-dNOPLATFONTS -sDEVICE=x11alpha" >> $(GV_INTERN_RES_DAT)
+ 	@echo "GV.gsSafer:		True" >> $(GV_INTERN_RES_DAT)
+diff -Nru gv-3.5.8.orig/source/MButton.c gv-3.5.8/source/MButton.c
+--- gv-3.5.8.orig/source/MButton.c	1997-04-06 00:00:00.000000000 +0200
++++ gv-3.5.8/source/MButton.c	2002-10-11 16:42:07.000000000 +0200
+@@ -32,9 +32,9 @@
+ 
+ #include <stdio.h>
+ #include "paths.h"
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(XawInit.h)
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/XawInit.h>
+ #include "MButtonP.h"
+ 
+ static void ClassInitialize();
+diff -Nru gv-3.5.8.orig/source/Scrollbar.c gv-3.5.8/source/Scrollbar.c
+--- gv-3.5.8.orig/source/Scrollbar.c	1997-04-08 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Scrollbar.c	2002-10-11 16:42:07.000000000 +0200
+@@ -35,10 +35,10 @@
+ #include <math.h>
+ 
+ #include "paths.h"
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(XawInit.h)
+-#include INC_XMU(Drawing.h)
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/XawInit.h>
++#include <X11/Xmu/Drawing.h>
+ #include "ScrollbarP.h"
+ 
+ 
+diff -Nru gv-3.5.8.orig/source/Scrollbar.h gv-3.5.8/source/Scrollbar.h
+--- gv-3.5.8.orig/source/Scrollbar.h	1997-04-08 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Scrollbar.h	2002-10-11 16:42:07.000000000 +0200
+@@ -29,8 +29,8 @@
+ #define _Scrollbar_h
+ 
+ #include "paths.h"
+-#include INC_XMU(Converters.h)
+-#include INC_X11(Xfuncproto.h)
++#include <X11/Xmu/Converters.h>
++#include <X11/Xfuncproto.h>
+ 
+ /****************************************************************
+  *
+diff -Nru gv-3.5.8.orig/source/ScrollbarP.h gv-3.5.8/source/ScrollbarP.h
+--- gv-3.5.8.orig/source/ScrollbarP.h	1997-04-08 00:00:00.000000000 +0200
++++ gv-3.5.8/source/ScrollbarP.h	2002-10-11 16:42:07.000000000 +0200
+@@ -29,7 +29,7 @@
+ #define _ScrollbarP_h
+ 
+ #include "paths.h"
+-#include INC_XAW(ThreeDP.h)
++#include <X11/Xaw3d/ThreeDP.h>
+ #include "Scrollbar.h"
+ 
+ typedef struct {
+diff -Nru gv-3.5.8.orig/source/Switch.c gv-3.5.8/source/Switch.c
+--- gv-3.5.8.orig/source/Switch.c	1997-04-06 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Switch.c	2002-10-11 16:42:07.000000000 +0200
+@@ -32,9 +32,9 @@
+ 
+ #include <stdio.h>
+ #include "paths.h"
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(XawInit.h)
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/XawInit.h>
+ #include "SwitchP.h"
+ 
+ static void ClassInitialize();
+diff -Nru gv-3.5.8.orig/source/Vlist.c gv-3.5.8/source/Vlist.c
+--- gv-3.5.8.orig/source/Vlist.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Vlist.c	2002-10-11 16:42:07.000000000 +0200
+@@ -33,13 +33,13 @@
+ #include "message.h"
+ 
+ #include "paths.h"
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XMU(Misc.h)
+-#include INC_XAW(XawInit.h)
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xmu/Misc.h>
++#include <X11/Xaw3d/XawInit.h>
+ #include "VlistP.h"
+ #include "Frame.h"
+-#include INC_XMU(Converters.h)
++#include <X11/Xmu/Converters.h>
+ 
+ #include "d_memdebug.h"
+ 
+diff -Nru gv-3.5.8.orig/source/Vlist.h gv-3.5.8/source/Vlist.h
+--- gv-3.5.8.orig/source/Vlist.h	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/Vlist.h	2002-10-11 16:42:07.000000000 +0200
+@@ -29,7 +29,7 @@
+ #define _Vlist_h_
+ 
+ #include "paths.h"
+-#include INC_XAW(Label.h)
++#include <X11/Xaw3d/Label.h>
+ 
+ #define XawVlistAll     -13
+ #define XawVlistEven    -12
+diff -Nru gv-3.5.8.orig/source/VlistP.h gv-3.5.8/source/VlistP.h
+--- gv-3.5.8.orig/source/VlistP.h	1997-04-06 00:00:00.000000000 +0200
++++ gv-3.5.8/source/VlistP.h	2002-10-11 16:42:07.000000000 +0200
+@@ -30,7 +30,7 @@
+ 
+ #include "paths.h"
+ #include "Vlist.h"
+-#include INC_XAW(LabelP.h)
++#include <X11/Xaw3d/LabelP.h>
+ 
+ typedef struct _VlistClass {
+   int makes_compiler_happy;  /* not used */
+diff -Nru gv-3.5.8.orig/source/actions.c gv-3.5.8/source/actions.c
+--- gv-3.5.8.orig/source/actions.c	1997-06-21 00:00:00.000000000 +0200
++++ gv-3.5.8/source/actions.c	2002-10-11 16:42:07.000000000 +0200
+@@ -38,15 +38,15 @@
+ #include <math.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(Cardinals.h)
+-#include INC_XAW(SimpleMenu.h)
+-#include INC_XAW(SmeBSB.h)
+-#include INC_XAW(SmeLine.h) 
+-#include INC_XAW(Scrollbar.h)
+-#include INC_XAW(MenuButton.h)
+-#include INC_X11(IntrinsicP.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/Cardinals.h>
++#include <X11/Xaw3d/SimpleMenu.h>
++#include <X11/Xaw3d/SmeBSB.h>
++#include <X11/Xaw3d/SmeLine.h> 
++#include <X11/Xaw3d/Scrollbar.h>
++#include <X11/Xaw3d/MenuButton.h>
++#include <X11/IntrinsicP.h>
+ #include "Aaa.h"
+ #include "Clip.h"
+ #include "Ghostview.h"
+diff -Nru gv-3.5.8.orig/source/callbacks.c gv-3.5.8/source/callbacks.c
+--- gv-3.5.8.orig/source/callbacks.c	1997-06-21 00:00:00.000000000 +0200
++++ gv-3.5.8/source/callbacks.c	2002-10-11 16:42:07.000000000 +0200
+@@ -42,16 +42,16 @@
+ #endif
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Shell.h)
+-#include INC_XAW(Cardinals.h)
+-#include INC_XAW(Scrollbar.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Shell.h>
++#include <X11/Xaw3d/Cardinals.h>
++#include <X11/Xaw3d/Scrollbar.h>
+ #include "Clip.h"
+ #include "FileSel.h"
+ #include "Ghostview.h"
+ #include "Vlist.h"
+-#include INC_X11(IntrinsicP.h)
++#include <X11/IntrinsicP.h>
+ 
+ #ifdef VMS
+ #   define unlink remove
+@@ -870,7 +870,7 @@
+   char *s;
+ 
+   BEGINMESSAGE(cb_page)
+-  if (gv_psfile && client_data) {
++  if (gv_filename && client_data) {
+     s = (char*)client_data;
+     if (*s=='-' || *s=='+') {  
+       k = 1;
+diff -Nru gv-3.5.8.orig/source/confirm.c gv-3.5.8/source/confirm.c
+--- gv-3.5.8.orig/source/confirm.c	1997-04-26 00:00:00.000000000 +0200
++++ gv-3.5.8/source/confirm.c	2002-10-11 16:42:07.000000000 +0200
+@@ -35,10 +35,10 @@
+ #include "message.h"
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(Label.h)
+-#include INC_X11(Shell.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/Label.h>
++#include <X11/Shell.h>
+ 
+ #include "Aaa.h"
+ #include "Button.h"
+diff -Nru gv-3.5.8.orig/source/d_mem.c gv-3.5.8/source/d_mem.c
+--- gv-3.5.8.orig/source/d_mem.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/d_mem.c	2002-10-11 16:42:07.000000000 +0200
+@@ -31,7 +31,7 @@
+ #include <time.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h) 
++#include <X11/Intrinsic.h> 
+ 
+ #include "d_mem.h"
+ 
+diff -Nru gv-3.5.8.orig/source/d_xtmem.c gv-3.5.8/source/d_xtmem.c
+--- gv-3.5.8.orig/source/d_xtmem.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/d_xtmem.c	2002-10-11 16:42:07.000000000 +0200
+@@ -31,7 +31,7 @@
+ #include <time.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h) 
++#include <X11/Intrinsic.h> 
+ 
+ #include "d_xtmem.h"
+ 
+diff -Nru gv-3.5.8.orig/source/descrip.mms gv-3.5.8/source/descrip.mms
+--- gv-3.5.8.orig/source/descrip.mms	1997-06-21 00:00:00.000000000 +0200
++++ gv-3.5.8/source/descrip.mms	2002-10-11 16:41:11.000000000 +0200
+@@ -262,7 +262,7 @@
+  @ WRITE_ file ""
+  @ WRITE_ file "GV.gsInterpreter:	gs"
+  @ WRITE_ file "GV.gsCmdScanPDF:	gs ""-dNODISPLAY"" ""-dQUIET"" ""-sPDFname""=%s ""-sDSCname""=%s pdf2dsc.ps -c quit"
+- @ WRITE_ file "GV.gsCmdConvPDF:	gs ""-dNODISPLAY"" ""-dQUIET"" $(PS_LEVEL) ""-dNOPAUSE"" ""-sPSFile""=%s %s -c quit"
++ @ WRITE_ file "GV.gsCmdConvPDF:       gs ""-dNODISPLAY"" ""-dQUIET"" $(PS_LEVEL) ""-dNOPAUSE"" ""-sPSFile""=%s %s -c quit"
+  @ WRITE_ file "GV.gsX11Device:	""-sDEVICE=x11"""
+  @ WRITE_ file "GV.gsX11AlphaDevice:""-dNOPLATFONTS"" ""-sDEVICE=x11alpha"""
+  @ WRITE_ file "GV.gsSafer:	True"
+diff -Nru gv-3.5.8.orig/source/dialog.c gv-3.5.8/source/dialog.c
+--- gv-3.5.8.orig/source/dialog.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/dialog.c	2002-10-11 16:42:07.000000000 +0200
+@@ -35,12 +35,12 @@
+ #include "message.h"
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Xos.h)
+-#include INC_XAW(AsciiText.h)
+-#include INC_XAW(Label.h)
+-#include INC_X11(Shell.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Xos.h>
++#include <X11/Xaw3d/AsciiText.h>
++#include <X11/Xaw3d/Label.h>
++#include <X11/Shell.h>
+ #include "Aaa.h"
+ #include "Button.h"
+ #include "Ghostview.h"
+diff -Nru gv-3.5.8.orig/source/doc_misc.c gv-3.5.8/source/doc_misc.c
+--- gv-3.5.8.orig/source/doc_misc.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/doc_misc.c	2002-10-11 16:42:07.000000000 +0200
+@@ -34,8 +34,8 @@
+ #include <stdio.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_XMU(CharSet.h)
++#include <X11/Intrinsic.h>
++#include <X11/Xmu/CharSet.h>
+ #include "Ghostview.h"
+ #include "main_resources.h"
+ 
+diff -Nru gv-3.5.8.orig/source/error.c gv-3.5.8/source/error.c
+--- gv-3.5.8.orig/source/error.c	1997-06-08 00:00:00.000000000 +0200
++++ gv-3.5.8/source/error.c	2002-10-11 16:42:07.000000000 +0200
+@@ -37,8 +37,8 @@
+ #include <stdlib.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Xos.h)
+-#include INC_X11(Intrinsic.h)
++#include <X11/Xos.h>
++#include <X11/Intrinsic.h>
+ 
+ #include "types.h"
+ #include "error.h"
+diff -Nru gv-3.5.8.orig/source/file.c gv-3.5.8/source/file.c
+--- gv-3.5.8.orig/source/file.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/file.c	2002-10-11 16:42:07.000000000 +0200
+@@ -44,7 +44,7 @@
+ #endif
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
++#include <X11/Intrinsic.h>
+ 
+ #include "types.h"
+ #include "config.h"
+@@ -145,6 +145,25 @@
+ }
+ 
+ /*############################################################*/
++/* file_assureDirectory */
++/*############################################################*/
++
++void
++file_assureDirectory(to,from)
++   char *to;
++   char *from;
++{
++   int len;
++   BEGINMESSAGE(file_assureDirectory)
++   strcpy(to,from);
++#  ifndef VMS
++      len = strlen(to);
++      if (to[len-1] != '/') { to[len] = '/'; to[len+1] = '\0'; }
++#  endif
++   ENDMESSAGE(file_assureDirectory)
++}
++
++/*############################################################*/
+ /* file_getTmpFilename */
+ /* provide some temporary file name */
+ /*############################################################*/
+@@ -164,11 +183,13 @@
+ 
+    BEGINMESSAGE(file_getTmpFilename)
+ 
+-   if (!baseDirectory) baseDirectory = app_res.scratch_dir;
+-   strcpy(tmpDirBuf,baseDirectory);
+-   pos = file_locateFilename(tmpDirBuf);
+-   if (pos) { ++pos; *pos='\0'; }
+-   else strcpy(tmpDirBuf,app_res.scratch_dir);
++   pos = NULL;
++   if (baseDirectory) {
++     strcpy(tmpDirBuf,baseDirectory); 
++     pos = file_locateFilename(tmpDirBuf);
++   }
++   if (pos) *pos='\0';
++   else file_assureDirectory(tmpDirBuf,app_res.scratch_dir);
+ 
+    if (!baseFilename) baseFilename= ".";
+    strcpy(tmpNameBuf,baseFilename);
+@@ -187,21 +208,13 @@
+       if (strlen(tmpExt)>11) tmpExt[11] = '\0';     /* allow .ps_page_nnn */
+       if (strlen(tmpName)+strlen(tmpExt)>23) tmpName[23-strlen(tmpExt)] = '\0';
+    }
+-   {
+-      struct stat s;
+-      int no_such_file;
+-      int i=1;
+-      do {
+ #ifdef VMS
+          sprintf(tempFilename,"%sgv_%lx_%x_%s_%s.tmp",tmpDirBuf,time(NULL),i,tmpName,tmpExt);
+ #else
+-         sprintf(tempFilename,"%sgv_%lx_%x_%s.%s.tmp",tmpDirBuf,time(NULL),i,tmpName,tmpExt);
++         sprintf(tempFilename,"%sgv_%s.%s.XXXXXX",tmpDirBuf,tmpName,tmpExt);
+ #endif
+-         file_translateTildeInPath(tempFilename);
+-         no_such_file = stat(tempFilename,&s);
+-         i++;
+-      } while (!no_such_file);
+-   } 
++   file_translateTildeInPath(tempFilename);
++   close(mkstemp(tempFilename));
+    SMESSAGE(tempFilename)
+    tempFilenameP = GV_XtNewString(tempFilename);
+    ENDMESSAGE(file_getTmpFilename)
+diff -Nru gv-3.5.8.orig/source/gv_user_res.dat gv-3.5.8/source/gv_user_res.dat
+--- gv-3.5.8.orig/source/gv_user_res.dat	1997-06-21 00:00:00.000000000 +0200
++++ gv-3.5.8/source/gv_user_res.dat	2002-10-11 16:40:49.000000000 +0200
+@@ -8,7 +8,7 @@
+ GV.fallbackOrientation:	portrait
+ GV.swapLandscape:	False
+ GV.autoCenter:		True
+-GV.antialias:		False
++GV.antialias:		True
+ GV.respectDSC:		True
+ GV.ignoreEOF:		True
+ GV.confirmPrint:	True
+diff -Nru gv-3.5.8.orig/source/info.c gv-3.5.8/source/info.c
+--- gv-3.5.8.orig/source/info.c	1997-04-26 00:00:00.000000000 +0200
++++ gv-3.5.8/source/info.c	2002-10-11 16:42:07.000000000 +0200
+@@ -35,11 +35,11 @@
+ #include <stdio.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(Form.h)
+-#include INC_XAW(AsciiText.h)
+-#include INC_X11(Shell.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/Form.h>
++#include <X11/Xaw3d/AsciiText.h>
++#include <X11/Shell.h>
+ #include "Button.h"
+ 
+ /*### Application dependencies ##############################################*/
+diff -Nru gv-3.5.8.orig/source/magmenu.c gv-3.5.8/source/magmenu.c
+--- gv-3.5.8.orig/source/magmenu.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/magmenu.c	2002-10-11 16:42:07.000000000 +0200
+@@ -34,13 +34,13 @@
+ #include <math.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(SimpleMenu.h)
+-#include INC_XAW(SmeBSB.h)
+-#include INC_XAW(SmeLine.h) 
+-#include INC_XAW(Cardinals.h)
+-#include INC_XAW(Scrollbar.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/SimpleMenu.h>
++#include <X11/Xaw3d/SmeBSB.h>
++#include <X11/Xaw3d/SmeLine.h> 
++#include <X11/Xaw3d/Cardinals.h>
++#include <X11/Xaw3d/Scrollbar.h>
+ #include "Ghostview.h"
+ 
+ #include "types.h"
+diff -Nru gv-3.5.8.orig/source/main.c gv-3.5.8/source/main.c
+--- gv-3.5.8.orig/source/main.c	1997-06-21 00:00:00.000000000 +0200
++++ gv-3.5.8/source/main.c	2002-10-11 16:42:07.000000000 +0200
+@@ -40,18 +40,18 @@
+ #include <math.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(cursorfont.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Shell.h)
+-#include INC_XAW(Cardinals.h)
+-#include INC_XAW(SimpleMenu.h)
+-#include INC_XAW(SmeBSB.h)
+-#include INC_XAW(SmeLine.h)
+-#include INC_XAW(Label.h)
+-#include INC_XAW(Scrollbar.h)
+-#include INC_XAW(XawInit.h)
+-#include INC_XMU(Editres.h)
++#include <X11/Intrinsic.h>
++#include <X11/cursorfont.h>
++#include <X11/StringDefs.h>
++#include <X11/Shell.h>
++#include <X11/Xaw3d/Cardinals.h>
++#include <X11/Xaw3d/SimpleMenu.h>
++#include <X11/Xaw3d/SmeBSB.h>
++#include <X11/Xaw3d/SmeLine.h>
++#include <X11/Xaw3d/Label.h>
++#include <X11/Xaw3d/Scrollbar.h>
++#include <X11/Xaw3d/XawInit.h>
++#include <X11/Xmu/Editres.h>
+ #include "Aaa.h"
+ #include "Button.h"
+ #include "Clip.h"
+diff -Nru gv-3.5.8.orig/source/media.c gv-3.5.8/source/media.c
+--- gv-3.5.8.orig/source/media.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/media.c	2002-10-11 16:42:07.000000000 +0200
+@@ -34,8 +34,8 @@
+ #include <math.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_XMU(SysUtil.h)
++#include <X11/Intrinsic.h>
++#include <X11/Xmu/SysUtil.h>
+ 
+ #include "types.h"
+ #include "config.h"
+diff -Nru gv-3.5.8.orig/source/misc.c gv-3.5.8/source/misc.c
+--- gv-3.5.8.orig/source/misc.c	1997-06-21 00:00:00.000000000 +0200
++++ gv-3.5.8/source/misc.c	2002-10-11 16:42:07.000000000 +0200
+@@ -93,18 +93,18 @@
+ #include <math.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Xos.h)
+-#include INC_X11(Xatom.h)
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Shell.h)
+-#include INC_XAW(Cardinals.h)
+-#include INC_XAW(SimpleMenu.h)
+-#include INC_XAW(SmeBSB.h)
+-#include INC_XAW(SmeLine.h)
+-#include INC_X11(IntrinsicP.h)
+-#include INC_XAW(TextP.h)
+-#include INC_XMU(StdCmap.h)
++#include <X11/Xos.h>
++#include <X11/Xatom.h>
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Shell.h>
++#include <X11/Xaw3d/Cardinals.h>
++#include <X11/Xaw3d/SimpleMenu.h>
++#include <X11/Xaw3d/SmeBSB.h>
++#include <X11/Xaw3d/SmeLine.h>
++#include <X11/IntrinsicP.h>
++#include <X11/Xaw3d/TextP.h>
++#include <X11/Xmu/StdCmap.h>
+ #include "Aaa.h"
+ #include "Button.h"
+ #include "Clip.h"
+@@ -1154,7 +1154,7 @@
+     misc_setSensitive(w_printAllPages     , show_printAllPages     , (gv_psfile   != NULL));
+     misc_setSensitive(w_checkFile         , show_checkFile         , (gv_filename != NULL));
+     misc_setSensitive(w_updateFile        , show_updateFile        , (gv_filename != NULL));
+-    misc_setSensitive(w_showThisPage      , show_showThisPage      , (gv_filename != NULL));
++    misc_setSensitive(w_showThisPage      , show_showThisPage      , (gv_psfile   != NULL));
+     misc_setSensitive(w_prevPage          , show_prevPage          , (toc_text    != NULL));
+     misc_setSensitive(w_nextPage          , show_nextPage          , (gv_filename != NULL));
+     misc_setSensitive(w_toggleCurrentPage , show_toggleCurrentPage , (toc_text    != NULL));
+@@ -1168,7 +1168,7 @@
+     XtSetSensitive(saveAllEntry,     (gv_psfile   != NULL));
+     XtSetSensitive(saveMarkedEntry,  (toc_text    != NULL));
+     XtSetSensitive(nextEntry,        (gv_filename != NULL));
+-    XtSetSensitive(redisplayEntry,   (gv_filename != NULL));
++    XtSetSensitive(redisplayEntry,   (gv_psfile   != NULL));
+     XtSetSensitive(prevEntry,        (toc_text    != NULL));
+     XtSetSensitive(currentEntry,     (toc_text    != NULL));
+     XtSetSensitive(oddEntry,         (toc_text    != NULL));
+@@ -1718,3 +1718,51 @@
+     ENDMESSAGE(catch_Xerror)
+     return 0;
+ }
++
++/*############################################################*/
++/* quote_filename */
++/* Quotes special characters in filenames */
++/* (taken from bash sources) */
++/*############################################################*/
++
++char *
++quote_filename (string) 
++     char *string;
++{
++    int c;
++    char *result, *r, *s;
++
++    BEGINMESSAGE(quote_filename)
++
++    result = (char*) GV_XtMalloc((2 * strlen (string) + 1) * sizeof(char));
++
++    for (r = result, s = string; s && (c = *s); s++)
++    {
++      switch (c)
++	{
++	case ' ': case '\t': case '\n':		/* IFS white space */
++	case '\'': case '"': case '\\':		/* quoting chars */
++	case '|': case '&': case ';':		/* shell metacharacters */
++	case '(': case ')': case '<': case '>':
++	case '!': case '{': case '}':		/* reserved words */
++	case '*': case '[': case '?': case ']':	/* globbing chars */
++	case '^':
++	case '$': case '`':			/* expansion chars */
++	  *r++ = '\\';
++	  *r++ = c;
++	  break;
++	case '#':				/* comment char */
++	  if (s == string)
++	    *r++ = '\\';
++	  /* FALLTHROUGH */
++	default:
++	  *r++ = c;
++	  break;
++	}
++    }
++    *r = '\0';
++
++    ENDMESSAGE(quote_filename)
++
++    return (result);
++}
+diff -Nru gv-3.5.8.orig/source/misc.h gv-3.5.8/source/misc.h
+--- gv-3.5.8.orig/source/misc.h	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/misc.h	2002-10-11 16:41:11.000000000 +0200
+@@ -115,6 +115,12 @@
+ #endif
+ );
+  
++extern char *                   quote_filename (
++#if NeedFunctionPrototypes
++    char*
++#endif
++);
++
+ #endif	/* _GV_MISC_H_ */
+ 
+ 
+diff -Nru gv-3.5.8.orig/source/misc_private.c gv-3.5.8/source/misc_private.c
+--- gv-3.5.8.orig/source/misc_private.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/misc_private.c	2002-10-11 16:42:07.000000000 +0200
+@@ -33,11 +33,11 @@
+ #include <stdlib.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(Cardinals.h)
+-#include INC_X11(IntrinsicP.h)
+-#include INC_XAW(LabelP.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/Cardinals.h>
++#include <X11/IntrinsicP.h>
++#include <X11/Xaw3d/LabelP.h>
+ #include "GhostviewP.h"
+ 
+ #include "types.h"
+diff -Nru gv-3.5.8.orig/source/miscmenu.c gv-3.5.8/source/miscmenu.c
+--- gv-3.5.8.orig/source/miscmenu.c	1997-06-21 00:00:00.000000000 +0200
++++ gv-3.5.8/source/miscmenu.c	2002-10-11 16:42:07.000000000 +0200
+@@ -35,13 +35,13 @@
+ #include <math.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(SimpleMenu.h)
+-#include INC_XAW(SmeBSB.h)
+-#include INC_XAW(SmeLine.h) 
+-#include INC_XAW(Cardinals.h)
+-#include INC_XAW(Scrollbar.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/SimpleMenu.h>
++#include <X11/Xaw3d/SmeBSB.h>
++#include <X11/Xaw3d/SmeLine.h> 
++#include <X11/Xaw3d/Cardinals.h>
++#include <X11/Xaw3d/Scrollbar.h>
+ 
+ #include "types.h"
+ #include "actions.h"
+@@ -60,7 +60,7 @@
+ 
+ static MiscMenuEntryStruct miscmenu_entries[] = {
+   { "update",cb_checkFile,(XtPointer)CHECK_FILE_DATE,2 },
+-  { "redisplay",cb_redisplay,NULL,2 },
++  { "redisplay",cb_redisplay,NULL,3 },
+   { "toggle_current" , cb_setPageMark, (XtPointer)(SPM_CURRENT|SPM_TOGGLE),1 },
+   { "toggle_even"    , cb_setPageMark, (XtPointer)(SPM_EVEN|SPM_TOGGLE),1 },
+   { "toggle_odd"     , cb_setPageMark, (XtPointer)(SPM_ODD|SPM_TOGGLE),1 },
+diff -Nru gv-3.5.8.orig/source/note.c gv-3.5.8/source/note.c
+--- gv-3.5.8.orig/source/note.c	1997-04-26 00:00:00.000000000 +0200
++++ gv-3.5.8/source/note.c	2002-10-11 16:42:07.000000000 +0200
+@@ -35,10 +35,10 @@
+ #include <stdio.h>
+ 
+ #include "paths.h"
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(Label.h)
+-#include INC_X11(Shell.h)
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/Label.h>
++#include <X11/Shell.h>
+ #include "Aaa.h"
+ #include "Button.h"
+ #include "popup.h"
+diff -Nru gv-3.5.8.orig/source/options.c gv-3.5.8/source/options.c
+--- gv-3.5.8.orig/source/options.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/options.c	2002-10-11 16:42:07.000000000 +0200
+@@ -37,12 +37,12 @@
+ #include <ctype.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Shell.h)
+-#include INC_XAW(Label.h)
+-#include INC_XAW(SimpleMenu.h)
+-#include INC_XAW(SmeBSB.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Shell.h>
++#include <X11/Xaw3d/Label.h>
++#include <X11/Xaw3d/SimpleMenu.h>
++#include <X11/Xaw3d/SmeBSB.h>
+ #include "Aaa.h"
+ #include "MButton.h"
+ 
+diff -Nru gv-3.5.8.orig/source/options_fs.c gv-3.5.8/source/options_fs.c
+--- gv-3.5.8.orig/source/options_fs.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/options_fs.c	2002-10-11 16:42:07.000000000 +0200
+@@ -37,9 +37,9 @@
+ #include <ctype.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Shell.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Shell.h>
+ #include "Aaa.h"
+ #include "Button.h"
+ #include "FileSel.h"
+@@ -105,7 +105,6 @@
+    Widget	w;
+    XtPointer	client_data, call_data;
+ {
+-   BEGINMESSAGE(options_fs_cb_apply)
+    Arg args[5];
+    Cardinal n;
+    static Boolean s_scratch_dir = False;
+diff -Nru gv-3.5.8.orig/source/options_gs.c gv-3.5.8/source/options_gs.c
+--- gv-3.5.8.orig/source/options_gs.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/options_gs.c	2002-10-11 16:42:07.000000000 +0200
+@@ -37,12 +37,12 @@
+ #include <ctype.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Shell.h)
+-#include INC_XAW(SimpleMenu.h)
+-#include INC_XAW(SmeBSB.h)
+-#include INC_XAW(AsciiText.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Shell.h>
++#include <X11/Xaw3d/SimpleMenu.h>
++#include <X11/Xaw3d/SmeBSB.h>
++#include <X11/Xaw3d/AsciiText.h>
+ #include "Aaa.h"
+ #include "Button.h"
+ #include "FileSel.h"
+diff -Nru gv-3.5.8.orig/source/options_gv.c gv-3.5.8/source/options_gv.c
+--- gv-3.5.8.orig/source/options_gv.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/options_gv.c	2002-10-11 16:42:07.000000000 +0200
+@@ -37,11 +37,11 @@
+ #include <ctype.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Shell.h)
+-#include INC_XAW(SimpleMenu.h)
+-#include INC_XAW(SmeBSB.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Shell.h>
++#include <X11/Xaw3d/SimpleMenu.h>
++#include <X11/Xaw3d/SmeBSB.h>
+ #include "Aaa.h"
+ #include "Button.h"
+ #include "FileSel.h"
+diff -Nru gv-3.5.8.orig/source/options_setup.c gv-3.5.8/source/options_setup.c
+--- gv-3.5.8.orig/source/options_setup.c	1997-06-21 00:00:00.000000000 +0200
++++ gv-3.5.8/source/options_setup.c	2002-10-11 16:42:07.000000000 +0200
+@@ -37,10 +37,10 @@
+ #include <ctype.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Shell.h)
+-#include INC_XAW(SmeBSB.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Shell.h>
++#include <X11/Xaw3d/SmeBSB.h>
+ #include "Aaa.h"
+ #include "Button.h"
+ #include "FileSel.h"
+diff -Nru gv-3.5.8.orig/source/popup.c gv-3.5.8/source/popup.c
+--- gv-3.5.8.orig/source/popup.c	1997-04-26 00:00:00.000000000 +0200
++++ gv-3.5.8/source/popup.c	2002-10-11 16:42:07.000000000 +0200
+@@ -35,10 +35,10 @@
+ #include <stdio.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(ShellP.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/IntrinsicP.h>
++#include <X11/ShellP.h>
+ 
+ #include "types.h"
+ #include "popup.h"
+diff -Nru gv-3.5.8.orig/source/process.c gv-3.5.8/source/process.c
+--- gv-3.5.8.orig/source/process.c	1997-04-26 00:00:00.000000000 +0200
++++ gv-3.5.8/source/process.c	2002-10-11 16:42:07.000000000 +0200
+@@ -49,13 +49,13 @@
+ #endif
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(MenuButton.h)
+-#include INC_XAW(SimpleMenu.h)
+-#include INC_XAW(SmeBSB.h)
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(ShellP.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/MenuButton.h>
++#include <X11/Xaw3d/SimpleMenu.h>
++#include <X11/Xaw3d/SmeBSB.h>
++#include <X11/IntrinsicP.h>
++#include <X11/ShellP.h>
+ 
+ #include "types.h"
+ #include "config.h"
+@@ -272,8 +272,7 @@
+    pid = fork();
+ 
+    if (pid == 0) { /* child */
+-      int  argc=0;
+-      char *argv[20];
++      char *argv[3];
+       char *c;
+ 
+       INFMESSAGE(child process)
+@@ -286,15 +285,10 @@
+        */
+       system(c);
+ #else
+-      while (isspace(*c)) c++;
+-      while (*c) {
+-         argv[argc++] = c;
+-         while (*c && !isspace(*c)) c++;
+-         if (*c) *c++ = '\0';
+-         while (isspace(*c)) c++;
+-         SMESSAGE(argv[argc-1])
+-      }
+-      argv[argc] = NULL;
++      argv[0] = "sh";
++      argv[1] = "-c";
++      argv[2] = c;
++      argv[3] = NULL;
+ 
+       INFMESSAGE(spawning conversion process)
+ /*
+diff -Nru gv-3.5.8.orig/source/ps.c gv-3.5.8/source/ps.c
+--- gv-3.5.8.orig/source/ps.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/ps.c	2002-10-11 16:42:07.000000000 +0200
+@@ -77,9 +77,9 @@
+ #include <ctype.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(Xos.h)                /* #includes the appropriate <string.h> */
+-#include INC_X11(Xfuncs.h)
++#include <X11/Intrinsic.h>
++#include <X11/Xos.h>                /* #includes the appropriate <string.h> */
++#include <X11/Xfuncs.h>
+ 
+ #include "types.h"
+ #include "file.h"
+@@ -417,10 +417,15 @@
+       struct document *retval = NULL;
+       FILE *tmpfile = (FILE*)NULL;
+       char *filename_unc;
++      char *quoted_filename, *quoted_filename_unc;
+       char cmd[512];
+       char s[512];
+       filename_unc=file_getTmpFilename(NULL,filename_raw);
+-      sprintf(cmd,cmd_uncompress,filename,filename_unc);
++      quoted_filename = quote_filename(filename);
++      quoted_filename_unc = quote_filename(filename_unc);
++      sprintf(cmd,cmd_uncompress,quoted_filename,quoted_filename_unc);
++      GV_XtFree(quoted_filename);
++      GV_XtFree(quoted_filename_unc);
+       INFMESSAGE(is compressed)
+       INFSMESSAGE(uncompress command,cmd)
+       if (ps_system(cmd) || file_fileIsNotUseful(filename_unc)) {
+@@ -478,7 +483,7 @@
+       doc = (struct document *) PS_malloc(sizeof(struct document));
+       CHECK_MALLOCED(doc);
+       memset(doc, 0, sizeof(struct document));
+-      sscanf(line, "%*s %s", text);
++      sscanf(line, "%*s %256s", text);
+       /*###jp###*/
+       /*doc->epsf = iscomment(text, "EPSF-");*/
+       doc->epsf = iscomment(text, "EPSF");
+@@ -488,10 +493,35 @@
+       struct document *retval = NULL;
+       FILE *tmpfile = (FILE*)NULL;
+       char *filename_dsc;
++      char *quoted_filename, *quoted_filename_dsc;
++      char *pdfpos;
++      char *dscpos;
+       char cmd[512];
+       char s[512];
+-      filename_dsc=file_getTmpFilename(NULL,filename_raw);
+-      sprintf(cmd,cmd_scan_pdf,filename,filename_dsc);
++      filename_dsc=file_getTmpFilename(NULL,filename_raw);      
++      quoted_filename = quote_filename(filename);
++      quoted_filename_dsc = quote_filename(filename_dsc);
++      if ((pdfpos = strstr(cmd_scan_pdf,"%pdf")) &&
++	  (dscpos = strstr(cmd_scan_pdf,"%dsc"))) {
++	cmd[0] = '\0';
++	if (pdfpos < dscpos) {
++	  strncat(cmd,cmd_scan_pdf,(pdfpos-cmd_scan_pdf));
++	  strcat(cmd,quoted_filename);
++	  strncat(cmd,pdfpos+4,(dscpos-pdfpos-4));
++	  strcat(cmd,quoted_filename_dsc);
++	  strcat(cmd,dscpos+4);
++	} else {
++	  strncat(cmd,cmd_scan_pdf,(dscpos-cmd_scan_pdf));
++	  strcat(cmd,quoted_filename_dsc);
++	  strncat(cmd,dscpos+4,(pdfpos-dscpos-4));
++	  strcat(cmd,quoted_filename);
++	  strcat(cmd,pdfpos+4);
++	}
++      } else {
++	sprintf(cmd,cmd_scan_pdf,quoted_filename,quoted_filename_dsc);
++      }
++      GV_XtFree(quoted_filename);
++      GV_XtFree(quoted_filename_dsc);
+       INFMESSAGE(is PDF)
+       INFSMESSAGE(scan command,cmd)
+ #ifdef VMS
+@@ -546,7 +576,7 @@
+ 	} else if (doc->date == NULL && iscomment(line+2, "CreationDate:")) {
+ 	    doc->date = gettextline(line+length("%%CreationDate:"));
+ 	} else if (bb_set == NONE && iscomment(line+2, "BoundingBox:")) {
+-	    sscanf(line+length("%%BoundingBox:"), "%s", text);
++	    sscanf(line+length("%%BoundingBox:"), "%256s", text);
+ 	    if (strcmp(text, "(atend)") == 0) {
+ 		bb_set = ATEND;
+ 	    } else {
+@@ -578,7 +608,7 @@
+ 	    }
+ 	} else if (orientation_set == NONE &&
+ 		   iscomment(line+2, "Orientation:")) {
+-	    sscanf(line+length("%%Orientation:"), "%s", text);
++	    sscanf(line+length("%%Orientation:"), "%256s", text);
+ 	    if (strcmp(text, "(atend)") == 0) {
+ 		orientation_set = ATEND;
+ 	    } else if (strcmp(text, "Portrait") == 0) {
+@@ -589,7 +619,7 @@
+ 		orientation_set = 1;
+ 	    }
+ 	} else if (page_order_set == NONE && iscomment(line+2, "PageOrder:")) {
+-	    sscanf(line+length("%%PageOrder:"), "%s", text);
++	    sscanf(line+length("%%PageOrder:"), "%256s", text);
+ 	    if (strcmp(text, "(atend)") == 0) {
+ 		page_order_set = ATEND;
+ 	    } else if (strcmp(text, "Ascend") == 0) {
+@@ -603,7 +633,7 @@
+ 		page_order_set = 1;
+ 	    }
+ 	} else if (pages_set == NONE && iscomment(line+2, "Pages:")) {
+-	    sscanf(line+length("%%Pages:"), "%s", text);
++	    sscanf(line+length("%%Pages:"), "%256s", text);
+ 	    if (strcmp(text, "(atend)") == 0) {
+ 		pages_set = ATEND;
+ 	    } else {
+@@ -823,7 +853,7 @@
+ 		/* Do nothing */
+ 	    } else if (doc->default_page_orientation == NONE &&
+ 		iscomment(line+2, "PageOrientation:")) {
+-		sscanf(line+length("%%PageOrientation:"), "%s", text);
++		sscanf(line+length("%%PageOrientation:"), "%256s", text);
+ 		if (strcmp(text, "Portrait") == 0) {
+ 		    doc->default_page_orientation = PORTRAIT;
+ 		} else if (strcmp(text, "Landscape") == 0) {
+@@ -945,7 +975,7 @@
+ 		/* Do nothing */
+ 	    } else if (doc->default_page_orientation == NONE &&
+ 		iscomment(line+2, "PageOrientation:")) {
+-		sscanf(line+length("%%PageOrientation:"), "%s", text);
++		sscanf(line+length("%%PageOrientation:"), "%256s", text);
+ 		if (strcmp(text, "Portrait") == 0) {
+ 		    doc->default_page_orientation = PORTRAIT;
+ 		} else if (strcmp(text, "Landscape") == 0) {
+@@ -1082,7 +1112,7 @@
+ 		/* Do nothing */
+ 	    } else if (doc->pages[doc->numpages].orientation == NONE &&
+ 		iscomment(line+2, "PageOrientation:")) {
+-		sscanf(line+length("%%PageOrientation:"), "%s", text);
++		sscanf(line+length("%%PageOrientation:"), "%256s", text);
+ 		if (strcmp(text, "Portrait") == 0) {
+ 		    doc->pages[doc->numpages].orientation = PORTRAIT;
+ 		} else if (strcmp(text, "Landscape") == 0) {
+@@ -1114,7 +1144,7 @@
+ 		PS_free(cp);
+ 	    } else if ((page_bb_set == NONE || page_bb_set == ATEND) &&
+ 		       iscomment(line+2, "PageBoundingBox:")) {
+-		sscanf(line+length("%%PageBoundingBox:"), "%s", text);
++		sscanf(line+length("%%PageBoundingBox:"), "%256s", text);
+ 		if (strcmp(text, "(atend)") == 0) {
+ 		    page_bb_set = ATEND;
+ 		} else {
+@@ -1228,14 +1258,14 @@
+ 	    }
+ 	} else if (orientation_set == ATEND &&
+ 		   iscomment(line+2, "Orientation:")) {
+-	    sscanf(line+length("%%Orientation:"), "%s", text);
++	    sscanf(line+length("%%Orientation:"), "%256s", text);
+ 	    if (strcmp(text, "Portrait") == 0) {
+ 		doc->orientation = PORTRAIT;
+ 	    } else if (strcmp(text, "Landscape") == 0) {
+ 		doc->orientation = LANDSCAPE;
+ 	    }
+ 	} else if (page_order_set == ATEND && iscomment(line+2, "PageOrder:")) {
+-	    sscanf(line+length("%%PageOrder:"), "%s", text);
++	    sscanf(line+length("%%PageOrder:"), "%256s", text);
+ 	    if (strcmp(text, "Ascend") == 0) {
+ 		doc->pageorder = ASCEND;
+ 	    } else if (strcmp(text, "Descend") == 0) {
+@@ -1789,7 +1819,7 @@
+       INFMESSAGE(encountered "BeginData:")
+       if (FD_LINE_LEN > 100) FD_BUF[100] = '\0';
+       text[0] = '\0';
+-      if (sscanf(line+length("%%BeginData:"), "%d %*s %s", &num, text) >= 1) {
++      if (sscanf(line+length("%%BeginData:"), "%d %*s %100s", &num, text) >= 1) {
+          if (strcmp(text, "Lines") == 0) {
+             INFIMESSAGE(number of lines to skip:,num)
+             while (num) {
+@@ -1888,7 +1918,7 @@
+          INFMESSAGE(encountered "BeginData:")
+          if (FD_LINE_LEN > 100) FD_BUF[100] = '\0';
+          text[0] = '\0';
+-         if (sscanf(line+length("%%BeginData:"), "%d %*s %s", &num, text) >= 1) {
++         if (sscanf(line+length("%%BeginData:"), "%d %*s %100s", &num, text) >= 1) {
+             if (strcmp(text, "Lines") == 0) {
+                INFIMESSAGE(number of lines:,num)
+                while (num) {
+@@ -1985,7 +2015,7 @@
+           PS_free(comment);
+           continue;
+        }
+-       sscanf(comment+length("%%Pages:"), "%s", text);
++       sscanf(comment+length("%%Pages:"), "%256s", text);
+        if (strcmp(text, "(atend)") == 0) {
+           fputs(comment, dest_file);
+           pages_atend = True;
+diff -Nru gv-3.5.8.orig/source/resource.c gv-3.5.8/source/resource.c
+--- gv-3.5.8.orig/source/resource.c	1997-06-21 00:00:00.000000000 +0200
++++ gv-3.5.8/source/resource.c	2002-10-11 16:42:07.000000000 +0200
+@@ -38,7 +38,7 @@
+ #include <stdio.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
++#include <X11/Intrinsic.h>
+ 
+ #include "types.h"
+ #include "config.h"
+diff -Nru gv-3.5.8.orig/source/save.c gv-3.5.8/source/save.c
+--- gv-3.5.8.orig/source/save.c	1997-04-26 00:00:00.000000000 +0200
++++ gv-3.5.8/source/save.c	2002-10-11 16:42:07.000000000 +0200
+@@ -34,7 +34,7 @@
+ #include <stdio.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
++#include <X11/Intrinsic.h>
+ #include "Ghostview.h"
+ 
+ #include "types.h"
+@@ -112,17 +112,19 @@
+    String print_filename;
+ {
+    String error=NULL;
++   char *print_quoted_filename;
+    char *c,*p;
+    Cardinal m,n;
+    String printfail=GV_ERROR_PRINT_FAIL;
+ 
+    BEGINMESSAGE(print_file)
+ 
++   print_quoted_filename = quote_filename(print_filename);
+    p = GV_XtNewString(print_command);
+    n=0;
+    c=p;
+    while ((c=strstr(c,"%s"))) { c+=2; n++; }
+-   m = (strlen(p)+(n>0?n:1)*strlen(print_filename)+5)*sizeof(char);
++   m = (strlen(p)+(n>0?n:1)*strlen(print_quoted_filename)+5)*sizeof(char);
+    c = (char*) GV_XtMalloc(m);
+    if (n>0) {
+      char *e,*s;
+@@ -133,13 +135,13 @@
+        if (s) *s='\0';
+        strcat(c,e);
+        if (s) {
+-	 strcat(c,print_filename);
++	 strcat(c,print_quoted_filename);
+          e=s+2;
+        } 
+        else s=NULL;
+      }
+    } else {
+-     sprintf(c, "%s %s",p,print_filename);
++     sprintf(c, "%s %s",p,print_quoted_filename);
+    }
+    INFSMESSAGE(printing:,c)
+    if (SYSTEM_FAILED_ON(c)) {
+@@ -149,6 +151,7 @@
+    }
+    GV_XtFree(c);
+    GV_XtFree(p);
++   GV_XtFree(print_quoted_filename);
+    ENDMESSAGE(print_file)
+    return(error);
+ }
+@@ -198,6 +201,9 @@
+    char proc_name[256];
+    char *error=NULL;
+    char *pos;
++   char *pdfpos;
++   char *pspos;
++   char *quoted_src_fn, *quoted_conv_fn;
+ 
+    BEGINMESSAGE(save_forkPDFToPSConversion)
+ 
+@@ -205,7 +211,30 @@
+    strcpy(proc_name,pos);
+    strcat(proc_name," conversion");
+ 
+-   sprintf(command,gv_gs_cmd_conv_pdf,sd->conv_fn,sd->src_fn);
++   quoted_src_fn = quote_filename(sd->src_fn);
++   quoted_conv_fn = quote_filename(sd->conv_fn);
++   if ((pdfpos = strstr(gv_gs_cmd_conv_pdf,"%pdf")) &&
++       (pspos = strstr(gv_gs_cmd_conv_pdf,"%ps"))) {
++     command[0] = '\0';
++     if (pdfpos < pspos) {
++       strncat(command,gv_gs_cmd_conv_pdf,(pdfpos-gv_gs_cmd_conv_pdf));
++       strcat(command,quoted_src_fn);
++       strncat(command,pdfpos+4,(pspos-pdfpos-4));
++       strcat(command,quoted_conv_fn);
++       strcat(command,pspos+3);
++     } else {
++       strncat(command,gv_gs_cmd_conv_pdf,(pspos-gv_gs_cmd_conv_pdf));
++       strcat(command,quoted_conv_fn);
++       strncat(command,pspos+3,(pdfpos-pspos-3));
++       strcat(command,quoted_src_fn);
++       strcat(command,pdfpos+4);
++     }
++   } else {
++     sprintf(command,gv_gs_cmd_conv_pdf,quoted_conv_fn,quoted_src_fn);
++   }
++   GV_XtFree(quoted_src_fn);
++   GV_XtFree(quoted_conv_fn);
++
+    INFSMESSAGE(starting conversion:,command)
+    process_fork(proc_name,command,save_forkPDFToPSConversionDone,(XtPointer)sd);
+    ENDMESSAGE(save_forkPDFToPSConversion)
+diff -Nru gv-3.5.8.orig/source/scale.c gv-3.5.8/source/scale.c
+--- gv-3.5.8.orig/source/scale.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/scale.c	2002-10-11 16:42:07.000000000 +0200
+@@ -34,8 +34,8 @@
+ #include <math.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_XMU(SysUtil.h)
++#include <X11/Intrinsic.h>
++#include <X11/Xmu/SysUtil.h>
+ 
+ #include "types.h"
+ #include "config.h"
+diff -Nru gv-3.5.8.orig/source/signal.c gv-3.5.8/source/signal.c
+--- gv-3.5.8.orig/source/signal.c	1997-04-26 00:00:00.000000000 +0200
++++ gv-3.5.8/source/signal.c	2002-10-11 16:42:07.000000000 +0200
+@@ -41,7 +41,7 @@
+ #endif
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
++#include <X11/Intrinsic.h>
+ 
+ 
+ #if defined(USE_SIGNAL_HANDLER)
+diff -Nru gv-3.5.8.orig/source/string.c gv-3.5.8/source/string.c
+--- gv-3.5.8.orig/source/string.c	1997-04-26 00:00:00.000000000 +0200
++++ gv-3.5.8/source/string.c	2002-10-11 16:42:07.000000000 +0200
+@@ -39,7 +39,7 @@
+ #include <stdarg.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
++#include <X11/Intrinsic.h>
+ 
+ #include "types.h"
+ #include "d_memdebug.h"
+diff -Nru gv-3.5.8.orig/source/version.c gv-3.5.8/source/version.c
+--- gv-3.5.8.orig/source/version.c	1997-04-26 00:00:00.000000000 +0200
++++ gv-3.5.8/source/version.c	2002-10-11 16:42:07.000000000 +0200
+@@ -35,13 +35,13 @@
+ #include <stdio.h>
+ 
+ #include "paths.h"
+-#include INC_X11(IntrinsicP.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XMU(Misc.h)
+-#include INC_XMU(Converters.h)
+-#include INC_XAW(Form.h)
+-#include INC_XAW(Label.h)
+-#include INC_X11(Shell.h)
++#include <X11/IntrinsicP.h>
++#include <X11/StringDefs.h>
++#include <X11/Xmu/Misc.h>
++#include <X11/Xmu/Converters.h>
++#include <X11/Xaw3d/Form.h>
++#include <X11/Xaw3d/Label.h>
++#include <X11/Shell.h>
+ #include "AaaP.h"
+ #include "Button.h"
+ 
+diff -Nru gv-3.5.8.orig/source/widgets_misc.c gv-3.5.8/source/widgets_misc.c
+--- gv-3.5.8.orig/source/widgets_misc.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/widgets_misc.c	2002-10-11 16:42:07.000000000 +0200
+@@ -33,10 +33,10 @@
+ #include <stdio.h>
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_XAW(AsciiText.h)
+-#include INC_XAW(Cardinals.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Xaw3d/AsciiText.h>
++#include <X11/Xaw3d/Cardinals.h>
+ #include "Button.h"
+ #include "Frame.h"
+ #include "Switch.h"
+diff -Nru gv-3.5.8.orig/source/zoom.c gv-3.5.8/source/zoom.c
+--- gv-3.5.8.orig/source/zoom.c	1997-06-07 00:00:00.000000000 +0200
++++ gv-3.5.8/source/zoom.c	2002-10-11 16:42:07.000000000 +0200
+@@ -39,10 +39,10 @@
+ #endif
+ 
+ #include "paths.h"
+-#include INC_X11(Intrinsic.h)
+-#include INC_X11(StringDefs.h)
+-#include INC_X11(Shell.h)
+-#include INC_XAW(Cardinals.h)
++#include <X11/Intrinsic.h>
++#include <X11/StringDefs.h>
++#include <X11/Shell.h>
++#include <X11/Xaw3d/Cardinals.h>
+ #include "Aaa.h"
+ #include "Button.h"
+ #include "Clip.h"

@@ -1,0 +1,23 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/include/
+drwxr-xr-x	root/root	usr/include/freetype/
+-rw-r--r--	root/root	usr/include/freetype/freetype.h
+-rw-r--r--	root/root	usr/include/freetype/fterrid.h
+-rw-r--r--	root/root	usr/include/freetype/ftnameid.h
+-rw-r--r--	root/root	usr/include/freetype/ftxcmap.h
+-rw-r--r--	root/root	usr/include/freetype/ftxerr18.h
+-rw-r--r--	root/root	usr/include/freetype/ftxgasp.h
+-rw-r--r--	root/root	usr/include/freetype/ftxgdef.h
+-rw-r--r--	root/root	usr/include/freetype/ftxgpos.h
+-rw-r--r--	root/root	usr/include/freetype/ftxgsub.h
+-rw-r--r--	root/root	usr/include/freetype/ftxkern.h
+-rw-r--r--	root/root	usr/include/freetype/ftxopen.h
+-rw-r--r--	root/root	usr/include/freetype/ftxpost.h
+-rw-r--r--	root/root	usr/include/freetype/ftxsbit.h
+-rw-r--r--	root/root	usr/include/freetype/ftxwidth.h
+drwxr-xr-x	root/root	usr/lib/
+-rw-r--r--	root/root	usr/lib/libttf.a
+-rwxr-xr-x	root/root	usr/lib/libttf.la
+lrwxrwxrwx	root/root	usr/lib/libttf.so -> libttf.so.2.2.0
+lrwxrwxrwx	root/root	usr/lib/libttf.so.2 -> libttf.so.2.2.0
+-rwxr-xr-x	root/root	usr/lib/libttf.so.2.2.0

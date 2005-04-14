@@ -1,0 +1,202 @@
+#!/bin/bash
+#
+#  Synchronize several httpup repositories to a centralized collection.
+#
+
+. /etc/prtsync.conf
+
+#  Print $1 to stderr and exit.
+error(){
+	echo "=======> ERROR: $1" >&2
+	exit 1
+}
+
+#  Ensure $1 is a directory and is readable or writeable, depending 
+#  on the optional parameter $2.  Exit if conditions are not met.
+ensure_path(){
+	if [ ! -d "$1" ]; then
+		error "$1 is not a directory."
+	elif [ "$2" = "r" -a ! -r "$1" ]; then
+		error "$1 is not readable."
+	elif [ "$2" = "w" -a ! -w "$1" ]; then
+		error "$1 is not writeable."
+	fi
+}
+
+#  Sends a notification email to address(es) $1 with subject $2 
+#  and body $3.  Mails are always sent to $mailer.
+notify(){
+	/usr/sbin/sendmail -f$mailer $mailer $1 <<-EOF  
+	Subject: $2
+	$3
+	Please rectify the problem.
+EOF
+}
+
+#  Iterates the collection $1, tagging and untagging all ports.
+tag_untag_ports(){
+	
+	echo "Tagging ports in $1..";
+	
+	ports=`find $1 -mindepth 1 -type d | sort`
+	for port in $ports; do  #tag or untag based on prompt
+	
+		prompt="y/N"; default="n"
+			
+		if [ -f $port/.sync ]; then  #resolve default
+			prompt="Y/n"; default="y"
+		fi
+	
+		p=`basename $port`; echo -n "$p [$prompt]: "
+		read c; test "$c" || c=$default
+		
+		if [ "$c" = "y" -o "$c" = "Y" ]; then
+			tagged="$tagged $p "
+			touch $port/.sync
+		else
+			untagged="$untagged $p "
+			rm -f $port/.sync
+		fi
+	
+	done
+	
+	httpup-repgen $1 >/dev/null
+	
+	echo "  Tagged:   $tagged" | sed 's/  /\n/g'
+	echo "  Untagged:   $untagged" | sed 's/  /\n/g'	
+}
+
+#  Syncs collections defined in $1 to $2, notifying appropriate parties 
+#  of errors and removing ports without .sync files.
+sync_ports(){
+	
+	echo "Syncing collections in $1 to $2.." 
+	
+	for driver in $1/*.httpup; do  #parse driver file, sync repo
+		
+		email=`fgrep "EMAIL=" $driver | sed "s/EMAIL=//"`
+		url=`fgrep "URL=" $driver | sed "s/URL=//"`
+		collection=`basename $driver .httpup`
+		
+		if httpup sync $url $2/$collection >/dev/null 2>&1; then
+			synced="$synced $collection "
+		else  #notify of failure
+			notify "$email" "Sync failed for $collection" "" 
+			failed="$failed $collection "
+		fi		
+	done
+	
+	if [ ! "$ignore_tag_files" = "true" ]; then  #trim ports lacking .sync files
+		
+		ports=`find $2 -mindepth 2 -type d`
+		
+		for port in $ports; do
+			test -f $port/.sync || rm -rf $port
+		done		
+	fi
+	
+	echo "  Synced:   $synced" | sed 's/  /\n/g'
+	echo "  Failed:   $failed" | sed 's/  /\n/g'
+}
+
+#  Merges ports in $2 to $3, pruning any duplicates.  Notifications are 
+#  made to addresses specified in the collections defined in $1.
+merge_ports(){
+	
+	echo "Merging ports in $2 to $3.."
+	
+	mv $3/.current $3/.prev 2>/dev/null
+	
+	ports=`find $2 -mindepth 2 -type d | sort`		
+	for port in $ports; do  #prune duplicates, notify affected parties
+		
+		p=`basename $port`; drivers=""
+		
+		echo "$duplicated" | grep " $p " >/dev/null && continue
+		paths=`echo "$ports" | grep "/$p$"`
+		
+		if [ `echo "$paths" | wc -l` -gt 1 ]; then  #duplicate found, notify
+						
+			drivers=`echo "$paths" | sed "s|^$2/|$1/|; s|/$p|.httpup|" | tr '\n' ' '`
+			emails=`fgrep -h "EMAIL=" $drivers | sed "s/EMAIL=//g" | tr '\n' ' '`
+			
+			notify "$emails" "Duplicate port $p" "Port $p found in $drivers."
+			duplicated="$duplicated $p "
+			
+		else  #unique port, ensure not in base/opt and merge
+			test -d $base/$p -o -d $opt/$p || cp -r $port $3
+			echo $p >>$3/.current
+		fi
+	done
+				
+	if [ -f $3/.current ]; then  #generate REPO, ignoring archive
+		echo "TARBALL" > $3/.httpup-repgen-ignore
+		httpup-repgen $3 >/dev/null
+		
+		if [ "$use_archive" = "true" ]; then  #update archive
+			cd $3; tar zcf $2/TARBALL .
+			mv $2/TARBALL $3; cd -
+		fi
+	fi
+		
+	if [ -f $3/.prev ]; then  #resolve added/removed	
+		added=`diff $3/.prev $3/.current | grep '>'`
+		removed=`diff $3/.prev $3/.current | grep '<'`
+	else  #no .prev, all ports were added
+		added=`cat $3/.current 2>/dev/null`
+	fi
+	
+	echo "  Added:  $added" | sed 's/  /\n/g; s/> //g'
+	echo "  Removed:  $removed" | sed 's/  /\n/g; s/< //g'
+	echo "  Duplicated:   $duplicated" | sed 's/  /\n/g'
+	echo	
+}
+
+#
+#    Execution begins.  Process arguments and dispatch function calls.
+#
+
+test "$1" = "-i" && ignore_tag_files="true" && shift
+test "$1" = "-a" && use_archive="true" && shift
+
+case $1 in
+	"tag")  #client mode, tag/untag ports in $2 or pwd
+		collection=$2; test -d $collection || collection=`pwd`
+		
+		ensure_path $collection "w"
+		
+		tag_untag_ports $collection
+		;;
+	
+	"sync")  #sync repos to $work, notify of errors
+		mkdir -p $work; ensure_path $work "w"
+		ensure_path $collections "r"				
+		
+		sync_ports $collections $work
+		;;
+		
+	"merge")  #merge ports in $work to a clean $destination
+		ensure_path $collections "r"
+		ensure_path $work "r"
+		ensure_path $base "r"
+		ensure_path $opt "r"
+		
+		export GLOBIGNORE="TARBALL"  #keep archive
+		
+		mkdir -p $destination; ensure_path $destination "w";
+		chmod 700 $destination; rm -rf $destination/*
+				
+		merge_ports $collections $work $destination
+						
+		chmod 755 $destination
+		;;
+	*)  #show usage and exit
+		echo "Usage: prtsync [options] command" >&2
+		exit 1
+		;;
+	
+esac
+
+exit 0
+
+#End of file

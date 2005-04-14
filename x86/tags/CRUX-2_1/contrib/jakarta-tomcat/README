@@ -1,0 +1,8 @@
+# README file for jakarta-tomcat port
+
+# POST-INSTALL
+Set up your JAVA_HOME environment variable
+pointing to j2sdk installation path
+
+i.e. (using the bash shell)
+export JAVA_HOME=/usr/lib/java

@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.5 2005/04/12 08:10:08 vector Exp $
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Description: Pretends root filesystem permissions for normal users
+# URL: http://freshmeat.net/projects/pretendroot/ 
+
+name=pretendroot
+version=0.6
+release=3
+source=(ftp://ftp.uhulinux.hu/pub/sources/$name/$name-$version.tar.gz \
+        pkgmk-$name)
+
+build()
+{
+    cd $name-$version
+    make
+    install -D -m 755 $name $PKG/usr/bin/$name
+    install -D -m 755 lib$name.so $PKG/usr/lib/lib$name.so
+    install -D -m 755 $SRC/pkgmk-$name $PKG/usr/bin/pkgmk-$name
+}

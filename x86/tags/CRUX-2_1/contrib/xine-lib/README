@@ -1,0 +1,17 @@
+Depdencies:
+
+x11			(required)
+
+alsa-lib	(recommended)
+libogg		(recommended)
+libvorbis	(recommended)
+libmad		(recommended)
+
+libdvdnav	(optional)
+flac		(optional)
+esound		(optional)
+libsdl		(optional)
+arts		(optional)
+libmng		(optional)
+liba52		(optional)
+samba		(optional)

@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.3 2005/04/04 19:55:22 danm Exp $
+# URL: http://www.freetype.org/freetype1/index.html
+# Description: FreeType 1 is a portable and highly efficient TrueType rendering engine
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Packager: Per Lidén, per at fukt dot bth dot se
+# Depends on: x11
+
+name=freetype1
+version=1.3.1
+release=2
+source=(http://dl.sourceforge.net/sourceforge/freetype/freetype-$version.tar.gz \
+	$name-$version.patch)
+
+build() {
+    cd freetype-$version
+    patch -p1 < ../$name-$version.patch
+    ./configure --prefix=/usr \
+    		--enable-static \
+		--disable-nls
+    make
+    make libdir=$PKG/usr/lib includedir=$PKG/usr/include install
+}

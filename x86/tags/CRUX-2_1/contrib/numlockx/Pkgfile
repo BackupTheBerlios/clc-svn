@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.2 2005/03/08 23:13:49 sip Exp $
+# Description: Turn on / off X11 numlock
+# URL: http://ktown.kde.org/~seli/numlockx/
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Simone Rota, sip at varlock dot com
+# Depends on: x11
+
+name=numlockx
+version=1.0
+release=1
+source=(http://ktown.kde.org/~seli/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure
+	make
+	mkdir -p $PKG/usr/bin
+	install -m 755 $name $PKG/usr/bin
+}

@@ -1,0 +1,14 @@
+# $Id: Pkgfile,v 1.1 2003/02/14 23:10:38 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=pkgconfig
+version=0.15.0
+release=1
+source=(http://www.freedesktop.org/software/pkgconfig/releases/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+}

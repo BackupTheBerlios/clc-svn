@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.4 2005/04/04 17:12:02 sip Exp $
+# Description: A pager for Blackbox and all other kde-compatible Window Managers.
+# URL: http://bbtools.sourceforge.net
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Francois Briere, bobofrancois at globetrotter dot net
+# Depends: blackbox
+
+name=bbpager
+version=20050313
+release=1
+source=(http://www.varlock.com/files/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    rm $PKG/usr/share/bbtools/README.bbpager
+}

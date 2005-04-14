@@ -1,0 +1,14 @@
+#
+# /etc/maradns/db.0.0.127
+#
+
+# SOA
+S0.0.127.in-addr.arpa.|86400|localhost.|root@localhost.|1|7200|3600|604800|1800
+
+# NS
+N0.0.127.in-addr.arpa.|86400|localhost.
+
+# PTR
+P1.0.0.127.in-addr.arpa.|86400|localhost.
+
+# End of file

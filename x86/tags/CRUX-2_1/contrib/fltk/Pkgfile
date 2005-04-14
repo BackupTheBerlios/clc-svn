@@ -1,0 +1,31 @@
+# $Id: Pkgfile,v 1.4 2005/03/13 14:40:35 riemer Exp $
+# Description: FLTK is a cross-platform C++ GUI toolkit for Unix, Windows and MacOSX
+# URL:         http://www.fltk.org
+# Maintainer:  Tilo Riemer, riemer at lincvs dot org
+# Depends on:  x11
+
+name=fltk
+version=1.1.6
+
+release=1
+source=(ftp://ftp.funet.fi/pub/mirrors/ftp.easysw.com/pub/${name}/${version}/${name}-${version}-source.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+#    ./configure --enable-xft --prefix=/usr
+    make
+
+    # no make install: make does not accept DESTDIR
+    mkdir -p $PKG/usr/include/FL
+    install --mode=644 -D FL/* $PKG/usr/include/FL
+    ln -s FL Fl; mv Fl $PKG/usr/include
+    mkdir -p $PKG/usr/lib
+    install -D lib/* $PKG/usr/lib
+    rm -f $PKG/usr/lib/README.lib
+    install -D fltk-config $PKG/usr/bin/fltk-config
+    install -D fluid/fluid $PKG/usr/bin/fluid
+    install --mode=644 -D documentation/fltk-config.man $PKG/usr/man/man1/fltk-config.1
+    install --mode=644 -D documentation/fluid.man $PKG/usr/man/man1/fluid.1
+    install --mode=644 -D documentation/fltk.man $PKG/usr/man/man3/fltk.3
+}

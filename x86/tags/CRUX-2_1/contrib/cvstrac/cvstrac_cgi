@@ -1,0 +1,5 @@
+#! /bin/sh
+
+/usr/bin/cvstrac cgi /var/lib/cvstrac MyProject
+
+# End of file

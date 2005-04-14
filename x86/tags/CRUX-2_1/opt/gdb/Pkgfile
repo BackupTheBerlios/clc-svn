@@ -1,0 +1,15 @@
+# $Id: Pkgfile,v 1.14 2004/11/22 21:32:20 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=gdb
+version=6.3
+release=1
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/{info,share,lib,include}
+}

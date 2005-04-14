@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.20 2004/10/19 20:58:06 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=reiserfsprogs
+version=3.6.19
+release=1
+source=(ftp://ftp.namesys.com/pub/reiserfsprogs/$name-$version.tar.gz \
+	$name-$version.patch)
+
+build () {
+    cd $name-$version
+    patch -p1 < ../$name-$version.patch
+    ./configure --prefix=/ --mandir=/usr/man
+    make
+    make DESTDIR=$PKG install
+    ln -sf mkreiserfs $PKG/sbin/mkfs.reiserfs
+    ln -sf mkreiserfs.8.gz $PKG/usr/man/man8/mkfs.reiserfs.8.gz
+    ln -sf reiserfsck $PKG/sbin/fsck.reiserfs
+    ln -sf reiserfsck.8.gz $PKG/usr/man/man8/fsck.reiserfs.8.gz
+}

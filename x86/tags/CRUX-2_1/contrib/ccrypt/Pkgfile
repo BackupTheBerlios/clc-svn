@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.3 2005/03/09 18:59:59 jue Exp $
+# Description: Utility for encrypting and decrypting files and streams
+# URL:         http://ccrypt.sourceforge.net/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=ccrypt
+version=1.7
+release=1
+source=(http://ccrypt.sourceforge.net/download/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/{doc,share}
+}

@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 19:00:01 jue Exp $
+# Description: Linux PCI Utilities
+# URL:         http://atrey.karlin.mff.cuni.cz/~mj/pciutils.shtml
+# Packager:    Markus Ackermann, maol at symlink dot ch
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=pciutils
+version=2.1.11
+release=2
+source=(ftp://atrey.karlin.mff.cuni.cz/pub/linux/pci/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    mkdir -p $PKG/usr/{lib,share,include/pci}
+    wget -P $PKG/usr/share http://pciids.sourceforge.net/pci.ids
+    sed -i "s/-O2/$CFLAGS/" Makefile
+    make PREFIX=/usr
+    make PREFIX=$PKG/usr install 
+    cd lib
+    ./configure
+    make
+    cp libpci.a $PKG/usr/lib
+    cp *.h $PKG/usr/include/pci
+}

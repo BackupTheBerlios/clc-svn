@@ -1,0 +1,36 @@
+# $Id: Pkgfile,v 1.8 2005/03/09 14:27:52 jaeger Exp $
+# Description: Userspace device management daemon
+# URL: http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: hotplug, sysfsutils
+
+name=udev
+version=054
+release=2
+source=(ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/$name-$version.tar.bz2 \
+	udev.rules start_udev $name-$version-makefile.diff)
+
+build() {
+	cd $name-$version
+	patch -p0 Makefile < $SRC/$name-$version-makefile.diff
+	sed -i -e 's/$(OPTIMIZATION)//' Makefile
+	make \
+		USE_KLIBC=true \
+		USE_LOG=false \
+		DEBUG=false \
+		EXTRAS="extras/scsi_id extras/volume_id" \
+		udevdir="/dev" \
+		mandir="/usr/man" \
+		DESTDIR=$PKG all install
+		install -m 0644 $SRC/udev.rules \
+			$PKG/etc/udev/rules.d/50-udev.rules
+		mkdir -p $PKG/etc/udev/scripts
+		install extras/{cdsymlinks,dvb,ide-devfs,scsi-devfs}.sh \
+			$PKG/etc/udev/scripts/
+		install -D extras/cdsymlinks.conf \
+			$PKG/etc/udev/cdsymlinks.conf
+		install -D -m 0755 extras/start_udev $PKG/sbin/start_udev
+		sed -i -e 's/udev_log="yes"/udev_log="no"/g' \
+			$PKG/etc/udev/udev.conf
+		install -m 0755 $SRC/start_udev $PKG/sbin/
+}

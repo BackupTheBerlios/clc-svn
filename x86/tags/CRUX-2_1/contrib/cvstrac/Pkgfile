@@ -1,0 +1,26 @@
+# $Id: Pkgfile,v 1.5 2005/04/08 14:40:20 jue Exp $
+# Description: A low-ceremony bug tracking system for CVS with integrated Wiki and CVS browser
+# URL:         http://www.cvstrac.org
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  sqlite, rcs
+
+name=cvstrac
+version=1.1.5
+release=1
+source=(http://www.cvstrac.org/$name-src-$version.tar.gz \
+        cvstrac_cgi cvstracd)
+
+build () {
+    cd $name-$version
+    sed -e "/^SRCDIR/s/=.*$/= \./" -e "s/-O[02]/$CFLAGS/" \
+        linux-gcc.mk > Makefile
+    make
+    chmod 777 .
+    su nobody -c "./cvstrac init . MyProject"
+    mkdir -p $PKG/var/lib
+    install -D -m 755 cvstrac $PKG/usr/bin/cvstrac
+    install -d -o nobody -g nobody $PKG/var/lib/cvstrac
+    install -m 644 -o nobody -g nobody MyProject.db $PKG/var/lib/cvstrac
+    install -D -m 755 ../cvstrac_cgi $PKG/var/www/cgi-bin/cvstrac.cgi
+    install -D -m 755 ../cvstracd $PKG/etc/rc.d/cvstrac
+}

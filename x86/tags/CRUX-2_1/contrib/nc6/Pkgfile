@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.3 2005/03/08 22:06:39 danm Exp $
+# Description: Reads and writes data across IPv4 and IPv6 network connections
+# URL: http://www.deepspace6.net/projects/netcat6.html
+# Maintainer: Daniel Mueller, daniel at danm dot de
+
+name=nc6
+version=0.5
+release=1
+source=(http://ftp.debian.org/debian/pool/main/n/nc6/${name}_${version}.orig.tar.gz)
+build () {
+	cd $name-$version
+	./configure --prefix=/usr \
+		--disable-nls
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share
+	ln -sf nc6 $PKG/usr/bin/netcat6
+	ln -sf nc6.1 $PKG/usr/man/man1/netcat6.1
+}

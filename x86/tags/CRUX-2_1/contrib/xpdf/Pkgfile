@@ -1,0 +1,35 @@
+# $Id: Pkgfile,v 1.5 2005/03/08 23:13:49 sip Exp $
+# Maintainer: Simone Rota, sip at varlock dot com
+# Packager: Robert McMeekin, viper at mcmeekin dot info
+# Description: PDF viewer
+# URL: http://foolabs.com/xpdf
+# Depends on: lesstif, t1lib
+
+# Kudos to the Ubuntu developers!
+name=xpdf
+version=3.00pl3
+release=9
+source=(
+    ftp://ftp.foolabs.com/pub/xpdf/$name-3.00.tar.gz
+    xpdf_3.00-8ubuntu1.1.diff.gz
+    ftp://ftp.foolabs.com/pub/xpdf/$name-3.00pl2.patch
+    ftp://ftp.foolabs.com/pub/xpdf/$name-3.00pl3.patch
+)
+
+build()
+{
+    cd $name-3.00
+    zcat $SRC/xpdf_3.00-8ubuntu1.1.diff.gz | patch -p1
+    patch -d xpdf < $SRC/$name-3.00pl2.patch
+    patch -d xpdf < $SRC/$name-3.00pl3.patch
+    ./configure \
+	--prefix=/usr \
+        --with-Xm-library=/usr/lib \
+        --with-Xm-includes=/usr/include/Xm \
+	--with-freetype2-includes=/usr/include/freetype2 \
+        --sysconfdir=/etc \
+        --enable-a4-paper \
+        --enable-opi
+    make
+    make install DESTDIR=$PKG
+}

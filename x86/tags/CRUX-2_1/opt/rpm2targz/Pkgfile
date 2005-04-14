@@ -1,0 +1,13 @@
+# $Id: Pkgfile,v 1.4 2004/11/04 23:57:46 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=rpm2targz
+version=1.0.4
+release=1
+source=(rpm2targz rpmoffset.c)
+
+build() {
+    gcc $CFLAGS rpmoffset.c -o rpmoffset
+    install -D -m 0755 rpm2targz $PKG/usr/bin/rpm2targz
+    install -D -m 0755 rpmoffset $PKG/usr/lib/rpm2targz/rpmoffset
+}

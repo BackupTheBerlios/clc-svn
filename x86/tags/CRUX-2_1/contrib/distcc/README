@@ -1,0 +1,17 @@
+WARNING:
+
+This version of the port is incompatible with the previous ones, so
+please make sure you don't have any 
+  export CC=/usr/bin/distcc-gcc 
+or 
+  export CXX=/usr/bin/distcc-g++
+in your startup/configuration files; this will make compilations fail.
+
+
+POST-INSTALL
+to use distcc, just 
+a) export DISTCC_HOSTS to include the compilation hosts
+b) prepend /usr/lib/distcc to your $PATH environment variable.
+   (e.g. in pkgmk.conf)
+c) export MAKEFLAGS=-j<n> where n is a number representing the number of
+   parallel jobs you want

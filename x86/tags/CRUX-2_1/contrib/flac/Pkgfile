@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.6 2005/04/04 21:39:17 vector Exp $
+# Description: Free Lossless Audio Codec
+# URL: http://flac.sourceforge.net/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Matt Housh, jaeger at morpheus dot net
+# Depends on: libogg
+
+name=flac
+version=1.1.2
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/doc
+}

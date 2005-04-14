@@ -1,0 +1,18 @@
+$Id: README,v 1.1 2004/12/29 00:26:14 danm Exp $
+
+REQUIREMENTS
+
+	Read and understand the IPSec Howto[s]:
+
+	[1] http://www.ipsec-howto.org/x265.html
+	[2] http://nhaggin.freeshell.org/wireless-vpn-howto/ar01s06.html
+
+	Good luck!
+
+PRE-INSTALL
+
+POST-INSTALL
+
+PRECAUTION
+
+	Backup your configuration files! (racoon.conf, pks.txt, ..)

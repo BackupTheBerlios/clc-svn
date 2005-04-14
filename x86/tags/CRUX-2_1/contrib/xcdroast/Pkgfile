@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.2 2005/03/08 22:06:39 danm Exp $
+# Description: Graphical frontend to create or copy CDs
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# URL: http://www.xcdroast.org
+# Depends on: gtk, cdrtools, libpcre
+
+name=xcdroast
+version=0.98alpha15
+release=3
+source=(http://xcdroast.sourceforge.net/RPMS/a15/src/$name-$version.tar.gz \
+	http://www.xcdroast.org/xcdr098/patches/wav.patch)
+
+build() {
+    cd $name-$version
+    (cd src; patch -p0 < $SRC/wav.patch)
+    ./configure --prefix=/usr \
+                --disable-nls \
+                --enable-gtk2
+    make
+    make DESTDIR=$PKG install
+}

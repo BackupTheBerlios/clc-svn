@@ -1,0 +1,53 @@
+# $Id: Pkgfile,v 1.13 2005/03/24 22:03:28 jaeger Exp $
+# Description: Thunderbird EMail client from the Mozilla project
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# URL: http://www.mozilla.org/projects/thunderbird/
+# Depends on: libidl, gtk, libjpeg, libpng, zlib, expat, gnupg
+
+name=thunderbird
+version=1.0.2
+release=1
+source=(http://ftp.mozilla.org/pub/mozilla.org/$name/releases/$version/source/$name-$version-source.tar.bz2 \
+	http://www.mozilla-enigmail.org/downloads/src/enigmail-0.90.2.tar.gz \
+	http://www.mozilla-enigmail.org/downloads/src/ipc-1.1.2.tar.gz \
+	http://jaeger.morpheus.net/linux/crux/files/$name-$version-init.tar.bz2 \
+	mozconfig)
+
+build() {
+	cd mozilla
+
+	# add ipc/enigmail to the source tree
+	mv $SRC/{ipc,enigmail} extensions/
+	# fix the makemake scripts
+	for i in ipc enigmail
+	do
+		sed -i -e "s|/bin/csh|/bin/tcsh|" extensions/$i/makemake
+	done
+
+	# configure
+	sed -e "s/#CFLAGS#/$CFLAGS/" $SRC/mozconfig > .mozconfig
+
+	# build it
+	make -f client.mk build_all
+
+	# build ipc and enigmail
+	(cd extensions/ipc && ./makemake && make)
+	(cd extensions/enigmail && ./makemake && make)
+
+	# put everything in the right place
+	mkdir -p $PKG/usr/lib/thunderbird $PKG/usr/bin
+	cp -rL --no-preserve=links dist/bin/* $PKG/usr/lib/thunderbird/
+	(cd $PKG/usr/bin && ln -s ../lib/thunderbird/thunderbird thunderbird)
+
+	# init files for startup permissions problems
+	cp -rf $SRC/{components.ini,defaults.ini,extensions} \
+		$PKG/usr/lib/thunderbird/
+
+	# register components/chrome
+	cd $PKG/usr/lib/thunderbird
+	MOZILLA_FIVE_HOME=$PWD LD_LIBRARY_PATH=$PWD ./regxpcom
+	MOZILLA_FIVE_HOME=$PWD LD_LIBRARY_PATH=$PWD ./regchrome
+
+	# fix ownership
+	chown -R root:root $PKG
+}

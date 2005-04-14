@@ -1,0 +1,17 @@
+POST-INSTALL
+
+Each user should execute /usr/lib/openoffice/setup
+and perform a workstation installation.
+
+
+IMPORTANT: THIS PORT SUCKS ;-)
+
+1) This is a quick port, ie no bloat removed.
+   I hope I'll find some time to provide a better
+   port in the near future. 
+   For now, it's here for your convenience.
+
+2) This is the binary release of OpenOffice.org.
+   I'm afraid a source build could take days to complete.
+
+- Simone - 

@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.10 2005/04/12 09:52:52 vector Exp $
+# Description: Tabbed VT102 terminal emulator for X Window System
+# URL: http://materm.sourceforge.net/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Jukka Heino, jukka at karsikkopuu dot net
+# Depends on: x11
+
+name=mrxvt
+version=0.4.0
+release=1
+source=(http://dl.sourceforge.net/sourceforge/materm/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --enable-xft
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/share
+    chmod 0755 $PKG/usr/bin/$name
+}

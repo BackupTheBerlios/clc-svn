@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.3 2005/03/09 21:09:54 till Exp $
+# Packager: Huynh Ngoc Chau Tran,  tran dot huynh at laposte dot net
+# Maintainer: Till Biedermann, tillbiedermann at yahoo dot de
+# Description: GTK-based frontend for Xine
+# URL: http://xinehq.de/index.php/releases
+# Depends on: xine-lib, gtk
+
+name=gxine
+version=0.4.1
+release=1
+source=(http://dl.sourceforge.net/sourceforge/xine/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/man/de
+    rm -rf $PKG/usr/share/locale
+}

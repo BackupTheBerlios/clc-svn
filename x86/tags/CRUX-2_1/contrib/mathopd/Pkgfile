@@ -1,0 +1,31 @@
+# $Id: Pkgfile,v 1.4 2005/03/24 16:06:41 jue Exp $
+# Description: Very fast and highly configurable HTTP server
+# URL:         http://www.mathopd.org/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=mathopd
+version=1.5p5
+release=1
+source=(http://www.mathopd.org/dist/$name-$version.tar.gz \
+        http://www.mathopd.org/dist/dir_cgi.c.txt \
+        http://www.mathopd.org/doc/mathopd.8.gz \
+        http://www.mathopd.org/doc/mathopd.conf.5.gz \
+        mathopd.conf mathopd)
+
+build () {
+    cd $name-$version/src
+    sed -i '37s/# //' Makefile
+    mv $SRC/dir_cgi.c.txt dir_cgi.c
+    
+    make -e CPPFLAGS="-DHAVE_CRYPT_H -DHAVE_VFORK -DLINUX_SENDFILE -Wall"
+    gcc $CFLAGS -Wall dir_cgi.c -o dir_cgi
+
+    mkdir -p $PKG/{var/log,etc/rc.d,usr/{bin,sbin,man/man{8,5}}}
+    install -m 755 mathopd $PKG/usr/sbin
+    install -m 755 dir_cgi $PKG/usr/bin
+    install -m 644 $SRC/mathopd.conf $PKG/etc
+    install -m 755 $SRC/mathopd $PKG/etc/rc.d
+    install -m 644 $SRC/mathopd.8.gz $PKG/usr/man/man8
+    install -m 644 $SRC/mathopd.conf.5.gz $PKG/usr/man/man5
+    install -d -o nobody -g nobody $PKG/var/log/mathopd
+}

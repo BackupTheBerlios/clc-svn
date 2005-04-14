@@ -1,0 +1,2842 @@
+diff -Nru iproute2-orig/doc/Makefile iproute2/doc/Makefile
+--- iproute2-orig/doc/Makefile	2004-05-11 20:28:58.091582305 +0200
++++ iproute2/doc/Makefile	2004-05-11 20:29:09.003894957 +0200
+@@ -42,9 +42,7 @@
+ 	done
+ 
+ %.ps: %.dvi
+-	$(DVIPS) $< -o $@.tmp
+-	./do-psnup $@.tmp $@ $(PAGESIZE) $(PAGESPERPAGE)
+-	rm -f $@.tmp
++	$(DVIPS) $< -o $@
+ 
+ %.html: %.sgml
+ 	$(SGML2HTML) $<
+diff -Nru iproute2-orig/etc/iproute2/rt_dsfield iproute2/etc/iproute2/rt_dsfield
+--- iproute2-orig/etc/iproute2/rt_dsfield	2004-05-11 20:28:58.094582391 +0200
++++ iproute2/etc/iproute2/rt_dsfield	2004-05-11 20:29:09.003894957 +0200
+@@ -1,13 +1,15 @@
+-0x10	lowdelay
+-0x08	throughput
+-0x04	reliability
++#0x10	lowdelay
++#0x08	throughput
++#0x04	reliability
++
+ # This value overlap with ECT, do not use it!
+-0x02	mincost
++#0x02	mincost
++
+ # These values seems do not want to die, Cisco likes them by a strange reason.
+-0x20	priority
+-0x40	immediate
+-0x60	flash
+-0x80	flash-override
+-0xa0	critical
+-0xc0	internet
+-0xe0	network
++#0x20	priority
++#0x40	immediate
++#0x60	flash
++#0x80	flash-override
++#0xa0	critical
++#0xc0	internet
++#0xe0	network
+diff -Nru iproute2-orig/etc/iproute2/rt_protos iproute2/etc/iproute2/rt_protos
+--- iproute2-orig/etc/iproute2/rt_protos	2004-05-11 20:28:58.093582362 +0200
++++ iproute2/etc/iproute2/rt_protos	2004-05-11 20:29:09.004894985 +0200
+@@ -1,25 +1,26 @@
+ #
+ # Reserved protocols.
+ #
+-0	unspec
+-1	redirect
+-2	kernel
+-3	boot
+-4	static
+-8	gated
+-9	ra
+-10	mrt
+-11	zebra
+-12	bird
++#0	unspec
++#1	redirect
++#2	kernel
++#3	boot
++#4	static
++#8	gated
++#9	ra
++#10	mrt
++#11	zebra
++#12	bird
++
+ #
+ #	Used by me for gated
+ #
+-254	gated/aggr
+-253	gated/bgp
+-252	gated/ospf
+-251	gated/ospfase
+-250	gated/rip
+-249	gated/static
+-248	gated/conn
+-247	gated/inet
+-246	gated/default
++#254	gated/aggr
++#253	gated/bgp
++#252	gated/ospf
++#251	gated/ospfase
++#250	gated/rip
++#249	gated/static
++#248	gated/conn
++#247	gated/inet
++#246	gated/default
+diff -Nru iproute2-orig/etc/iproute2/rt_realms iproute2/etc/iproute2/rt_realms
+--- iproute2-orig/etc/iproute2/rt_realms	2004-05-11 20:28:58.093582362 +0200
++++ iproute2/etc/iproute2/rt_realms	2004-05-11 20:29:09.004894985 +0200
+@@ -1,7 +1,7 @@
+ #
+ # reserved values
+ #
+-0	cosmos
++#0	cosmos
+ #
+ # local
+ #
+diff -Nru iproute2-orig/etc/iproute2/rt_scopes iproute2/etc/iproute2/rt_scopes
+--- iproute2-orig/etc/iproute2/rt_scopes	2004-05-11 20:28:58.093582362 +0200
++++ iproute2/etc/iproute2/rt_scopes	2004-05-11 20:29:09.004894985 +0200
+@@ -1,11 +1,12 @@
+ #
+ # reserved values
+ #
+-0	global
+-255	nowhere
+-254	host
+-253	link
++#0	global
++#255	nowhere
++#254	host
++#253	link
++
+ #
+ # pseudo-reserved
+ #
+-200	site
++#200	site
+diff -Nru iproute2-orig/etc/iproute2/rt_tables iproute2/etc/iproute2/rt_tables
+--- iproute2-orig/etc/iproute2/rt_tables	2004-05-11 20:28:58.094582391 +0200
++++ iproute2/etc/iproute2/rt_tables	2004-05-11 20:29:09.005895014 +0200
+@@ -1,10 +1,10 @@
+ #
+ # reserved values
+ #
+-255	local
+-254	main
+-253	default
+-0	unspec
++#255	local
++#254	main
++#253	default
++#0	unspec
+ #
+ # local
+ #
+diff -Nru iproute2-orig/include-glibc/glibc-bugs.h iproute2/include-glibc/glibc-bugs.h
+--- iproute2-orig/include-glibc/glibc-bugs.h	2004-05-11 20:28:58.100582563 +0200
++++ iproute2/include-glibc/glibc-bugs.h	2004-05-11 20:29:09.005895014 +0200
+@@ -12,8 +12,8 @@
+ 
+ #include <linux/types.h>
+ 
+-typedef __u16 in_port_t;
+-typedef __u32 in_addr_t;
++/* typedef __u16 in_port_t; */
++/* typedef __u32 in_addr_t; */
+ 
+ #endif
+ 
+diff -Nru iproute2-orig/ip/iproute.c iproute2/ip/iproute.c
+--- iproute2-orig/ip/iproute.c	2004-05-11 20:28:58.082582047 +0200
++++ iproute2/ip/iproute.c	2004-05-11 20:29:09.006895043 +0200
+@@ -620,6 +620,9 @@
+ 		}
+ 		memset(rtnh, 0, sizeof(*rtnh));
+ 		rtnh->rtnh_len = sizeof(*rtnh);
++		rtnh->rtnh_ifindex = 0;
++		rtnh->rtnh_flags = 0;
++		rtnh->rtnh_hops = 0;
+ 		rta->rta_len += rtnh->rtnh_len;
+ 		parse_one_nh(rta, rtnh, &argc, &argv);
+ 		rtnh = RTNH_NEXT(rtnh);
+diff -Nru iproute2-orig/ip/iprule.c iproute2/ip/iprule.c
+--- iproute2-orig/ip/iprule.c	2004-05-11 20:28:58.083582076 +0200
++++ iproute2/ip/iprule.c	2004-05-11 20:29:09.007895071 +0200
+@@ -120,7 +120,7 @@
+ 		fprintf(fp, "tos %s ", rtnl_dsfield_n2a(r->rtm_tos, b1, sizeof(b1)));
+ 	}
+ 	if (tb[RTA_PROTOINFO]) {
+-		fprintf(fp, "fwmark %8x ", *(__u32*)RTA_DATA(tb[RTA_PROTOINFO]));
++		fprintf(fp, "fwmark %#x ", *(__u32*)RTA_DATA(tb[RTA_PROTOINFO]));
+ 	}
+ 
+ 	if (tb[RTA_IIF]) {
+@@ -245,7 +245,7 @@
+ 		} else if (strcmp(*argv, "fwmark") == 0) {
+ 			__u32 fwmark;
+ 			NEXT_ARG();
+-			if (get_u32(&fwmark, *argv, 16))
++			if (get_u32(&fwmark, *argv, 0))
+ 				invarg("fwmark value is invalid\n", *argv);
+ 			addattr32(&req.n, sizeof(req), RTA_PROTOINFO, fwmark);
+ 		} else if (matches(*argv, "realms") == 0) {
+diff -Nru iproute2-orig/lib/libnetlink.c iproute2/lib/libnetlink.c
+--- iproute2-orig/lib/libnetlink.c	2004-05-11 20:28:58.096582448 +0200
++++ iproute2/lib/libnetlink.c	2004-05-11 20:29:09.007895071 +0200
+@@ -164,7 +164,8 @@
+ 		while (NLMSG_OK(h, status)) {
+ 			int err;
+ 
+-			if (h->nlmsg_pid != rth->local.nl_pid ||
++			if (nladdr.nl_pid != 0 ||
++			    h->nlmsg_pid != rth->local.nl_pid ||
+ 			    h->nlmsg_seq != rth->dump) {
+ 				if (junk) {
+ 					err = junk(&nladdr, h, arg2);
+@@ -272,7 +273,8 @@
+ 				exit(1);
+ 			}
+ 
+-			if (h->nlmsg_pid != rtnl->local.nl_pid ||
++			if (nladdr.nl_pid != peer ||
++			    h->nlmsg_pid != rtnl->local.nl_pid ||
+ 			    h->nlmsg_seq != seq) {
+ 				if (junk) {
+ 					err = junk(&nladdr, h, jarg);
+diff -Nru iproute2-orig/lib/libnetlink.c~ iproute2/lib/libnetlink.c~
+--- iproute2-orig/lib/libnetlink.c~	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/lib/libnetlink.c~	2004-05-11 20:29:09.008895100 +0200
+@@ -0,0 +1,521 @@
++/*
++ * libnetlink.c	RTnetlink service routines.
++ *
++ *		This program is free software; you can redistribute it and/or
++ *		modify it under the terms of the GNU General Public License
++ *		as published by the Free Software Foundation; either version
++ *		2 of the License, or (at your option) any later version.
++ *
++ * Authors:	Alexey Kuznetsov, <kuznet@ms2.inr.ac.ru>
++ *
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <syslog.h>
++#include <fcntl.h>
++#include <net/if_arp.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <string.h>
++#include <errno.h>
++#include <time.h>
++#include <sys/uio.h>
++
++#include "libnetlink.h"
++
++void rtnl_close(struct rtnl_handle *rth)
++{
++	close(rth->fd);
++}
++
++int rtnl_open(struct rtnl_handle *rth, unsigned subscriptions)
++{
++	int addr_len;
++
++	memset(rth, 0, sizeof(rth));
++
++	rth->fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
++	if (rth->fd < 0) {
++		perror("Cannot open netlink socket");
++		return -1;
++	}
++
++	memset(&rth->local, 0, sizeof(rth->local));
++	rth->local.nl_family = AF_NETLINK;
++	rth->local.nl_groups = subscriptions;
++
++	if (bind(rth->fd, (struct sockaddr*)&rth->local, sizeof(rth->local)) < 0) {
++		perror("Cannot bind netlink socket");
++		return -1;
++	}
++	addr_len = sizeof(rth->local);
++	if (getsockname(rth->fd, (struct sockaddr*)&rth->local, &addr_len) < 0) {
++		perror("Cannot getsockname");
++		return -1;
++	}
++	if (addr_len != sizeof(rth->local)) {
++		fprintf(stderr, "Wrong address length %d\n", addr_len);
++		return -1;
++	}
++	if (rth->local.nl_family != AF_NETLINK) {
++		fprintf(stderr, "Wrong address family %d\n", rth->local.nl_family);
++		return -1;
++	}
++	rth->seq = time(NULL);
++	return 0;
++}
++
++int rtnl_wilddump_request(struct rtnl_handle *rth, int family, int type)
++{
++	struct {
++		struct nlmsghdr nlh;
++		struct rtgenmsg g;
++	} req;
++	struct sockaddr_nl nladdr;
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++
++	req.nlh.nlmsg_len = sizeof(req);
++	req.nlh.nlmsg_type = type;
++	req.nlh.nlmsg_flags = NLM_F_ROOT|NLM_F_MATCH|NLM_F_REQUEST;
++	req.nlh.nlmsg_pid = 0;
++	req.nlh.nlmsg_seq = rth->dump = ++rth->seq;
++	req.g.rtgen_family = family;
++
++	return sendto(rth->fd, (void*)&req, sizeof(req), 0, (struct sockaddr*)&nladdr, sizeof(nladdr));
++}
++
++int rtnl_send(struct rtnl_handle *rth, char *buf, int len)
++{
++	struct sockaddr_nl nladdr;
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++
++	return sendto(rth->fd, buf, len, 0, (struct sockaddr*)&nladdr, sizeof(nladdr));
++}
++
++int rtnl_dump_request(struct rtnl_handle *rth, int type, void *req, int len)
++{
++	struct nlmsghdr nlh;
++	struct sockaddr_nl nladdr;
++	struct iovec iov[2] = { { &nlh, sizeof(nlh) }, { req, len } };
++	struct msghdr msg = {
++		(void*)&nladdr, sizeof(nladdr),
++		iov,	2,
++		NULL,	0,
++		0
++	};
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++
++	nlh.nlmsg_len = NLMSG_LENGTH(len);
++	nlh.nlmsg_type = type;
++	nlh.nlmsg_flags = NLM_F_ROOT|NLM_F_MATCH|NLM_F_REQUEST;
++	nlh.nlmsg_pid = 0;
++	nlh.nlmsg_seq = rth->dump = ++rth->seq;
++
++	return sendmsg(rth->fd, &msg, 0);
++}
++
++int rtnl_dump_filter(struct rtnl_handle *rth,
++		     int (*filter)(struct sockaddr_nl *, struct nlmsghdr *n, void *),
++		     void *arg1,
++		     int (*junk)(struct sockaddr_nl *,struct nlmsghdr *n, void *),
++		     void *arg2)
++{
++	char	buf[8192];
++	struct sockaddr_nl nladdr;
++	struct iovec iov = { buf, sizeof(buf) };
++
++	while (1) {
++		int status;
++		struct nlmsghdr *h;
++
++		struct msghdr msg = {
++			(void*)&nladdr, sizeof(nladdr),
++			&iov,	1,
++			NULL,	0,
++			0
++		};
++
++		status = recvmsg(rth->fd, &msg, 0);
++
++		if (status < 0) {
++			if (errno == EINTR)
++				continue;
++			perror("OVERRUN");
++			continue;
++		}
++		if (status == 0) {
++			fprintf(stderr, "EOF on netlink\n");
++			return -1;
++		}
++		if (msg.msg_namelen != sizeof(nladdr)) {
++			fprintf(stderr, "sender address length == %d\n", msg.msg_namelen);
++			exit(1);
++		}
++
++		h = (struct nlmsghdr*)buf;
++		while (NLMSG_OK(h, status)) {
++			int err;
++
++			if (h->nlmsg_pid != rth->local.nl_pid ||
++			    h->nlmsg_seq != rth->dump) {
++				if (junk) {
++					err = junk(&nladdr, h, arg2);
++					if (err < 0)
++						return err;
++				}
++				goto skip_it;
++			}
++
++			if (h->nlmsg_type == NLMSG_DONE)
++				return 0;
++			if (h->nlmsg_type == NLMSG_ERROR) {
++				struct nlmsgerr *err = (struct nlmsgerr*)NLMSG_DATA(h);
++				if (h->nlmsg_len < NLMSG_LENGTH(sizeof(struct nlmsgerr))) {
++					fprintf(stderr, "ERROR truncated\n");
++				} else {
++					errno = -err->error;
++					perror("RTNETLINK answers");
++				}
++				return -1;
++			}
++			err = filter(&nladdr, h, arg1);
++			if (err < 0)
++				return err;
++
++skip_it:
++			h = NLMSG_NEXT(h, status);
++		}
++		if (msg.msg_flags & MSG_TRUNC) {
++			fprintf(stderr, "Message truncated\n");
++			continue;
++		}
++		if (status) {
++			fprintf(stderr, "!!!Remnant of size %d\n", status);
++			exit(1);
++		}
++	}
++}
++
++int rtnl_talk(struct rtnl_handle *rtnl, struct nlmsghdr *n, pid_t peer,
++	      unsigned groups, struct nlmsghdr *answer,
++	      int (*junk)(struct sockaddr_nl *,struct nlmsghdr *n, void *),
++	      void *jarg)
++{
++	int status;
++	unsigned seq;
++	struct nlmsghdr *h;
++	struct sockaddr_nl nladdr;
++	struct iovec iov = { (void*)n, n->nlmsg_len };
++	char   buf[8192];
++	struct msghdr msg = {
++		(void*)&nladdr, sizeof(nladdr),
++		&iov,	1,
++		NULL,	0,
++		0
++	};
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++	nladdr.nl_pid = peer;
++	nladdr.nl_groups = groups;
++
++	n->nlmsg_seq = seq = ++rtnl->seq;
++	if (answer == NULL)
++		n->nlmsg_flags |= NLM_F_ACK;
++
++	status = sendmsg(rtnl->fd, &msg, 0);
++
++	if (status < 0) {
++		perror("Cannot talk to rtnetlink");
++		return -1;
++	}
++
++	iov.iov_base = buf;
++
++	while (1) {
++		iov.iov_len = sizeof(buf);
++		status = recvmsg(rtnl->fd, &msg, 0);
++
++		if (status < 0) {
++			if (errno == EINTR)
++				continue;
++			perror("OVERRUN");
++			continue;
++		}
++		if (status == 0) {
++			fprintf(stderr, "EOF on netlink\n");
++			return -1;
++		}
++		if (msg.msg_namelen != sizeof(nladdr)) {
++			fprintf(stderr, "sender address length == %d\n", msg.msg_namelen);
++			exit(1);
++		}
++		for (h = (struct nlmsghdr*)buf; status >= sizeof(*h); ) {
++			int err;
++			int len = h->nlmsg_len;
++			int l = len - sizeof(*h);
++
++			if (l<0 || len>status) {
++				if (msg.msg_flags & MSG_TRUNC) {
++					fprintf(stderr, "Truncated message\n");
++					return -1;
++				}
++				fprintf(stderr, "!!!malformed message: len=%d\n", len);
++				exit(1);
++			}
++
++			if (h->nlmsg_pid != rtnl->local.nl_pid ||
++			    h->nlmsg_seq != seq) {
++				if (junk) {
++					err = junk(&nladdr, h, jarg);
++					if (err < 0)
++						return err;
++				}
++				continue;
++			}
++
++			if (h->nlmsg_type == NLMSG_ERROR) {
++				struct nlmsgerr *err = (struct nlmsgerr*)NLMSG_DATA(h);
++				if (l < sizeof(struct nlmsgerr)) {
++					fprintf(stderr, "ERROR truncated\n");
++				} else {
++					errno = -err->error;
++					if (errno == 0) {
++						if (answer)
++							memcpy(answer, h, h->nlmsg_len);
++						return 0;
++					}
++					perror("RTNETLINK answers");
++				}
++				return -1;
++			}
++			if (answer) {
++				memcpy(answer, h, h->nlmsg_len);
++				return 0;
++			}
++
++			fprintf(stderr, "Unexpected reply!!!\n");
++
++			status -= NLMSG_ALIGN(len);
++			h = (struct nlmsghdr*)((char*)h + NLMSG_ALIGN(len));
++		}
++		if (msg.msg_flags & MSG_TRUNC) {
++			fprintf(stderr, "Message truncated\n");
++			continue;
++		}
++		if (status) {
++			fprintf(stderr, "!!!Remnant of size %d\n", status);
++			exit(1);
++		}
++	}
++}
++
++int rtnl_listen(struct rtnl_handle *rtnl, 
++	      int (*handler)(struct sockaddr_nl *,struct nlmsghdr *n, void *),
++	      void *jarg)
++{
++	int status;
++	struct nlmsghdr *h;
++	struct sockaddr_nl nladdr;
++	struct iovec iov;
++	char   buf[8192];
++	struct msghdr msg = {
++		(void*)&nladdr, sizeof(nladdr),
++		&iov,	1,
++		NULL,	0,
++		0
++	};
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++	nladdr.nl_pid = 0;
++	nladdr.nl_groups = 0;
++
++
++	iov.iov_base = buf;
++
++	while (1) {
++		iov.iov_len = sizeof(buf);
++		status = recvmsg(rtnl->fd, &msg, 0);
++
++		if (status < 0) {
++			if (errno == EINTR)
++				continue;
++			perror("OVERRUN");
++			continue;
++		}
++		if (status == 0) {
++			fprintf(stderr, "EOF on netlink\n");
++			return -1;
++		}
++		if (msg.msg_namelen != sizeof(nladdr)) {
++			fprintf(stderr, "Sender address length == %d\n", msg.msg_namelen);
++			exit(1);
++		}
++		for (h = (struct nlmsghdr*)buf; status >= sizeof(*h); ) {
++			int err;
++			int len = h->nlmsg_len;
++			int l = len - sizeof(*h);
++
++			if (l<0 || len>status) {
++				if (msg.msg_flags & MSG_TRUNC) {
++					fprintf(stderr, "Truncated message\n");
++					return -1;
++				}
++				fprintf(stderr, "!!!malformed message: len=%d\n", len);
++				exit(1);
++			}
++
++			err = handler(&nladdr, h, jarg);
++			if (err < 0)
++				return err;
++
++			status -= NLMSG_ALIGN(len);
++			h = (struct nlmsghdr*)((char*)h + NLMSG_ALIGN(len));
++		}
++		if (msg.msg_flags & MSG_TRUNC) {
++			fprintf(stderr, "Message truncated\n");
++			continue;
++		}
++		if (status) {
++			fprintf(stderr, "!!!Remnant of size %d\n", status);
++			exit(1);
++		}
++	}
++}
++
++int rtnl_from_file(FILE *rtnl, 
++	      int (*handler)(struct sockaddr_nl *,struct nlmsghdr *n, void *),
++	      void *jarg)
++{
++	int status;
++	struct sockaddr_nl nladdr;
++	char   buf[8192];
++	struct nlmsghdr *h = (void*)buf;
++
++	memset(&nladdr, 0, sizeof(nladdr));
++	nladdr.nl_family = AF_NETLINK;
++	nladdr.nl_pid = 0;
++	nladdr.nl_groups = 0;
++
++	while (1) {
++		int err, len, type;
++		int l;
++
++		status = fread(&buf, 1, sizeof(*h), rtnl);
++
++		if (status < 0) {
++			if (errno == EINTR)
++				continue;
++			perror("rtnl_from_file: fread");
++			return -1;
++		}
++		if (status == 0)
++			return 0;
++
++		len = h->nlmsg_len;
++		type= h->nlmsg_type;
++		l = len - sizeof(*h);
++
++		if (l<0 || len>sizeof(buf)) {
++			fprintf(stderr, "!!!malformed message: len=%d @%lu\n",
++				len, ftell(rtnl));
++			return -1;
++		}
++
++		status = fread(NLMSG_DATA(h), 1, NLMSG_ALIGN(l), rtnl);
++
++		if (status < 0) {
++			perror("rtnl_from_file: fread");
++			return -1;
++		}
++		if (status < l) {
++			fprintf(stderr, "rtnl-from_file: truncated message\n");
++			return -1;
++		}
++
++		err = handler(&nladdr, h, jarg);
++		if (err < 0)
++			return err;
++	}
++}
++
++int addattr32(struct nlmsghdr *n, int maxlen, int type, __u32 data)
++{
++	int len = RTA_LENGTH(4);
++	struct rtattr *rta;
++	if (NLMSG_ALIGN(n->nlmsg_len) + len > maxlen)
++		return -1;
++	rta = (struct rtattr*)(((char*)n) + NLMSG_ALIGN(n->nlmsg_len));
++	rta->rta_type = type;
++	rta->rta_len = len;
++	memcpy(RTA_DATA(rta), &data, 4);
++	n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + len;
++	return 0;
++}
++
++int addattr_l(struct nlmsghdr *n, int maxlen, int type, void *data, int alen)
++{
++	int len = RTA_LENGTH(alen);
++	struct rtattr *rta;
++
++	if (NLMSG_ALIGN(n->nlmsg_len) + len > maxlen)
++		return -1;
++	rta = (struct rtattr*)(((char*)n) + NLMSG_ALIGN(n->nlmsg_len));
++	rta->rta_type = type;
++	rta->rta_len = len;
++	memcpy(RTA_DATA(rta), data, alen);
++	n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + len;
++	return 0;
++}
++
++int rta_addattr32(struct rtattr *rta, int maxlen, int type, __u32 data)
++{
++	int len = RTA_LENGTH(4);
++	struct rtattr *subrta;
++
++	if (RTA_ALIGN(rta->rta_len) + len > maxlen)
++		return -1;
++	subrta = (struct rtattr*)(((char*)rta) + RTA_ALIGN(rta->rta_len));
++	subrta->rta_type = type;
++	subrta->rta_len = len;
++	memcpy(RTA_DATA(subrta), &data, 4);
++	rta->rta_len = NLMSG_ALIGN(rta->rta_len) + len;
++	return 0;
++}
++
++int rta_addattr_l(struct rtattr *rta, int maxlen, int type, void *data, int alen)
++{
++	struct rtattr *subrta;
++	int len = RTA_LENGTH(alen);
++
++	if (RTA_ALIGN(rta->rta_len) + len > maxlen)
++		return -1;
++	subrta = (struct rtattr*)(((char*)rta) + RTA_ALIGN(rta->rta_len));
++	subrta->rta_type = type;
++	subrta->rta_len = len;
++	memcpy(RTA_DATA(subrta), data, alen);
++	rta->rta_len = NLMSG_ALIGN(rta->rta_len) + len;
++	return 0;
++}
++
++
++int parse_rtattr(struct rtattr *tb[], int max, struct rtattr *rta, int len)
++{
++	while (RTA_OK(rta, len)) {
++		if (rta->rta_type <= max)
++			tb[rta->rta_type] = rta;
++		rta = RTA_NEXT(rta,len);
++	}
++	if (len)
++		fprintf(stderr, "!!!Deficit %d, rta_len=%d\n", len, rta->rta_len);
++	return 0;
++}
+diff -Nru iproute2-orig/lib/rt_names.c iproute2/lib/rt_names.c
+--- iproute2-orig/lib/rt_names.c	2004-05-11 20:28:58.094582391 +0200
++++ iproute2/lib/rt_names.c	2004-05-11 20:29:09.010895157 +0200
+@@ -271,6 +271,7 @@
+ 	rtnl_rttable_init = 1;
+ 	rtnl_rttable_tab[255] = "local";
+ 	rtnl_rttable_tab[254] = "main";
++	rtnl_rttable_tab[253] = "default";
+ 	rtnl_tab_initialize("/etc/iproute2/rt_tables",
+ 			    rtnl_rttable_tab, 256);
+ }
+diff -Nru iproute2-orig/man/ip.8 iproute2/man/ip.8
+--- iproute2-orig/man/ip.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/ip.8	2002-10-14 20:17:13.000000000 +0200
+@@ -0,0 +1,15 @@
++.TH "ip" "8" "2.4.7" "Alexey Kuznetsov" "iproute"
++.SH "NAME"
++ip \- TCP/IP interface configuration and routing utility
++.SH "SYNTAX"
++ip
++.SH "DESCRIPTION"
++This utility allows you to configure your network interfaces in various ways.
++.SH "OPTIONS"
++For the complete command reference please look at the following document:
++.br 
++/usr/share/doc/iproute\-2.4.7/ip\-cref.ps
++.SH "SEE ALSO"
++ifconfig(8), route(8), netstat(8), arp(8), rarp(8), ipchains(8)
++.SH "AUTHORS"
++Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
+diff -Nru iproute2-orig/man/iproute.8 iproute2/man/iproute.8
+--- iproute2-orig/man/iproute.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/iproute.8	2003-12-13 01:23:58.000000000 +0100
+@@ -0,0 +1,84 @@
++.TH iproute 8 "Sat Mar 22 13:02:26 GMT 1997" Kuznetov "Linux iproute manual"
++.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
++.\" other parms are allowed: see man(7), man(1)
++.SH NAME
++iproute \- program to control policy-based routing tables
++.SH SYNOPSIS
++.B iproute
++.I "[ -c | -r | -l ]"
++.br
++
++.B iproute
++.I "[ add | del ] [ PREFIX | NET mask MASK ] [ tos TOS ]"
++.I "[ nat NET ] [ class CLASS ] INFO"
++.br
++
++.B iproute
++.I "[ addrule | delrule ] [ from PREFIX ] [ to PREFIX ] [ tos TOS ]"
++.I "[ dev DEVICE ] [ masq | drop | reject | prohibit | nat NET ]"
++.I "[ pref PREFERENCE ] [ class CLASS | INFO ]"
++.br
++
++.I PREFIX
++can be a net number, or net number and prefix length, e.g.
++.I 192.168.0.0
++or
++.I 192.168.0.0/24
++.br
++
++.I INFO
++references any combination of the routing parameters "gw [gateway]",
++"dev [device]", "metric [metric]", "mtu [mtu]", "irtt [rtt]",
++"window [window]", and any of
++.I FLAGS
++.br
++
++.I FLAGS
++can be any of "static", "reject", "throw", "nopmtudisc", "noforward", "local",
++"interface", and "broadcast" (reject and throw cannot be specified together,
++however, as with interface and broadcast).
++
++.SH "DESCRIPTION"
++This manual page documents briefly the various invocations of the
++.BR iproute
++command.
++This manual page was written for the Debian GNU/Linux distribution
++(but may be used by others), because the original program does not
++have a manual page.
++Instead, it has documentation as part of the Linux source tree. Note that
++this documentation may also be found in /usr/share/doc/iproute on Debian systems.
++
++.PP
++.B iproute
++will modify or show the current policy-based routing tables. These are held in
++kernel space, so iproute requires root permissions to run. Note that policy
++based routing tables are a feature of kernels 2.1.16 and above, so you will
++not be able to use this program unless you have a specific patch with an
++earlier kernel.
++
++.SH OPTIONS
++.B iproute
++accepts the following single options on the command line:-
++.TP
++.B \-c
++Shows the current routing cache.
++.TP
++.B \-r
++Shows the current routing classes.
++.TP
++.B \-l
++Shows a long listing of routes.
++.PP
++Invoking the program with no command-line will produce a simple list of
++current routes.
++.SH "SEE ALSO"
++.IR "route(8), ifconfig(8), netstat(8), arp(8)"
++.PP
++The policy-based routing system is documented fully in the file
++.IR "Documentation/networking/policy-routing.txt"
++which can be found in kernels 2.1.16 and above.
++.SH BUGS
++Not very well documented anywhere :)
++.SH AUTHOR
++This manual page was written by Tom Lees <tom@lpsg.demon.co.uk>,
++for the Debian GNU/Linux system.
+diff -Nru iproute2-orig/man/tc-cbq.8 iproute2/man/tc-cbq.8
+--- iproute2-orig/man/tc-cbq.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/tc-cbq.8	2003-12-13 01:23:58.000000000 +0100
+@@ -0,0 +1,353 @@
++.TH CBQ 8 "16 December 2001" "iproute2" "Linux"
++.SH NAME
++CBQ \- Class Based Queueing
++.SH SYNOPSIS
++.B tc qdisc ... dev
++dev
++.B  ( parent
++classid 
++.B | root) [ handle 
++major: 
++.B ] cbq [ allot 
++bytes
++.B ] avpkt
++bytes
++.B bandwidth
++rate
++.B [ cell 
++bytes
++.B ] [ ewma
++log
++.B ] [ mpu
++bytes
++.B ] 
++
++.B tc class ... dev
++dev
++.B parent 
++major:[minor]
++.B [ classid 
++major:minor
++.B ] cbq allot
++bytes
++.B [ bandwidth 
++rate 
++.B ] [ rate 
++rate
++.B ] prio
++priority
++.B [ weight
++weight
++.B ] [ minburst 
++packets
++.B ] [ maxburst 
++packets 
++.B ] [ ewma 
++log
++.B ] [ cell
++bytes
++.B ] avpkt
++bytes
++.B [ mpu
++bytes 
++.B ] [ bounded isolated ] [ split
++handle
++.B & defmap
++defmap
++.B ] [ estimator 
++interval timeconstant
++.B ]
++
++.SH DESCRIPTION
++Class Based Queueing is a classful qdisc that implements a rich
++linksharing hierarchy of classes.  It contains shaping elements as
++well as prioritizing capabilities.  Shaping is performed using link
++idle time calculations based on the timing of dequeue events and 
++underlying link bandwidth.
++
++.SH SHAPING ALGORITHM
++When shaping a 10mbit/s connection to 1mbit/s, the link will
++be idle 90% of the time. If it isn't, it needs to be throttled so that it
++IS idle 90% of the time.
++
++During operations, the effective idletime is measured using an
++exponential weighted moving average (EWMA), which considers recent
++packets to be exponentially more important than past ones. The Unix
++loadaverage is calculated in the same way.
++
++The calculated idle time is subtracted from the EWMA measured one,
++the resulting number is called 'avgidle'. A perfectly loaded link has
++an avgidle of zero: packets arrive exactly at the calculated
++interval.
++
++An overloaded link has a negative avgidle and if it gets too negative,
++CBQ throttles and is then 'overlimit'.
++
++Conversely, an idle link might amass a huge avgidle, which would then
++allow infinite bandwidths after a few hours of silence. To prevent
++this, avgidle is capped at 
++.B maxidle.
++
++If overlimit, in theory, the CBQ could throttle itself for exactly the
++amount of time that was calculated to pass between packets, and then
++pass one packet, and throttle again. Due to timer resolution constraints,
++this may not be feasible, see the 
++.B minburst
++parameter below.
++
++.SH CLASSIFICATION
++Within the one CBQ instance many classes may exist. Each of these classes
++contains another qdisc, by default 
++.BR tc-pfifo (8).
++
++When enqueueing a packet, CBQ starts at the root and uses various methods to 
++determine which class should receive the data. 
++
++In the absence of uncommon configuration options, the process is rather easy. 
++At each node we look for an instruction, and then go to the class the 
++instruction refers us to. If the class found is a barren leaf-node (without 
++children), we enqueue the packet there. If it is not yet a leaf node, we do 
++the whole thing over again starting from that node. 
++
++The following actions are performed, in order at each node we visit, until one 
++sends us to another node, or terminates the process.
++.TP
++(i)
++Consult filters attached to the class. If sent to a leafnode, we are done. 
++Otherwise, restart.
++.TP
++(ii)
++Consult the defmap for the priority assigned to this packet, which depends 
++on the TOS bits. Check if the referral is leafless, otherwise restart.
++.TP
++(iii)
++Ask the defmap for instructions for the 'best effort' priority. Check the 
++answer for leafness, otherwise restart.
++.TP
++(iv)
++If none of the above returned with an instruction, enqueue at this node.
++.P
++This algorithm makes sure that a packet always ends up somewhere, even while
++you are busy building your configuration. 
++
++For more details, see
++.BR tc-cbq-details(8).
++
++.SH LINK SHARING ALGORITHM
++When dequeuing for sending to the network device, CBQ decides which of its 
++classes will be allowed to send. It does so with a Weighted Round Robin process
++in which each class with packets gets a chance to send in turn. The WRR process
++starts by asking the highest priority classes (lowest numerically - 
++highest semantically) for packets, and will continue to do so until they
++have no more data to offer, in which case the process repeats for lower 
++priorities.
++
++Classes by default borrow bandwidth from their siblings. A class can be 
++prevented from doing so by declaring it 'bounded'. A class can also indicate 
++its unwillingness to lend out bandwidth by being 'isolated'.
++
++.SH QDISC
++The root of a CBQ qdisc class tree has the following parameters:
++
++.TP 
++parent major:minor | root
++This mandatory parameter determines the place of the CBQ instance, either at the
++.B root
++of an interface or within an existing class.
++.TP
++handle major:
++Like all other qdiscs, the CBQ can be assigned a handle. Should consist only
++of a major number, followed by a colon. Optional, but very useful if classes
++will be generated within this qdisc.
++.TP 
++allot bytes
++This allotment is the 'chunkiness' of link sharing and is used for determining packet
++transmission time tables. The qdisc allot differs slightly from the class allot discussed
++below. Optional. Defaults to a reasonable value, related to avpkt.
++.TP
++avpkt bytes
++The average size of a packet is needed for calculating maxidle, and is also used
++for making sure 'allot' has a safe value. Mandatory.
++.TP
++bandwidth rate
++To determine the idle time, CBQ must know the bandwidth of your underlying 
++physical interface, or parent qdisc. This is a vital parameter, more about it
++later. Mandatory.
++.TP
++cell
++The cell size determines he granularity of packet transmission time calculations. Has a sensible default.
++.TP 
++mpu
++A zero sized packet may still take time to transmit. This value is the lower
++cap for packet transmission time calculations - packets smaller than this value
++are still deemed to have this size. Defaults to zero.
++.TP
++ewma log
++When CBQ needs to measure the average idle time, it does so using an 
++Exponentially Weighted Moving Average which smoothes out measurements into
++a moving average. The EWMA LOG determines how much smoothing occurs. Lower 
++values imply greater sensitivity. Must be between 0 and 31. Defaults 
++to 5.
++.P
++A CBQ qdisc does not shape out of its own accord. It only needs to know certain
++parameters about the underlying link. Actual shaping is done in classes.
++
++.SH CLASSES
++Classes have a host of parameters to configure their operation.
++
++.TP 
++parent major:minor
++Place of this class within the hierarchy. If attached directly to a qdisc 
++and not to another class, minor can be omitted. Mandatory.
++.TP 
++classid major:minor
++Like qdiscs, classes can be named. The major number must be equal to the
++major number of the qdisc to which it belongs. Optional, but needed if this 
++class is going to have children.
++.TP 
++weight weight
++When dequeuing to the interface, classes are tried for traffic in a 
++round-robin fashion. Classes with a higher configured qdisc will generally
++have more traffic to offer during each round, so it makes sense to allow
++it to dequeue more traffic. All weights under a class are normalized, so
++only the ratios matter. Defaults to the configured rate, unless the priority 
++of this class is maximal, in which case it is set to 1.
++.TP 
++allot bytes
++Allot specifies how many bytes a qdisc can dequeue
++during each round of the process. This parameter is weighted using the 
++renormalized class weight described above. Silently capped at a minimum of
++3/2 avpkt. Mandatory.
++
++.TP 
++prio priority
++In the round-robin process, classes with the lowest priority field are tried 
++for packets first. Mandatory.
++
++.TP 
++avpkt
++See the QDISC section.
++
++.TP 
++rate rate
++Maximum rate this class and all its children combined can send at. Mandatory.
++
++.TP
++bandwidth rate
++This is different from the bandwidth specified when creating a CBQ disc! Only
++used to determine maxidle and offtime, which are only calculated when
++specifying maxburst or minburst. Mandatory if specifying maxburst or minburst.
++
++.TP 
++maxburst
++This number of packets is used to calculate maxidle so that when
++avgidle is at maxidle, this number of average packets can be burst
++before avgidle drops to 0. Set it higher to be more tolerant of
++bursts. You can't set maxidle directly, only via this parameter.
++
++.TP
++minburst 
++As mentioned before, CBQ needs to throttle in case of
++overlimit. The ideal solution is to do so for exactly the calculated
++idle time, and pass 1 packet. However, Unix kernels generally have a
++hard time scheduling events shorter than 10ms, so it is better to
++throttle for a longer period, and then pass minburst packets in one
++go, and then sleep minburst times longer.
++
++The time to wait is called the offtime. Higher values of minburst lead
++to more accurate shaping in the long term, but to bigger bursts at
++millisecond timescales. Optional.
++
++.TP
++minidle
++If avgidle is below 0, we are overlimits and need to wait until
++avgidle will be big enough to send one packet. To prevent a sudden
++burst from shutting down the link for a prolonged period of time,
++avgidle is reset to minidle if it gets too low.
++
++Minidle is specified in negative microseconds, so 10 means that
++avgidle is capped at -10us. Optional.
++
++.TP
++bounded 
++Signifies that this class will not borrow bandwidth from its siblings.
++.TP 
++isolated
++Means that this class will not borrow bandwidth to its siblings
++
++.TP 
++split major:minor & defmap bitmap[/bitmap]
++If consulting filters attached to a class did not give a verdict, 
++CBQ can also classify based on the packet's priority. There are 16
++priorities available, numbered from 0 to 15. 
++
++The defmap specifies which priorities this class wants to receive, 
++specified as a bitmap. The Least Significant Bit corresponds to priority 
++zero. The 
++.B split
++parameter tells CBQ at which class the decision must be made, which should
++be a (grand)parent of the class you are adding.
++
++As an example, 'tc class add ... classid 10:1 cbq .. split 10:0 defmap c0'
++configures class 10:0 to send packets with priorities 6 and 7 to 10:1.
++
++The complimentary configuration would then 
++be: 'tc class add ... classid 10:2 cbq ... split 10:0 defmap 3f'
++Which would send all packets 0, 1, 2, 3, 4 and 5 to 10:1.
++.TP
++estimator interval timeconstant
++CBQ can measure how much bandwidth each class is using, which tc filters
++can use to classify packets with. In order to determine the bandwidth
++it uses a very simple estimator that measures once every
++.B interval
++microseconds how much traffic has passed. This again is a EWMA, for which
++the time constant can be specified, also in microseconds. The 
++.B time constant
++corresponds to the sluggishness of the measurement or, conversely, to the 
++sensitivity of the average to short bursts. Higher values mean less
++sensitivity. 
++
++.SH BUGS
++The actual bandwidth of the underlying link may not be known, for example 
++in the case of PPoE or PPTP connections which in fact may send over a 
++pipe, instead of over a physical device. CBQ is quite resilient to major
++errors in the configured bandwidth, probably a the cost of coarser shaping.
++
++Default kernels rely on coarse timing information for making decisions. These 
++may make shaping precise in the long term, but inaccurate on second long scales.
++
++See 
++.BR tc-cbq-details(8)
++for hints on how to improve this.
++
++.SH SOURCES
++.TP
++o
++Sally Floyd and Van Jacobson, "Link-sharing and Resource
++Management Models for Packet Networks",
++IEEE/ACM Transactions on Networking, Vol.3, No.4, 1995
++
++.TP 
++o
++Sally Floyd, "Notes on CBQ and Guaranteed Service", 1995
++
++.TP
++o
++Sally Floyd, "Notes on Class-Based Queueing: Setting
++Parameters", 1996
++
++.TP 
++o
++Sally Floyd and Michael Speer, "Experimental Results
++for Class-Based Queueing", 1998, not published.
++
++
++
++.SH SEE ALSO
++.BR tc (8)
++
++.SH AUTHOR
++Alexey N. Kuznetsov, <kuznet@ms2.inr.ac.ru>. This manpage maintained by
++bert hubert <ahu@ds9a.nl>
++
++
+diff -Nru iproute2-orig/man/tc-htb.8 iproute2/man/tc-htb.8
+--- iproute2-orig/man/tc-htb.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/tc-htb.8	2003-12-13 01:23:58.000000000 +0100
+@@ -0,0 +1,153 @@
++.TH HTB 8 "10 January 2002" "iproute2" "Linux"
++.SH NAME
++HTB \- Hierarchy Token Bucket
++.SH SYNOPSIS
++.B tc qdisc ... dev
++dev
++.B  ( parent
++classid 
++.B | root) [ handle 
++major: 
++.B ] htb [ default 
++minor-id
++.B ] 
++
++.B tc class ... dev
++dev
++.B parent 
++major:[minor]
++.B [ classid 
++major:minor
++.B ] htb rate
++rate
++.B [ ceil
++rate 
++.B ] burst 
++bytes
++.B [ cburst
++bytes
++.B ] [ prio
++priority
++.B ] 
++
++.SH DESCRIPTION
++HTB is meant as a more understandable and intuitive replacement for
++the CBQ qdisc in Linux. Both CBQ and HTB help you to control the use
++of the outbound bandwidth on a given link. Both allow you to use one
++physical link to simulate several slower links and to send different
++kinds of traffic on different simulated links. In both cases, you have
++to specify how to divide the physical link into simulated links and
++how to decide which simulated link to use for a given packet to be sent. 
++
++Unlike CBQ, HTB shapes traffic based on the Token Bucket Filter algorithm 
++which does not depend on interface characteristics and so does not need to
++know the underlying bandwidth of the outgoing interface.
++
++.SH SHAPING ALGORITHM
++Shaping works as documented in
++.B tc-tbf (8).
++
++.SH CLASSIFICATION
++Within the one HRB instance many classes may exist. Each of these classes
++contains another qdisc, by default 
++.BR tc-pfifo (8).
++
++When enqueueing a packet, HTB starts at the root and uses various methods to 
++determine which class should receive the data. 
++
++In the absence of uncommon configuration options, the process is rather easy. 
++At each node we look for an instruction, and then go to the class the 
++instruction refers us to. If the class found is a barren leaf-node (without 
++children), we enqueue the packet there. If it is not yet a leaf node, we do 
++the whole thing over again starting from that node. 
++
++The following actions are performed, in order at each node we visit, until one 
++sends us to another node, or terminates the process.
++.TP
++(i)
++Consult filters attached to the class. If sent to a leafnode, we are done. 
++Otherwise, restart.
++.TP
++(ii)
++If none of the above returned with an instruction, enqueue at this node.
++.P
++This algorithm makes sure that a packet always ends up somewhere, even while
++you are busy building your configuration. 
++
++.SH LINK SHARING ALGORITHM
++FIXME
++
++.SH QDISC
++The root of a CBQ qdisc class tree has the following parameters:
++
++.TP 
++parent major:minor | root
++This mandatory parameter determines the place of the CBQ instance, either at the
++.B root
++of an interface or within an existing class.
++.TP
++handle major:
++Like all other qdiscs, the CBQ can be assigned a handle. Should consist only
++of a major number, followed by a colon. Optional, but very useful if classes
++will be generated within this qdisc.
++.TP 
++default minor-id
++Unclassified traffic gets sent to the class with this minor-id.
++
++.SH CLASSES
++Classes have a host of parameters to configure their operation.
++
++.TP 
++parent major:minor
++Place of this class within the hierarchy. If attached directly to a qdisc 
++and not to another class, minor can be omitted. Mandatory.
++.TP 
++classid major:minor
++Like qdiscs, classes can be named. The major number must be equal to the
++major number of the qdisc to which it belongs. Optional, but needed if this 
++class is going to have children.
++.TP 
++prio priority
++In the round-robin process, classes with the lowest priority field are tried 
++for packets first. Mandatory.
++
++.TP 
++rate rate
++Maximum rate this class and all its children are guaranteed. Mandatory.
++
++.TP
++ceil rate
++Maximum rate at which a class can send, if its parent has bandwidth to spare. 
++Defaults to the configured rate, which implies no borrowing
++
++.TP 
++burst bytes
++Amount of bytes that can be burst at 
++.B ceil
++speed, in excess of the configured
++.B rate. 
++Should be at least as high as the highest burst of all children.
++
++.TP 
++cburst bytes
++Amount of bytes that can be burst at 'infinite' speed, in other words, as fast
++as the interface can transmit them. For perfect evening out, should be equal to at most one average
++packet. Should be at least as high as the highest cburst of all children.
++
++.SH NOTES
++Due to Unix timing constraints, the maximum ceil rate is not infinite and may in fact be quite low. On Intel, 
++there are 100 timer events per second, the maximum rate is that rate at which 'burst' bytes are sent each timer tick.
++From this, the mininum burst size for a specified rate can be calculated. For i386, a 10mbit rate requires a 12 kilobyte 
++burst as 100*12kb*8 equals 10mbit.
++
++.SH BUGS
++Not in the stock kernel yet.
++
++.SH SEE ALSO
++.BR tc (8)
++.P
++HTB website: http://luxik.cdi.cz/~devik/qos/htb/
++.SH AUTHOR
++Martin Devera <devik@cdi.cz>. This manpage maintained by bert hubert <ahu@ds9a.nl>
++
++
+diff -Nru iproute2-orig/man/tc-pbfifo.8 iproute2/man/tc-pbfifo.8
+--- iproute2-orig/man/tc-pbfifo.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/tc-pbfifo.8	2003-12-13 01:23:58.000000000 +0100
+@@ -0,0 +1,72 @@
++.TH PBFIFO 8 "10 January 2002" "iproute2" "Linux"
++.SH NAME
++pfifo \- Packet limited First In, First Out queue
++.P
++bfifo \- Byte limited First In, First Out queue
++
++.SH SYNOPSIS
++.B tc qdisc ... add pfifo
++.B [ limit 
++packets
++.B ]
++.P
++.B tc qdisc ... add bfifo
++.B [ limit 
++bytes
++.B ]
++
++.SH DESCRIPTION
++The pfifo and bfifo qdiscs are unadorned First In, First Out queues. They are the
++simplest queues possible and therefore have no overhead. 
++.B pfifo
++constrains the queue size as measured in packets. 
++.B bfifo
++does so as measured in bytes.
++
++Like all non-default qdiscs, they maintain statistics. This might be a reason to prefer 
++pfifo or bfifo over the default.
++
++.SH ALGORITHM
++A list of packets is maintained, when a packet is enqueued it gets inserted at the tail of
++a list. When a packet needs to be sent out to the network, it is taken from the head of the list. 
++
++If the list is too long, no further packets are allowed on. This is called 'tail drop'.
++
++.SH PARAMETERS
++.TP 
++limit
++Maximum queue size. Specified in bytes for bfifo, in packets for pfifo. For pfifo, defaults 
++to the interface txqueuelen, as specified with 
++.BR ifconfig (8)
++or
++.BR ip (8).
++
++For bfifo, it defaults to the txqueuelen multiplied by the interface MTU.
++
++.SH OUTPUT
++The output of 
++.B tc -s qdisc ls
++contains the limit, either in packets or in bytes, and the number of bytes 
++and packets actually sent. An unsent and dropped packet only appears between braces 
++and is not counted as 'Sent'.
++
++In this example, the queue length is 100 packets, 45894 bytes were sent over 681 packets. 
++No packets were dropped, and as the pfifo queue does not slow down packets, there were also no
++overlimits:
++.P
++.nf
++# tc -s qdisc ls dev eth0 
++qdisc pfifo 8001: dev eth0 limit 100p
++ Sent 45894 bytes 681 pkts (dropped 0, overlimits 0) 
++.fi
++
++If a backlog occurs, this is displayed as well.
++.SH SEE ALSO
++.BR tc (8)
++
++.SH AUTHORS
++Alexey N. Kuznetsov, <kuznet@ms2.inr.ac.ru>
++
++This manpage maintained by bert hubert <ahu@ds9a.nl>
++
++
+diff -Nru iproute2-orig/man/tc-pfifo_fast.8 iproute2/man/tc-pfifo_fast.8
+--- iproute2-orig/man/tc-pfifo_fast.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/tc-pfifo_fast.8	2003-12-13 01:23:58.000000000 +0100
+@@ -0,0 +1,59 @@
++.TH PFIFO_FAST 8 "10 January 2002" "iproute2" "Linux"
++.SH NAME
++pfifo_fast \- three-band first in, first out queue
++
++.SH DESCRIPTION
++pfifo_fast is the default qdisc of each interface.
++
++Whenever an interface is created, the pfifo_fast qdisc is automatically used
++as a queue. If another qdisc is attached, it preempts the default
++pfifo_fast, which automatically returns to function when an existing qdisc
++is detached.
++
++In this sense this qdisc is magic, and unlike other qdiscs.
++
++.SH ALGORITHM
++The algorithm is very similar to that of the classful 
++.BR tc-prio (8)
++qdisc. 
++.B pfifo_fast
++is like three
++.BR tc-pfifo (8)
++queues side by side, where packets can be enqueued in any of the three bands
++based on their Type of Service bits or assigned priority. 
++
++Not all three bands are dequeued simultaneously - as long as lower bands
++have traffic, higher bands are never dequeued. This can be used to
++prioritize interactive traffic or penalize 'lowest cost' traffic.
++
++Each band can be txqueuelen packets long, as configured with
++.BR ifconfig (8)
++or 
++.BR ip (8).
++Additional packets coming in are not enqueued but are instead dropped.
++
++See
++.BR tc-prio (8)
++for complete details on how TOS bits are translated into bands.
++.SH PARAMETERS
++.TP 
++txqueuelen
++The length of the three bands depends on the interface txqueuelen, as
++specified with
++.BR ifconfig (8)
++or
++.BR ip (8).
++
++.SH BUGS
++Does not maintain statistics and does not show up in tc qdisc ls. This is because
++it is the automatic default in the absence of a configured qdisc. 
++
++.SH SEE ALSO
++.BR tc (8)
++
++.SH AUTHORS
++Alexey N. Kuznetsov, <kuznet@ms2.inr.ac.ru>
++
++This manpage maintained by bert hubert <ahu@ds9a.nl>
++
++
+diff -Nru iproute2-orig/man/tc-prio.8 iproute2/man/tc-prio.8
+--- iproute2-orig/man/tc-prio.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/tc-prio.8	2003-12-13 01:23:58.000000000 +0100
+@@ -0,0 +1,187 @@
++.TH PRIO 8 "16 December 2001" "iproute2" "Linux"
++.SH NAME
++PRIO \- Priority qdisc
++.SH SYNOPSIS
++.B tc qdisc ... dev
++dev
++.B  ( parent
++classid 
++.B | root) [ handle 
++major: 
++.B ] prio [ bands 
++bands
++.B ] [ priomap
++band,band,band... 
++.B ] [ estimator 
++interval timeconstant
++.B ]
++
++.SH DESCRIPTION
++The PRIO qdisc is a simple classful queueing discipline that contains
++an arbitrary number of classes of differing priority. The classes are
++dequeued in numerical descending order of priority. PRIO is a scheduler 
++and never delays packets - it is a work-conserving qdisc, though the qdiscs
++contained in the classes may not be.
++
++Very useful for lowering latency when there is no need for slowing down
++traffic.
++
++.SH ALGORITHM
++On creation with 'tc qdisc add', a fixed number of bands is created. Each
++band is a class, although is not possible to add classes with 'tc qdisc
++add', the number of bands to be created must instead be specified on the
++commandline attaching PRIO to its root.
++
++When dequeueing, band 0 is tried first and only if it did not deliver a
++packet does PRIO try band 1, and so onwards. Maximum reliability packets
++should therefore go to band 0, minimum delay to band 1 and the rest to band
++2.
++
++As the PRIO qdisc itself will have minor number 0, band 0 is actually
++major:1, band 1 is major:2, etc. For major, substitute the major number
++assigned to the qdisc on 'tc qdisc add' with the
++.B handle
++parameter.
++
++.SH CLASSIFICATION
++Three methods are available to PRIO to determine in which band a packet will
++be enqueued.
++.TP
++From userspace
++A process with sufficient privileges can encode the destination class
++directly with SO_PRIORITY, see
++.BR tc(7).
++.TP 
++with a tc filter
++A tc filter attached to the root qdisc can point traffic directly to a class
++.TP 
++with the priomap
++Based on the packet priority, which in turn is derived from the Type of
++Service assigned to the packet.
++.P
++Only the priomap is specific to this qdisc. 
++.SH QDISC PARAMETERS
++.TP
++bands
++Number of bands. If changed from the default of 3,
++.B priomap
++must be updated as well.
++.TP 
++priomap
++The priomap maps the priority of
++a packet to a class. The priority can either be set directly from userspace,
++or be derived from the Type of Service of the packet.
++
++Determines how packet priorities, as assigned by the kernel, map to
++bands. Mapping occurs based on the TOS octet of the packet, which looks like
++this:
++
++.nf
++0   1   2   3   4   5   6   7
+++---+---+---+---+---+---+---+---+
++|           |               |   |
++|PRECEDENCE |      TOS      |MBZ|
++|           |               |   |
+++---+---+---+---+---+---+---+---+
++.fi
++
++The four TOS bits (the 'TOS field') are defined as:
++
++.nf
++Binary Decimcal  Meaning
++-----------------------------------------
++1000   8         Minimize delay (md)
++0100   4         Maximize throughput (mt)
++0010   2         Maximize reliability (mr)
++0001   1         Minimize monetary cost (mmc)
++0000   0         Normal Service
++.fi
++
++As there is 1 bit to the right of these four bits, the actual value of the
++TOS field is double the value of the TOS bits. Tcpdump -v -v shows you the
++value of the entire TOS field, not just the four bits. It is the value you
++see in the first column of this table:
++
++.nf
++TOS     Bits  Means                    Linux Priority    Band
++------------------------------------------------------------
++0x0     0     Normal Service           0 Best Effort     1
++0x2     1     Minimize Monetary Cost   1 Filler          2
++0x4     2     Maximize Reliability     0 Best Effort     1
++0x6     3     mmc+mr                   0 Best Effort     1
++0x8     4     Maximize Throughput      2 Bulk            2
++0xa     5     mmc+mt                   2 Bulk            2
++0xc     6     mr+mt                    2 Bulk            2
++0xe     7     mmc+mr+mt                2 Bulk            2
++0x10    8     Minimize Delay           6 Interactive     0
++0x12    9     mmc+md                   6 Interactive     0
++0x14    10    mr+md                    6 Interactive     0
++0x16    11    mmc+mr+md                6 Interactive     0
++0x18    12    mt+md                    4 Int. Bulk       1
++0x1a    13    mmc+mt+md                4 Int. Bulk       1
++0x1c    14    mr+mt+md                 4 Int. Bulk       1
++0x1e    15    mmc+mr+mt+md             4 Int. Bulk       1
++.fi
++
++The second column contains the value of the relevant
++four TOS bits, followed by their translated meaning. For example, 15 stands
++for a packet wanting Minimal Montetary Cost, Maximum Reliability, Maximum
++Throughput AND Minimum Delay. 
++
++The fourth column lists the way the Linux kernel interprets the TOS bits, by
++showing to which Priority they are mapped.
++
++The last column shows the result of the default priomap. On the commandline,
++the default priomap looks like this:
++
++    1, 2, 2, 2, 1, 2, 0, 0 , 1, 1, 1, 1, 1, 1, 1, 1
++
++This means that priority 4, for example, gets mapped to band number 1.
++The priomap also allows you to list higher priorities (> 7) which do not
++correspond to TOS mappings, but which are set by other means.
++
++This table from RFC 1349 (read it for more details) explains how
++applications might very well set their TOS bits:
++
++.nf
++TELNET                   1000           (minimize delay)
++FTP
++        Control          1000           (minimize delay)
++        Data             0100           (maximize throughput)
++
++TFTP                     1000           (minimize delay)
++
++SMTP 
++        Command phase    1000           (minimize delay)
++        DATA phase       0100           (maximize throughput)
++
++Domain Name Service
++        UDP Query        1000           (minimize delay)
++        TCP Query        0000
++        Zone Transfer    0100           (maximize throughput)
++
++NNTP                     0001           (minimize monetary cost)
++
++ICMP
++        Errors           0000
++        Requests         0000 (mostly)
++        Responses        <same as request> (mostly)
++.fi
++
++
++.SH CLASSES
++PRIO classes cannot be configured further - they are automatically created
++when the PRIO qdisc is attached. Each class however can contain yet a
++further qdisc.
++
++.SH BUGS
++Large amounts of traffic in the lower bands can cause starvation of higher
++bands. Can be prevented by attaching a shaper (for example, 
++.BR tc-tbf(8)
++to these bands to make sure they cannot dominate the link.
++
++.SH AUTHORS
++Alexey N. Kuznetsov, <kuznet@ms2.inr.ac.ru>,  J Hadi Salim
++<hadi@cyberus.ca>. This manpage maintained by bert hubert <ahu@ds9a.nl>
++
++
+diff -Nru iproute2-orig/man/tc-red.8 iproute2/man/tc-red.8
+--- iproute2-orig/man/tc-red.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/tc-red.8	2003-12-13 01:23:58.000000000 +0100
+@@ -0,0 +1,131 @@
++.TH RED 8 "13 December 2001" "iproute2" "Linux"
++.SH NAME
++red \- Random Early Detection 
++.SH SYNOPSIS
++.B tc qdisc ... red
++.B limit 
++bytes
++.B min 
++bytes 
++.B max 
++bytes 
++.B avpkt
++bytes
++.B burst 
++packets
++.B [ ecn ] [ bandwidth
++rate
++.B ] probability
++chance
++
++.SH DESCRIPTION
++Random Early Detection is a classless qdisc which manages its queue size
++smartly. Regular queues simply drop packets from the tail when they are
++full, which may not be the optimal behaviour. RED also performs tail drop,
++but does so in a more gradual way.
++
++Once the queue hits a certain average length, packets enqueued have a
++configurable chance of being marked (which may mean dropped). This chance
++increases linearly up to a point called the
++.B max
++average queue length, although the queue might get bigger.
++
++This has a host of benefits over simple taildrop, while not being processor
++intensive. It prevents synchronous retransmits after a burst in traffic,
++which cause further retransmits, etc.
++
++The goal is the have a small queue size, which is good for interactivity
++while not disturbing TCP/IP traffic with too many sudden drops after a burst
++of traffic.
++
++Depending on 08 ECN is configured, marking either means dropping or
++purely marking a packet as overlimit.
++.SH ALGORITHM
++The average queue size is used for determining the marking
++probability. This is calculated using an Exponential Weighted Moving
++Average, which can be more or less sensitive to bursts.
++
++When the average queue size is below 
++.B min
++bytes, no packet will ever be marked. When it exceeds 
++.B min, 
++the probability of doing so climbs linearly up
++to 
++.B probability, 
++until the average queue size hits
++.B max
++bytes. Because 
++.B probability 
++is normally not set to 100%, the queue size might
++conceivably rise above 
++.B max
++bytes, so the 
++.B limit
++parameter is provided to set a hard maximum for the size of the queue.
++
++.SH PARAMETERS
++.TP 
++min
++Average queue size at which marking becomes a possibility.
++.TP 
++max
++At this average queue size, the marking probability is maximal. Should be at
++least twice
++.B min
++to prevent synchronous retransmits, higher for low 
++.B min.
++.TP 
++probability
++Maximum probability for marking, specified as a floating point
++number from 0.0 to 1.0. Suggested values are 0.01 or 0.02 (1 or 2%,
++respectively).
++.TP 
++limit
++Hard limit on the real (not average) queue size in bytes. Further packets
++are dropped. Should be set higher than max+burst. It is advised to set this
++a few times higher than 
++.B max.
++.TP
++burst
++Used for determining how fast the average queue size is influenced by the
++real queue size. Larger values make the calculation more sluggish, allowing
++longer bursts of traffic before marking starts. Real life experiments
++support the following guideline: (min+min+max)/(3*avpkt).
++.TP 
++avpkt
++Specified in bytes. Used with burst to determine the time constant for
++average queue size calculations. 1000 is a good value.
++.TP
++bandwidth
++This rate is used for calculating the average queue size after some
++idle time. Should be set to the bandwidth of your interface. Does not mean
++that RED will shape for you! Optional.
++.TP
++ecn
++As mentioned before, RED can either 'mark' or 'drop'. Explicit Congestion
++Notification allows RED to notify remote hosts that their rate exceeds the
++amount of bandwidth available. Non-ECN capable hosts can only be notified by
++dropping a packet.  If this parameter is specified, packets which indicate
++that their hosts honor ECN will only be marked and not dropped, unless the
++queue size hits
++.B limit
++bytes. Needs a tc binary with RED support compiled in. Recommended.
++
++.SH SEE ALSO
++.BR tc (8)
++
++.SH SOURCES
++.TP 
++o
++Floyd, S., and Jacobson, V., Random Early Detection gateways for
++Congestion Avoidance. http://www.aciri.org/floyd/papers/red/red.html
++.TP 
++o
++Some changes to the algorithm by Alexey N. Kuznetsov.
++
++.SH AUTHORS
++Alexey N. Kuznetsov, <kuznet@ms2.inr.ac.ru>,  Alexey Makarenko
++<makar@phoenix.kharkov.ua>, J Hadi Salim <hadi@nortelnetworks.com>.  
++This manpage maintained by bert hubert <ahu@ds9a.nl>
++
++
+diff -Nru iproute2-orig/man/tc-sfq.8 iproute2/man/tc-sfq.8
+--- iproute2-orig/man/tc-sfq.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/tc-sfq.8	2003-12-13 01:23:58.000000000 +0100
+@@ -0,0 +1,107 @@
++.TH TC 8 "8 December 2001" "iproute2" "Linux"
++.SH NAME
++sfq \- Stochastic Fairness Queueing
++.SH SYNOPSIS
++.B tc qdisc ... perturb
++seconds
++.B quantum
++bytes
++
++.SH DESCRIPTION
++
++Stochastic Fairness Queueing is a classless queueing discipline available for
++traffic control with the 
++.BR tc (8)
++command.
++
++SFQ does not shape traffic but only schedules the transmission of packets, based on 'flows'. 
++The goal is to ensure fairness so that each flow is able to send data in turn, thus preventing
++any single flow from drowning out the rest.
++
++This may in fact have some effect in mitigating a Denial of Service attempt.
++
++SFQ is work-conserving and therefore always delivers a packet if it has one available.
++.SH ALGORITHM
++On enqueueing, each packet is assigned to a hash bucket, based on
++.TP
++(i)
++Source address
++.TP
++(ii)
++Destination address
++.TP
++(iii)
++Source port
++.P
++If these are available. SFQ knows about ipv4 and ipv6 and also UDP, TCP and ESP. 
++Packets with other protocols are hashed based on the 32bits representation of their 
++destination and the socket they belong to. A flow corresponds mostly to a TCP/IP 
++connection.
++
++Each of these buckets should represent a unique flow. Because multiple flows may
++get hashed to the same bucket, the hashing algorithm is perturbed at configurable 
++intervals so that the unfairness lasts only for a short while. Perturbation may 
++however cause some inadvertent packet reordering to occur.
++
++When dequeuing, each hashbucket with data is queried in a round robin fashion.
++
++The compile time maximum length of the SFQ is 128 packets, which can be spread over
++at most 128 buckets of 1024 available. In case of overflow, tail-drop is performed
++on the fullest bucket, thus maintaining fairness.
++
++.SH PARAMETERS
++.TP 
++perturb
++Interval in seconds for queue algorithm perturbation. Defaults to 0, which means that 
++no perturbation occurs. Do not set too low for each perturbation may cause some packet
++reordering. Advised value: 10
++.TP 
++quantum
++Amount of bytes a flow is allowed to dequeue during a round of the round robin process.
++Defaults to the MTU of the interface which is also the advised value and the minimum value.
++
++.SH EXAMPLE & USAGE
++
++To attach to device ppp0:
++.P
++# tc qdisc add dev ppp0 root sfq perturb 10
++.P
++Please note that SFQ, like all non-shaping (work-conserving) qdiscs, is only useful 
++if it owns the queue.
++This is the case when the link speed equals the actually available bandwidth. This holds 
++for regular phone modems, ISDN connections and direct non-switched ethernet links. 
++.P
++Most often, cable modems and DSL devices do not fall into this category. The same holds 
++for when connected to a switch  and trying to send data to a congested segment also 
++connected to the switch.
++.P
++In this case, the effective queue does not reside within Linux and is therefore not 
++available for scheduling.
++.P
++Embed SFQ in a classful qdisc to make sure it owns the queue.
++
++.SH SOURCE
++.TP 
++o
++Paul E. McKenney "Stochastic Fairness Queuing",
++IEEE INFOCOMM'90 Proceedings, San Francisco, 1990.
++
++.TP
++o
++Paul E. McKenney "Stochastic Fairness Queuing",
++"Interworking: Research and Experience", v.2, 1991, p.113-131.
++
++.TP 
++o
++See also:
++M. Shreedhar and George Varghese "Efficient Fair
++Queuing using Deficit Round Robin", Proc. SIGCOMM 95.
++
++.SH SEE ALSO
++.BR tc (8)
++
++.SH AUTHOR
++Alexey N. Kuznetsov, <kuznet@ms2.inr.ac.ru>. This manpage maintained by
++bert hubert <ahu@ds9a.nl>
++
++
+diff -Nru iproute2-orig/man/tc-tbf.8 iproute2/man/tc-tbf.8
+--- iproute2-orig/man/tc-tbf.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/tc-tbf.8	2003-12-13 01:23:58.000000000 +0100
+@@ -0,0 +1,138 @@
++.TH TC 8 "13 December 2001" "iproute2" "Linux"
++.SH NAME
++tbf \- Token Bucket Filter
++.SH SYNOPSIS
++.B tc qdisc ... tbf rate
++rate
++.B burst
++bytes/cell
++.B ( latency 
++ms 
++.B | limit
++bytes
++.B ) [ mpu 
++bytes
++.B [ peakrate
++rate
++.B mtu
++bytes/cell
++.B ] ]
++.P
++burst is also known as buffer and maxburst. mtu is also known as minburst.
++.SH DESCRIPTION
++
++The Token Bucket Filter is a classless queueing discipline available for
++traffic control with the 
++.BR tc (8)
++command.
++
++TBF is a pure shaper and never schedules traffic. It is non-work-conserving and may throttle
++itself, although packets are available, to ensure that the configured rate is not exceeded. 
++On all platforms except for Alpha,
++it is able to shape up to 1mbit/s of normal traffic with ideal minimal burstiness, 
++sending out  data exactly at the configured rates. 
++
++Much higher rates are possible but at the cost of losing the minimal burstiness. In that
++case, data is on average dequeued at the configured rate but may be sent much faster at millisecond 
++timescales. Because of further queues living in network adaptors, this is often not a problem.
++
++Kernels with a higher 'HZ' can achieve higher rates with perfect burstiness. On Alpha, HZ is ten
++times higher, leading to a 10mbit/s limit to perfection. These calculations hold for packets of on 
++average 1000 bytes.
++
++.SH ALGORITHM
++As the name implies, traffic is filtered based on the expenditure of 
++.B tokens.
++Tokens roughly correspond to bytes, with the additional constraint that each packet consumes
++some tokens, no matter how small it is. This reflects the fact that even a zero-sized packet occupies
++the link for some time.
++
++On creation, the TBF is stocked with tokens which correspond to the amount of traffic that can be burst 
++in one go. Tokens arrive at a steady rate, until the bucket is full.
++
++If no tokens are available, packets are queued, up to a configured limit. The TBF now 
++calculates the token deficit, and throttles until the first packet in the queue can be sent.
++
++If it is not acceptable to burst out packets at maximum speed, a peakrate can be configured 
++to limit the speed at which the bucket empties. This peakrate is implemented as a second TBF
++with a very small bucket, so that it doesn't burst.
++
++To achieve perfection, the second bucket may contain only a single packet, which leads to 
++the earlier mentioned 1mbit/s limit. 
++
++This limit is caused by the fact that the kernel can only throttle for at minimum 1 'jiffy', which depends
++on HZ as 1/HZ. For perfect shaping, only a single packet can get sent per jiffy - for HZ=100, this means 100 
++packets of on average 1000 bytes each, which roughly corresponds to 1mbit/s.
++
++.SH PARAMETERS
++See 
++.BR tc (8)
++for how to specify the units of these values.
++.TP
++limit or latency
++Limit is the number of bytes that can be queued waiting for tokens to become
++available. You can also specify this the other way around by setting the
++latency parameter, which specifies the maximum amount of time a packet can
++sit in the TBF. The latter calculation takes into account the size of the
++bucket, the rate and possibly the peakrate (if set). These two parameters
++are mutually exclusive. 
++.TP
++burst
++Also known as buffer or maxburst.
++Size of the bucket, in bytes. This is the maximum amount of bytes that tokens can be available for instantaneously. 
++In general, larger shaping rates require a larger buffer. For 10mbit/s on Intel, you need at least 10kbyte buffer 
++if you want to reach your configured rate!
++
++If your buffer is too small, packets may be dropped because more tokens arrive per timer tick than fit in your bucket.
++The minimum buffer size can be calculated by dividing the rate by HZ.
++
++Token usage calculations are performed using a table which by default has a resolution of 8 packets. 
++This resolution can be changed by specifying the 
++.B cell
++size with the burst. For example, to specify a 6000 byte buffer with a 16
++byte cell size, set a burst of 6000/16. You will probably never have to set
++this. Must be an integral power of 2.
++.TP
++mpu
++A zero-sized packet does not use zero bandwidth. For ethernet, no packet uses less than 64 bytes. The Minimum Packet Unit 
++determines the minimal token usage (specified in bytes) for a packet. Defaults to zero.
++.TP
++rate
++The speed knob. See remarks above about limits! See 
++.BR tc (8)
++for units.
++.PP
++Furthermore, if a peakrate is desired, the following parameters are available:
++
++.TP
++peakrate
++Maximum depletion rate of the bucket. Limited to 1mbit/s on Intel, 10mbit/s on Alpha. The peakrate does 
++not need to be set, it is only necessary if perfect millisecond timescale shaping is required.
++
++.TP
++mtu/minburst
++Specifies the size of the peakrate bucket. For perfect accuracy, should be set to the MTU of the interface.
++If a peakrate is needed, but some burstiness is acceptable, this size can be raised. A 3000 byte minburst
++allows around 3mbit/s of peakrate, given 1000 byte packets.
++
++Like the regular burstsize you can also specify a 
++.B cell
++size.
++.SH EXAMPLE & USAGE
++
++To attach a TBF with a sustained maximum rate of 0.5mbit/s, a peakrate of 1.0mbit/s,
++a 5kilobyte buffer, with a pre-bucket queue size limit calculated so the TBF causes
++at most 70ms of latency, with perfect peakrate behaviour, issue:
++.P
++# tc qdisc add dev eth0 root tbf rate 0.5mbit \\
++  burst 5kb latency 70ms peakrate 1mbit       \\
++  minburst 1540
++
++.SH SEE ALSO
++.BR tc (8)
++
++.SH AUTHOR
++Alexey N. Kuznetsov, <kuznet@ms2.inr.ac.ru>. This manpage maintained by
++bert hubert <ahu@ds9a.nl>
++
++
+diff -Nru iproute2-orig/man/tc.8 iproute2/man/tc.8
+--- iproute2-orig/man/tc.8	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/man/tc.8	2003-12-13 01:23:58.000000000 +0100
+@@ -0,0 +1,348 @@
++.TH TC 8 "16 December 2001" "iproute2" "Linux"
++.SH NAME
++tc \- show / manipulate traffic control settings
++.SH SYNOPSIS
++.B tc qdisc [ add | change | replace | link ] dev 
++DEV 
++.B 
++[ parent 
++qdisc-id 
++.B | root ] 
++.B [ handle 
++qdisc-id ] qdisc
++[ qdisc specific parameters ]
++.P
++
++.B tc class [ add | change | replace ] dev
++DEV
++.B parent 
++qdisc-id 
++.B [ classid 
++class-id ] qdisc
++[ qdisc specific parameters ]
++.P
++
++.B tc filter [ add | change | replace ] dev
++DEV
++.B  [ parent
++qdisc-id
++.B | root ] protocol
++protocol
++.B prio
++priority filtertype
++[ filtertype specific parameters ]
++.B flowid
++flow-id
++
++.B tc [-s | -d ] qdisc show [ dev 
++DEV 
++.B  ]
++.P
++.B tc [-s | -d ] class show dev 
++DEV 
++.P
++.B tc filter show dev 
++DEV 
++
++.SH DESCRIPTION
++.B Tc
++is used to configure Traffic Control in the Linux kernel. Traffic Control consists 
++of the following:
++
++.TP 
++SHAPING
++When traffic is shaped, its rate of transmission is under control. Shaping may 
++be more than lowering the available bandwidth - it is also used to smooth out 
++bursts in traffic for better network behaviour. Shaping occurs on egress.
++
++.TP 
++SCHEDULING
++By scheduling the transmission of packets it is possible to improve interactivity
++for traffic that needs it while still guaranteeing bandwidth to bulk transfers. Reordering
++is also called prioritizing, and happens only on egress.
++
++.TP
++POLICING
++Where shaping deals with transmission of traffic, policing pertains to traffic
++arriving. Policing thus occurs on ingress.
++
++.TP
++DROPPING
++Traffic exceeding a set bandwidth may also be dropped forthwith, both on 
++ingress and on egress.
++
++.P
++Processing of traffic is controlled by three kinds of objects: qdiscs, 
++classes and filters. 
++
++.SH QDISCS
++.B qdisc 
++is short for 'queueing discipline' and it is elementary to 
++understanding traffic control. Whenever the kernel needs to send a 
++packet to an interface, it is 
++.B enqueued
++to the qdisc configured for that interface. Immediately afterwards, the kernel
++tries to get as many packets as possible from the qdisc, for giving them
++to the network adaptor driver.
++
++A simple QDISC is the 'pfifo' one, which does no processing at all and is a pure 
++First In, First Out queue. It does however store traffic when the network interface
++can't handle it momentarily.
++
++.SH CLASSES
++Some qdiscs can contain classes, which contain further qdiscs - traffic may 
++then be enqueued in any of the inner qdiscs, which are within the
++.B classes.
++When the kernel tries to dequeue a packet from such a 
++.B classful qdisc
++it can come from any of the classes. A qdisc may for example prioritize 
++certain kinds of traffic by trying to dequeue from certain classes
++before others.
++
++.SH FILTERS
++A
++.B filter
++is used by a classful qdisc to determine in which class a packet will
++be enqueued. Whenever traffic arrives at a class with subclasses, it needs
++to be classified. Various methods may be employed to do so, one of these
++are the filters. All filters attached to the class are called, until one of 
++them returns with a verdict. If no verdict was made, other criteria may be 
++available. This differs per qdisc.
++
++It is important to notice that filters reside 
++.B within
++qdiscs - they are not masters of what happens.
++
++.SH CLASSLESS QDISCS
++The classless qdiscs are:
++.TP 
++[p|b]fifo
++Simplest usable qdisc, pure First In, First Out behaviour. Limited in 
++packets or in bytes.
++.TP
++pfifo_fast
++Standard qdisc for 'Advanced Router' enabled kernels. Consists of a three-band
++queue which honors Type of Service flags, as well as the priority that may be 
++assigned to a packet.
++.TP
++red
++Random Early Detection simulates physical congestion by randomly dropping
++packets when nearing configured bandwidth allocation. Well suited to very
++large bandwidth applications.
++.TP 
++sfq
++Stochastic Fairness Queueing reorders queued traffic so each 'session'
++gets to send a packet in turn.
++.TP
++tbf
++The Token Bucket Filter is suited for slowing traffic down to a precisely
++configured rate. Scales well to large bandwidths. 
++.SH CONFIGURING CLASSLESS QDISCS
++In the absence of classful qdiscs, classless qdiscs can only be attached at 
++the root of a device. Full syntax:
++.P
++.B tc qdisc add dev 
++DEV 
++.B root 
++QDISC QDISC-PARAMETERS
++
++To remove, issue
++.P
++.B tc qdisc del dev
++DEV
++.B root
++
++The  
++.B pfifo_fast
++qdisc is the automatic default in the absence of a configured qdisc.
++
++.SH CLASSFUL QDISCS
++The classful qdiscs are:
++.TP
++CBQ
++Class Based Queueing implements a rich linksharing hierarchy of classes. 
++It contains shaping elements as well as prioritizing capabilities. Shaping is
++performed using link idle time calculations based on average packet size and
++underlying link bandwidth. The latter may be ill-defined for some interfaces.
++.TP
++HTB
++The Hierarchy Token Bucket implements a rich linksharing hierarchy of 
++classes with an emphasis on conforming to existing practices. HTB facilitates
++guaranteeing bandwidth to classes, while also allowing specification of upper
++limits to inter-class sharing. It contains shaping elements, based on TBF and
++can prioritize classes.	
++.TP 
++PRIO
++The PRIO qdisc is a non-shaping container for a configurable number of 
++classes which are dequeued in order. This allows for easy prioritization 
++of traffic, where lower classes are only able to send if higher ones have 
++no packets available. To facilitate configuration, Type Of Service bits are 
++honored by default.
++.SH THEORY OF OPERATION
++Classes form a tree, where each class has a single parent. 
++A class may have multiple children. Some qdiscs allow for runtime addition
++of classes (CBQ, HTB) while others (PRIO) are created with a static number of 
++children.
++
++Qdiscs which allow dynamic addition of classes can have zero or more 
++subclasses to which traffic may be enqueued. 
++
++Furthermore, each class contains a
++.B leaf qdisc
++which by default has 
++.B pfifo 
++behaviour though another qdisc can be attached in place. This qdisc may again 
++contain classes, but each class can have only one leaf qdisc. 
++
++When a packet enters a classful qdisc it can be 
++.B classified
++to one of the classes within. Three criteria are available, although not all 
++qdiscs will use all three:
++.TP 
++tc filters
++If tc filters are attached to a class, they are consulted first 
++for relevant instructions. Filters can match on all fields of a packet header, 
++as well as on the firewall mark applied by ipchains or iptables. See 
++.BR tc-filters (8).
++.TP
++Type of Service
++Some qdiscs have built in rules for classifying packets based on the TOS field.
++.TP
++skb->priority
++Userspace programs can encode a class-id in the 'skb->priority' field using 
++the SO_PRIORITY option.
++.P
++Each node within the tree can have its own filters but higher level filters
++may also point directly to lower classes.
++
++If classification did not succeed, packets are enqueued to the leaf qdisc 
++attached to that class. Check qdisc specific manpages for details, however.
++
++.SH NAMING
++All qdiscs, classes and filters have IDs, which can either be specified
++or be automatically assigned. 
++
++IDs consist of a major number and a minor number, separated by a colon.
++
++.TP 
++QDISCS
++A qdisc, which potentially can have children, 
++gets assigned a major number, called a 'handle', leaving the minor 
++number namespace available for classes. The handle is expressed as '10:'. 
++It is customary to explicitly assign a handle to qdiscs expected to have 
++children.
++
++.TP 
++CLASSES
++Classes residing under a qdisc share their qdisc major number, but each have
++a separate minor number called a 'classid' that has no relation to their 
++parent classes, only to their parent qdisc. The same naming custom as for 
++qdiscs applies.
++
++.TP 
++FILTERS
++Filters have a three part ID, which is only needed when using a hashed
++filter hierarchy, for which see
++.BR tc-filters (8).
++.SH UNITS
++All parameters accept a floating point number, possibly followed by a unit.
++.P
++Bandwidths or rates can be specified in:
++.TP 
++kbps
++Kilobytes per second
++.TP
++mbps
++Megabytes per second
++.TP
++kbit
++Kilobits per second
++.TP
++mbit
++Megabits per second
++.TP
++bps or a bare number
++Bits per second
++.P
++Amounts of data can be specified in:
++.TP
++kb or k
++Kilobytes
++.TP
++mb or m
++Megabytes
++.TP
++mbit
++Megabits
++.TP
++kbit
++Kilobits
++.TP
++b or a bare number
++Bytes.
++.P
++Lengths of time can be specified in:
++.TP
++s, sec or secs
++Whole seconds
++.TP
++ms, msec or msecs
++Milliseconds
++.TP
++us, usec, usecs or a bare number
++Microseconds.
++
++.SH TC COMMANDS
++The following commands are available for qdiscs, classes and filter:
++.TP
++add
++Add a qdisc, class or filter to a node. For all entities, a 
++.B parent
++must be passed, either by passing its ID or by attaching directly to the root of a device. 
++When creating a qdisc or a filter, it can be named with the
++.B handle
++parameter. A class is named with the
++.B classid
++parameter.
++
++.TP
++remove
++A qdisc can be removed by specifying its handle, which may also be 'root'. All subclasses and their leaf qdiscs 
++are automatically deleted, as well as any filters attached to them.
++
++.TP
++change
++Some entities can be modified 'in place'. Shares the syntax of 'add', with the exception
++that the handle cannot be changed and neither can the parent. In other words, 
++.B
++change 
++cannot move a node.
++
++.TP
++replace
++Performs a nearly atomic remove/add on an existing node id. If the node does not exist yet
++it is created.
++
++.TP
++link
++Only available for qdiscs and performs a replace where the node 
++must exist already.
++
++
++.SH HISTORY
++.B tc
++was written by Alexey N. Kuznetsov and added in Linux 2.2.
++.SH SEE ALSO
++.BR tc-cbq (8),
++.BR tc-htb (8),
++.BR tc-sfq (8),
++.BR tc-red (8),
++.BR tc-tbf (8),
++.BR tc-pfifo (8),
++.BR tc-bfifo (8),
++.BR tc-pfifo_fast (8),
++.BR tc-filters (8)
++
++.SH AUTHOR
++Manpage maintained by bert hubert (ahu@ds9a.nl)
++
+diff -Nru iproute2-orig/misc/ss.c iproute2/misc/ss.c
+--- iproute2-orig/misc/ss.c	2004-05-11 20:28:58.096582448 +0200
++++ iproute2/misc/ss.c	2004-05-11 20:29:09.012895215 +0200
+@@ -33,7 +33,7 @@
+ #include "tcp_diag.h"
+ #include "SNAPSHOT.h"
+ 
+-#include <linux/tcp.h>
++#include <netinet/tcp.h>
+ 
+ int resolve_hosts = 0;
+ int resolve_services = 1;
+@@ -2336,7 +2336,7 @@
+ 
+ 	current_filter.states = default_filter.states;
+ 
+-	while ((ch = getopt(argc, argv, "h?aletuwxnro460spfmiA:D:F:vV")) != EOF) {
++	while ((ch = getopt(argc, argv, "h?aletuwxnro460spf:miA:D:F:vV")) != EOF) {
+ 		switch(ch) {
+ 		case 'n':
+ 			resolve_services = 0;
+diff -Nru iproute2-orig/tc/Makefile iproute2/tc/Makefile
+--- iproute2-orig/tc/Makefile	2004-05-11 20:28:58.086582162 +0200
++++ iproute2/tc/Makefile	2004-05-11 20:29:09.012895215 +0200
+@@ -25,6 +25,7 @@
+ endif
+ 
+ #TCMODULES += q_csz.o
++TCMODULES += q_htb.o
+ #TCMODULES += q_hpfq.o
+ #TCMODULES += q_hfsc.o
+ 
+diff -Nru iproute2-orig/tc/Makefile~ iproute2/tc/Makefile~
+--- iproute2-orig/tc/Makefile~	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/tc/Makefile~	2004-05-11 20:29:09.013895243 +0200
+@@ -0,0 +1,54 @@
++TCOBJ=tc.o tc_qdisc.o tc_class.o tc_filter.o tc_util.o m_police.o m_estimator.o
++
++include ../Config
++
++TCMODULES :=
++TCMODULES += q_fifo.o
++TCMODULES += q_sfq.o
++TCMODULES += q_red.o
++TCMODULES += q_prio.o
++TCMODULES += q_tbf.o
++TCMODULES += q_cbq.o
++TCMODULES += f_rsvp.o
++TCMODULES += f_u32.o
++TCMODULES += f_route.o
++TCMODULES += f_fw.o
++ifeq ($(TC_CONFIG_DIFFSERV),y)
++  TCMODULES += q_dsmark.o
++  TCMODULES += q_gred.o
++  TCMODULES += f_tcindex.o
++  TCMODULES += q_ingress.o
++endif
++ifeq ($(TC_CONFIG_ATM),y)
++  TCMODULES += q_atm.o
++  LDLIBS += -latm
++endif
++
++#TCMODULES += q_csz.o
++#TCMODULES += q_hpfq.o
++#TCMODULES += q_hfsc.o
++
++TCOBJ += $(TCMODULES)
++
++TCLIB := tc_core.o
++TCLIB += tc_red.o
++TCLIB += tc_cbq.o
++TCLIB += tc_estimator.o
++
++LDLIBS += -L. -ltc -lm -ldl
++LDFLAGS += -Wl,-export-dynamic
++
++all: libtc.a tc
++
++tc: $(TCOBJ) $(LIBNETLINK) $(LIBUTIL) $(TCLIB)
++
++libtc.a: $(TCLIB)
++	$(AR) rcs $@ $(TCLIB)
++
++install: all
++	install -m 0755 -s tc $(DESTDIR)$(SBINDIR)
++
++
++clean:
++	rm -f $(TCOBJ) $(TCLIB) libtc.a tc
++
+diff -Nru iproute2-orig/tc/q_htb.c iproute2/tc/q_htb.c
+--- iproute2-orig/tc/q_htb.c	1970-01-01 01:00:00.000000000 +0100
++++ iproute2/tc/q_htb.c	2004-05-11 20:29:09.014895272 +0200
+@@ -0,0 +1,306 @@
++/*
++ * q_htb.c		HTB.
++ *
++ *		This program is free software; you can redistribute it and/or
++ *		modify it under the terms of the GNU General Public License
++ *		as published by the Free Software Foundation; either version
++ *		2 of the License, or (at your option) any later version.
++ *
++ * Authors:	Martin Devera, devik@cdi.cz
++ *
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <syslog.h>
++#include <fcntl.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <arpa/inet.h>
++#include <string.h>
++
++#include "utils.h"
++#include "tc_util.h"
++
++#define HTB_TC_VER 0x30003
++#if HTB_TC_VER >> 16 != TC_HTB_PROTOVER
++#error "Different kernel and TC HTB versions"
++#endif
++
++static void explain(void)
++{
++	fprintf(stderr, "Usage: ... qdisc add ... htb [default N] [r2q N]\n"
++		" default  minor id of class to which unclassified packets are sent {0}\n"
++		" r2q      DRR quantums are computed as rate in Bps/r2q {10}\n"
++		" debug    string of 16 numbers each 0-3 {0}\n\n"
++		"... class add ... htb rate R1 burst B1 [prio P] [slot S] [pslot PS]\n"
++		"                      [ceil R2] [cburst B2] [mtu MTU] [quantum Q]\n"
++		" rate     rate allocated to this class (class can still borrow)\n"
++		" burst    max bytes burst which can be accumulated during idle period {computed}\n"
++		" ceil     definite upper class rate (no borrows) {rate}\n"
++		" cburst   burst but for ceil {computed}\n"
++		" mtu      max packet size we create rate map for {1600}\n"
++		" prio     priority of leaf; lower are served first {0}\n"
++		" quantum  how much bytes to serve from leaf at once {use r2q}\n"
++		"\nTC HTB version %d.%d\n",HTB_TC_VER>>16,HTB_TC_VER&0xffff
++		);
++}
++
++static void explain1(char *arg)
++{
++    fprintf(stderr, "Illegal \"%s\"\n", arg);
++    explain();
++}
++
++
++#define usage() return(-1)
++
++static int htb_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
++{
++	struct tc_htb_glob opt;
++	struct rtattr *tail;
++	unsigned i; char *p;
++	memset(&opt,0,sizeof(opt));
++	opt.rate2quantum = 10;
++	opt.version = 3;
++
++	while (argc > 0) {
++		if (matches(*argv, "r2q") == 0) {
++		    NEXT_ARG();
++		    if (get_u32(&opt.rate2quantum, *argv, 10)) {
++			explain1("r2q"); return -1;
++		    }
++		} else if (matches(*argv, "default") == 0) {
++		    NEXT_ARG();
++		    if (get_u32(&opt.defcls, *argv, 16)) {
++			explain1("default"); return -1;
++		    }
++		} else if (matches(*argv, "debug") == 0) {
++		    NEXT_ARG(); p = *argv;
++		    for (i=0; i<16; i++,p++) {
++			if (*p<'0' || *p>'3') break;
++			opt.debug |= (*p-'0')<<(2*i);
++		    }
++		} else {
++			fprintf(stderr, "What is \"%s\"?\n", *argv);
++			explain();
++			return -1;
++		}
++		argc--; argv++;
++	}
++	tail = (struct rtattr*)(((void*)n)+NLMSG_ALIGN(n->nlmsg_len));
++	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
++	addattr_l(n, 2024, TCA_HTB_INIT, &opt, NLMSG_ALIGN(sizeof(opt)));
++	tail->rta_len = (((void*)n)+NLMSG_ALIGN(n->nlmsg_len)) - (void*)tail;
++	return 0;
++}
++
++static int htb_parse_class_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n)
++{
++	int ok=0;
++	struct tc_htb_opt opt;
++	__u32 rtab[256],ctab[256];
++	unsigned buffer=0,cbuffer=0;
++	int cell_log=-1,ccell_log = -1,mtu;
++	struct rtattr *tail;
++
++	memset(&opt, 0, sizeof(opt)); mtu = 1600; /* eth packet len */
++
++	while (argc > 0) {
++		if (matches(*argv, "prio") == 0) {
++			NEXT_ARG();
++			if (get_u32(&opt.prio, *argv, 10)) {
++				explain1("prio"); return -1;
++			}
++			ok++;
++		} else if (matches(*argv, "mtu") == 0) {
++			NEXT_ARG();
++			if (get_u32(&mtu, *argv, 10)) {
++				explain1("mtu"); return -1;
++			}
++		} else if (matches(*argv, "quantum") == 0) {
++			NEXT_ARG();
++			if (get_u32(&opt.quantum, *argv, 10)) {
++				explain1("quantum"); return -1;
++			}
++		} else if (matches(*argv, "burst") == 0 ||
++			strcmp(*argv, "buffer") == 0 ||
++			strcmp(*argv, "maxburst") == 0) {
++			NEXT_ARG();
++			if (get_size_and_cell(&buffer, &cell_log, *argv) < 0) {
++				explain1("buffer");
++				return -1;
++			}
++			ok++;
++		} else if (matches(*argv, "cburst") == 0 ||
++			strcmp(*argv, "cbuffer") == 0 ||
++			strcmp(*argv, "cmaxburst") == 0) {
++			NEXT_ARG();
++			if (get_size_and_cell(&cbuffer, &ccell_log, *argv) < 0) {
++				explain1("cbuffer");
++				return -1;
++			}
++			ok++;
++		} else if (strcmp(*argv, "ceil") == 0) {
++			NEXT_ARG();
++			if (opt.ceil.rate) {
++				fprintf(stderr, "Double \"ceil\" spec\n");
++				return -1;
++			}
++			if (get_rate(&opt.ceil.rate, *argv)) {
++				explain1("ceil");
++				return -1;
++			}
++			ok++;
++		} else if (strcmp(*argv, "rate") == 0) {
++			NEXT_ARG();
++			if (opt.rate.rate) {
++				fprintf(stderr, "Double \"rate\" spec\n");
++				return -1;
++			}
++			if (get_rate(&opt.rate.rate, *argv)) {
++				explain1("rate");
++				return -1;
++			}
++			ok++;
++		} else if (strcmp(*argv, "help") == 0) {
++			explain();
++			return -1;
++		} else {
++			fprintf(stderr, "What is \"%s\"?\n", *argv);
++			explain();
++			return -1;
++		}
++		argc--; argv++;
++	}
++
++/*	if (!ok)
++		return 0;*/
++
++	if (opt.rate.rate == 0) {
++		fprintf(stderr, "\"rate\" is required.\n");
++		return -1;
++	}
++	/* if ceil params are missing, use the same as rate */
++	if (!opt.ceil.rate) opt.ceil = opt.rate;
++
++	/* compute minimal allowed burst from rate; mtu is added here to make
++	   sute that buffer is larger than mtu and to have some safeguard space */
++	if (!buffer) buffer = opt.rate.rate / HZ + mtu;
++	if (!cbuffer) cbuffer = opt.ceil.rate / HZ + mtu;
++
++	if ((cell_log = tc_calc_rtable(opt.rate.rate, rtab, cell_log, mtu, 0)) < 0) {
++		fprintf(stderr, "htb: failed to calculate rate table.\n");
++		return -1;
++	}
++	opt.buffer = tc_calc_xmittime(opt.rate.rate, buffer);
++	opt.rate.cell_log = cell_log;
++	
++	if ((ccell_log = tc_calc_rtable(opt.ceil.rate, ctab, cell_log, mtu, 0)) < 0) {
++		fprintf(stderr, "htb: failed to calculate ceil rate table.\n");
++		return -1;
++	}
++	opt.cbuffer = tc_calc_xmittime(opt.ceil.rate, cbuffer);
++	opt.ceil.cell_log = ccell_log;
++
++	tail = (struct rtattr*)(((void*)n)+NLMSG_ALIGN(n->nlmsg_len));
++	addattr_l(n, 1024, TCA_OPTIONS, NULL, 0);
++	addattr_l(n, 2024, TCA_HTB_PARMS, &opt, sizeof(opt));
++	addattr_l(n, 3024, TCA_HTB_RTAB, rtab, 1024);
++	addattr_l(n, 4024, TCA_HTB_CTAB, ctab, 1024);
++	tail->rta_len = (((void*)n)+NLMSG_ALIGN(n->nlmsg_len)) - (void*)tail;
++	return 0;
++}
++
++static int htb_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
++{
++	struct rtattr *tb[TCA_HTB_RTAB+1];
++	struct tc_htb_opt *hopt;
++	struct tc_htb_glob *gopt;
++	double buffer,cbuffer;
++	SPRINT_BUF(b1);
++	SPRINT_BUF(b2);
++
++	if (opt == NULL)
++		return 0;
++
++	memset(tb, 0, sizeof(tb));
++	parse_rtattr(tb, TCA_HTB_RTAB, RTA_DATA(opt), RTA_PAYLOAD(opt));
++
++	if (tb[TCA_HTB_PARMS]) {
++
++	    hopt = RTA_DATA(tb[TCA_HTB_PARMS]);
++	    if (RTA_PAYLOAD(tb[TCA_HTB_PARMS])  < sizeof(*hopt)) return -1;
++
++		if (!hopt->level) {
++			fprintf(f, "prio %d ", (int)hopt->prio);
++			if (show_details)
++				fprintf(f, "quantum %d ", (int)hopt->quantum);
++		}
++	    fprintf(f, "rate %s ", sprint_rate(hopt->rate.rate, b1));
++	    buffer = ((double)hopt->rate.rate*tc_core_tick2usec(hopt->buffer))/1000000;
++	    fprintf(f, "ceil %s ", sprint_rate(hopt->ceil.rate, b1));
++	    cbuffer = ((double)hopt->ceil.rate*tc_core_tick2usec(hopt->cbuffer))/1000000;
++	    if (show_details) {
++		fprintf(f, "burst %s/%u mpu %s ", sprint_size(buffer, b1),
++			1<<hopt->rate.cell_log, sprint_size(hopt->rate.mpu, b2));
++		fprintf(f, "cburst %s/%u mpu %s ", sprint_size(cbuffer, b1),
++			1<<hopt->ceil.cell_log, sprint_size(hopt->ceil.mpu, b2));
++		fprintf(f, "level %d ", (int)hopt->level);
++	    } else {
++		fprintf(f, "burst %s ", sprint_size(buffer, b1));
++		fprintf(f, "cburst %s ", sprint_size(cbuffer, b1));
++	    }
++	    if (show_raw)
++		fprintf(f, "buffer [%08x] cbuffer [%08x] ", 
++			hopt->buffer,hopt->cbuffer);
++	}
++	if (tb[TCA_HTB_INIT]) {
++	    gopt = RTA_DATA(tb[TCA_HTB_INIT]);
++	    if (RTA_PAYLOAD(tb[TCA_HTB_INIT])  < sizeof(*gopt)) return -1;
++
++	    fprintf(f, "r2q %d default %x direct_packets_stat %u", 
++		    gopt->rate2quantum,gopt->defcls,gopt->direct_pkts);
++		if (show_details)
++			fprintf(f," ver %d.%d",gopt->version >> 16,gopt->version & 0xffff);
++	}
++	return 0;
++}
++
++static int htb_print_xstats(struct qdisc_util *qu, FILE *f, struct rtattr *xstats)
++{
++	struct tc_htb_xstats *st;
++	if (xstats == NULL)
++		return 0;
++
++	if (RTA_PAYLOAD(xstats) < sizeof(*st))
++		return -1;
++
++	st = RTA_DATA(xstats);
++	fprintf(f, " lended: %u borrowed: %u giants: %u\n", 
++		st->lends,st->borrows,st->giants);
++	fprintf(f, " tokens: %d ctokens: %d\n", st->tokens,st->ctokens);
++	return 0;
++}
++
++struct qdisc_util htb_util = {
++	NULL,
++	"htb",
++	htb_parse_opt,
++	htb_print_opt,
++	htb_print_xstats,
++	htb_parse_class_opt,
++	htb_print_opt,
++};
++
++/* for testing of old one */
++struct qdisc_util htb2_util = {
++	NULL,
++	"htb2",
++	htb_parse_opt,
++	htb_print_opt,
++	htb_print_xstats,
++	htb_parse_class_opt,
++	htb_print_opt,
++};

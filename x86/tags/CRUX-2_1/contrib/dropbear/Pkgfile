@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.4 2005/03/09 18:59:59 jue Exp $
+# Description: Small and secure SSH2 server and client
+# URL:         http://matt.ucc.asn.au/dropbear/dropbear.html
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=dropbear
+version=0.45
+release=1
+source=(http://matt.ucc.asn.au/$name/$name-$version.tar.bz2 \
+        $name)
+
+build () {
+    cd $name-$version
+    sed -i 's|libexec|lib/ssh|' options.h
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+    mkdir -p $PKG/{etc/{rc.d,dropbear},usr/man/man8}
+    install dropbear{.8,key.8} $PKG/usr/man/man8
+    install -m 755 ../dropbear $PKG/etc/rc.d
+}

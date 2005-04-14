@@ -1,0 +1,13 @@
+README for ghostscript 7.05.x
+
+REQUIREMENTS
+1. If configure finds an already installed cups and
+   gimp-print package, the cups and the stp driver 
+   will be compiled into the ghostscript binary.
+   See also the README of the cups port.
+
+PRE-INSTALL
+
+POST-INSTALL
+   
+PRECAUTION

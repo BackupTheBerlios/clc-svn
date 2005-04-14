@@ -1,0 +1,25 @@
+# $Id: Pkgfile,v 1.3 2005/04/03 11:46:38 jue Exp $
+# Description: GTK version of the vim editor
+# URL:         http://www.vim.org/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  vim, gtk
+
+name=gvim
+version=6.3
+release=2
+source=(ftp://ftp.vim.org/pub/vim/unix/vim-$version.tar.bz2 \
+        vim-$version.patch)
+
+build () {
+    cd vim63
+    patch -p1 < ../vim-$version.patch
+    cd src
+    ./configure --prefix=/usr \
+                --with-vim-name=gvim \
+                --with-x=yes \
+                --enable-gui=gtk2 \
+                --disable-gpm \
+                --disable-nls
+    make VIMRTDIR=
+    make VIMRTDIR= DESTDIR=$PKG installvimbin
+}

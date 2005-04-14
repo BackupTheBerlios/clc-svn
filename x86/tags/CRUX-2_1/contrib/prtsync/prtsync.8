@@ -1,0 +1,83 @@
+.TH prtsync 8 "" "prtsync 0.3" ""
+.SH NAME
+prtsync \- Merge several \fBhttpup(8)\fP repositories to a centralized collection.
+
+.SH SYNOPSIS
+\fBprtsync [options] command\fP
+
+.SH DESCRIPTION
+\fBprtsync\fP aims to simplify the process of maintaining and sharing CRUX
+Linux ports.  Ports are build scripts for creating CRUX packages via \fBpkgmk(8)\fP.
+At one end, \fBprtsync\fP serves as a tagging mechanism for port authors to 
+indicate which of their ports to share.  Port authors need only to then host an 
+\fBhttpup(8)\fP repository containing their ports, and tell a CLC maintainer
+about it.  At the other end, \fBprtsync\fP cleanly and safely collects and merges 
+shared ports from specified repositories, using \fBhttpup(8)\fP for transport.
+
+.SH OPTIONS
+.TP
+.B -i
+When used with the \fBsync\fP command, \fBprtsync\fP will skip, or ignore, 
+tag files.  All ports will be synced.  This is sometimes helpful 
+when dealing with older \fBhttpup(8)\fP repositories.  To make this the default 
+behavior, adjust \fIignore_tag_files\fP in \fI/etc/prtsync.conf\fP.
+.TP
+.B -a
+When used with the \fBmerge\fP command, \fBprtsync\fP will archive the
+newly created repository to \fI$destination/TARBALL\fP.  This archive can 
+be used to suppliment initial checkouts, and may later be built into 
+\fBports(8)\fP and \fBhttpup(8)\fP.  To make this the default behavior, adjust
+\fIuse_archive\fP in \fI/etc/prtsync.conf/fP.
+
+.SH COMMANDS
+.TP
+.B tag [collection]
+Tag or untag ports in the specified collection (directory), or in the current working
+directory (\fI./\fP).  \fBprtsync\fP prompts for each port within the collection, suggesting
+a default action of keeping the current tag status.
+.TP
+.B sync
+Retrieve tagged ports from all collections specified in \fI/etc/prtsync/*.httpup\fP.  
+\fBprtsync\fP uses slightly modified, backwards compatible, \fBhttpup(8)\fP driver files:
+
+.br
+ROOT_DIR=/usr/ports/user
+.br
+URL=http://provider.net/~user/ports
+.br
+EMAIL=user@provider.net
+
+See \fBhttpup(8)\fP for more information.
+.TP
+.B merge
+Merges the most recently synced ports to a destination.  If more than one 
+version of the same port are present, neither are included in the destination, 
+and notification emails to the affected authors are sent.  Synced ports appearing 
+in CRUX's \fIbase\fP and \fIopt\fP collections are also excluded in the destination.
+
+.SH EXAMPLES
+.TP
+.B yes | prtsync tag ~/my/ports
+Would tag all ports in \fI~/my/ports\fP for sharing.
+.TP
+.B prtsync sync && prtsync merge
+Would first sync and then merge the collections specified in \fI/etc/prtsync/*.httpup\fP.
+These commands are kept separate because sometimes it may be desirable to only 
+sync ports, or only re-merge what was previously synced.
+
+.SH FILES
+.TP
+.B "/etc/prtsync.conf"
+Defines where the \fBhttpup(8)\fP driver files reside, where the merged ports should 
+reside, and other configuration variables.
+
+.SH SEE ALSO
+\fBhttpup(8)\fP, \fBports(8)\fP, \fBpkgmk(8)\fP
+
+.SH CREDITS
+Jay Dolan, Simone Rota, Johannes Winkelmann, Jukka Heino
+
+.SH COPYRIGHT
+\fBprtsync(8)\fP (prtsync) is Copyright (c) 2004-2005 Jay Dolan and is licensed through
+the GNU General Public License.
+

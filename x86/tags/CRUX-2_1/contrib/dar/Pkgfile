@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.5 2005/03/09 18:59:59 jue Exp $
+# Description: Disk ARchive - a sophisticated backup utility for Linux
+# URL:         http://dar.linux.free.fr/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=dar
+version=2.2.1
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz \
+        darrc)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make 
+    make DESTDIR=$PKG install
+    rm -r $PKG/usr/share
+    install -D -m 644 ../darrc $PKG/etc/darrc
+}

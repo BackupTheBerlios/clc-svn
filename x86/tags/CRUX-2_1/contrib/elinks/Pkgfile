@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.9 2005/04/08 09:08:51 jue Exp $
+# Description: Enhanced version of the links textmode WWW browser with frame/table support 
+# URL:         http://elinks.or.cz/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  openssl
+
+name=elinks
+version=0.10.4
+release=1
+source=(http://elinks.or.cz/download/$name-$version.tar.bz2)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr \
+                --sysconfdir=/usr/etc \
+                --enable-own-libc \
+                --enable-256-colors \
+                --disable-nls
+    make
+    make DESTDIR=$PKG install
+    ln -s elinks $PKG/usr/bin/links
+}

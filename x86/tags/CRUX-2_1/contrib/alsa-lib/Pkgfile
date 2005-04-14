@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.5 2005/03/08 22:06:39 danm Exp $
+# Description: ALSA libraries
+# URL: http://www.alsa-project.org
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: 
+
+name=alsa-lib
+version=1.0.8
+release=1
+source=(ftp://ftp.alsa-project.org/pub/lib/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+}

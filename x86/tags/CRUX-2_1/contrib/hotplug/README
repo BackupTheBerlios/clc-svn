@@ -1,0 +1,10 @@
+$Id: README,v 1.2 2005/03/01 20:15:41 jaeger Exp $
+
+README for hotplug
+
+
+If you need coldplugging support (modules loaded for devices that were present
+at boot-time that would normally be hotplugged), install coldplug and add
+"coldplug" to the SERVICES array in /etc/rc.conf. This port no longer has
+an init script so it's safe to remove "hotplug" from SERVICES.
+

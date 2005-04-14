@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.7 2005/04/05 19:42:04 vector Exp $
+# Description: Network bandwidth monitor
+# URL: http://trash.net/~reeler/bmon/
+# Maintainer: Jukka Heino, jukka dot karsikkopuu dot net
+# Packager: Jukka Heino, jukka dot karsikkopuu dot net
+# Depends on:
+
+name=bmon
+version=2.1.0
+release=1
+source=(http://people.suug.ch/~tgr/$name/files/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+}

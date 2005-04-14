@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 14:27:52 jaeger Exp $
+# Description: Openbox - fast, lightweight, standards-compliant window manager
+# URL: http://www.icculus.org/openbox/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: x11, freetype, glib, expat, libxml2
+
+name=openbox
+version=3.2
+release=1
+source=(http://www.icculus.org/$name/releases/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr --disable-nls
+	make
+	make DESTDIR=$PKG install
+}

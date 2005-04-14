@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.5 2005/03/12 15:25:49 jw Exp $
+# Packager:    Johannes Winkelmann, jw at tks6 dot net
+# Maintainer:  Johannes Winkelmann, jw at tks6 dot net
+# Description: an external dependency list for ports w/o CLC header
+# URL:         http://jw.tks6.net/files/crux/ 
+
+name=external-pkg-dependencies
+version=2.0
+release=5
+source=(opt.dependencies)
+
+build() {
+    mkdir -p $PKG/var/lib/pkg
+    touch $PKG/var/lib/pkg/external-pkg-dependencies
+
+    cat opt.dependencies > $PKG/var/lib/pkg/external-pkg-dependencies
+}

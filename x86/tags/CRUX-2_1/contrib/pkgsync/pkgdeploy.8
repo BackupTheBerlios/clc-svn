@@ -1,0 +1,37 @@
+.TH pkgdeploy 8 "" "pkgdeploy 1.1" ""
+.SH NAME
+pkgdeploy \- Integrate \fBpkgsync\fP with \fBprt-get\fP.
+
+.SH SYNOPSIS
+\fBpkgdeploy\fP is not meant to be run manually.
+
+.SH DESCRIPTION
+\fBpkgdeploy\fP is a wrapper script which can be used to couple 
+\fBprt-get\fP's \fIinstall\fP and \fIupgrade\fP actions with \fBpkgsync\fP's \fIcommit\fP 
+action.  Using \fBprt-get\fP and \fBpkgsync\fP in conjuction is a relatively easy 
+way to maintain numerous CRUX PCs.  For example, when the \fBpkgsync\fP master 
+host performs a \fBprt-get sysup\fP, the \fBpkgsync\fP repository will be updated; 
+thus pushing the new software base to the \fBpkgsync\fI client nodes.
+
+.SH USAGE
+To setup pkgdeploy, edit \fI/etc/prt-get.conf\fP and add the line:
+.TP
+.B addcommand pkgdeploy
+
+.SH FILES
+.TP
+.B "/etc/pkgdeploy.conf"
+Defines rules for deploying packages to specified repositories.  Rules are 
+listed in a simple array variable \fIdeploy_rules\fP in the format:
+\fIpackage:/path/to/repository\fP  
+
+.SH SEE ALSO
+pkgsync(8), prt-get(8), prt-get.conf(8)
+
+.SH CREDITS
+Jay Dolan, Jukka Heino, Johannes Winkelmann
+
+.SH COPYRIGHT
+pkgdeploy (pkgdeploy) is Copyright (c) 2004 Jay Dolan and is licensed through
+the GNU General Public License.
+

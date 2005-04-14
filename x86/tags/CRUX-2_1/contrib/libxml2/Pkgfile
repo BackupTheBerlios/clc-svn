@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.7 2005/03/08 22:06:39 danm Exp $
+# Description: XML library version 2
+# URL: http://xmlsoft.org/
+# Maintainer: Daniel Mueller, daniel at danm dot de
+
+name=libxml2
+version=2.6.17
+release=1
+source=(http://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/$name-$version.tar.bz2)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr --without-python
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/doc $PKG/usr/share/doc
+}

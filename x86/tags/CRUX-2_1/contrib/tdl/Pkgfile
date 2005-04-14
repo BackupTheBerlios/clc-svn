@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 19:00:07 jue Exp $
+# Description: Small command-line driven ToDo list manager 
+# URL:         http://www.rpcurnow.force9.co.uk/tdl/ 
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=tdl
+version=1.5.2
+release=1
+source=(http://www.rpcurnow.force9.co.uk/tdl/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make 
+    make DESTDIR=$PKG install
+}

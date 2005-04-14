@@ -1,0 +1,54 @@
+#! /bin/sh
+#
+# start_udev
+#
+# script to initialize /dev by using udev.
+#
+# Based on the udev init.d script
+#
+
+. /etc/udev/udev.conf
+
+prog=udev
+sysfs_dir=/sys
+bin=/sbin/udev
+udevd=/sbin/udevd
+
+create_missing() {
+
+	# sysfs doesn't export these
+	#
+	# Thanks to Gentoo for this list.
+
+	ln -snf /proc/self/fd $udev_root/fd
+	ln -snf /proc/self/fd/0 $udev_root/stdin
+	ln -snf /proc/self/fd/1 $udev_root/stdout
+	ln -snf /proc/self/fd/2 $udev_root/stderr
+	ln -snf /proc/kcore $udev_root/core
+
+	mkdir $udev_root/pts
+	mkdir $udev_root/shm
+
+	touch $udev_root/.udev
+}
+
+# don't use udev if sysfs is not mounted.
+if [ ! -d $sysfs_dir/block ]; then
+	exit 1
+fi
+
+echo -n "Mounting ramfs at $udev_root... "
+mount -n -t ramfs none $udev_root
+echo "done."
+
+# propogate /udev from /sys
+echo -n "Creating initial udev device nodes... "
+/sbin/udevstart
+create_missing
+echo "done."
+
+echo -n "Setting /sbin/udev as default hotplugger... "
+echo "/sbin/udev" > /proc/sys/kernel/hotplug
+echo "done."
+
+exit 0
