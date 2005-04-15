@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.13 2005/03/22 22:22:49 per Exp $
+# $Id: Pkgfile,v 1.14 2005/04/14 22:44:09 per Exp $
 # Maintainer: Per Lidén <per@fukt.bth.se>
 
 name=filesystem
@@ -49,6 +49,10 @@ build() {
     chmod 1777 $PKG/var/lock
     chmod 1777 $PKG/var/tmp
     chmod 0750 $PKG/root
+
+    # /dev
+    mknod $PKG/dev/console c 5 1
+    chmod 0600 $PKG/dev/console
 
     # /etc
     cp issue $PKG/etc

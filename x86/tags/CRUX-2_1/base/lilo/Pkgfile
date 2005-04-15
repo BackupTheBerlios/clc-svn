@@ -1,8 +1,8 @@
-# $Id: Pkgfile,v 1.24 2004/12/11 22:44:37 per Exp $
+# $Id: Pkgfile,v 1.25 2005/04/14 23:01:01 per Exp $
 # Maintainer: Per Lidén <per@fukt.bth.se>
 
 name=lilo
-version=22.6.1
+version=22.7
 release=1
 source=(http://home.san.rr.com/johninsd/pub/linux/lilo/$name-$version.src.tar.gz \
 	$name-$version.patch lilo.conf)
