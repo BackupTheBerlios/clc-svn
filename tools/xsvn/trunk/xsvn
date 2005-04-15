@@ -4,8 +4,17 @@
 #
 # TEST VERSION!
 
-VERSION=0.3
+VERSION=0.4
 BRANCHPOINT=branch-point
+
+
+# done:
+#   $ merge-from x86 trunk/gcc
+#   $ release base gcc
+#
+# missing
+#   $ diff x86 trunk/gcc
+#   $ merge-from sparc -r 25 base/gcc
 
 
 function assert() {
@@ -15,81 +24,96 @@ function assert() {
     fi
 }
 
-assert "XSVN_SRC_REPO must be set"  $XSVN_SRC_REPO
-assert "XSVN_BASE_REPO must be set" $XSVN_BASE_REPO
-assert "XSVN_RELEASE must be set" $XSVN_RELEASE
+if [ -f .xsvn-config ]; then
+    source .xsvn-config
+elif [ -f ../.xsvn-config ]; then
+    PWD=`pwd`
 
+    # TODO: use last path part as port name
+    
+    cd ..
+else
+    echo "No .xsvn-config found in . and .."
+    exit -1
+fi
+
+
+# XSVN_ARCH is the "work arch"
+
+assert "XSVN_BASE_URL must be set in .xsvn-config" $XSVN_BASE_URL
+assert "XSVN_ARCH must be set in .xsvn-config"  $XSVN_ARCH
 
 if [ "$1" = "merge-from" ]; then
 
-    if [ "$XSVN_SRC_REPO" = "" ]; then
-	echo "Error: XSVN_SRC_REPO not set"
-	exit -1
-    fi
+    assert "merge-from needs a collection name as first argument" $2
+    assert "merge-from needs a port name as second argument" $3
 
+    fromarch=$2
+    port=$3
+    portname=`basename $port`
 
-    assert "merge-from needs a port name as argument" $2
-
-    if [ ! -d $2 ]; then
-	echo "merging $2 from $XSVN_SRC_REPO/trunk/$2"
-	svn cp $XSVN_SRC_REPO/trunk/$2 $2
+    if [ ! -d $portname ]; then
+	echo "merging $port from $XSVN_BASE_URL/$fromarch/$port"
+	svn cp $XSVN_BASE_URL/$fromarch/$port $portname
 	
-	bp=`svn log -q $XSVN_SRC_REPO/trunk/$2|grep -r '^r'|\
+	bp=`svn log -q $XSVN_BASE_URL/$fromarch/$port|grep -r '^r'|\
 	    xargs|sed -e 's/r\([^|]*\)|.*/\1/g'`
 	echo "Setting branch-point to '$bp'"
-	svn propset $BRANCHPOINT $bp $2
+	svn propset $BRANCHPOINT $bp $portname
 
 	echo "Now commit (or revert) your changes"
     else
-	bp=`svn propget $BRANCHPOINT $2`
+	bp=`svn propget $BRANCHPOINT $portname`
 
 	if [ ! "$bp" = "" ]; then
-	    echo "Merging changes since $bp from $XSVN_SRC_REPO/trunk"
-	    svn merge -r $bp:HEAD $XSVN_SRC_REPO/trunk/$2 $2
-	    svn up $2
+	    echo "Merging changes since $bp from $XSVN_BASE_URL/$fromarch/$port"
+	    svn merge -r $bp:HEAD $XSVN_BASE_URL/$fromarch/$port $portname
+	    svn up $portname
 
-	    bp=`svn log -q $XSVN_SRC_REPO/trunk/$2|grep -r '^r'|\
+	    bp=`svn log -q $XSVN_BASE_URL/$fromarch/$port|grep -r '^r'|\
 		xargs|sed -e 's/r\([^|]*\)|.*/\1/g'`
 	    echo "Setting branch-point to '$bp'"
-	    svn propset $BRANCHPOINT $bp $2
+	    svn propset $BRANCHPOINT $bp $portname
 
 	    echo "Now commit (or revert) your changes"
 	else
 	    echo "Failed to determine branch-point; set property manually"
 	fi
     fi
-
 elif [ "$1" = "release" ]; then
-    if [ "$XSVN_BASE_REPO" = "" ]; then
-	echo "Error: XSVN_BASE_REPO not set"
-	exit -1
-    fi
     
     if [ "$XSVN_RELEASE" = "" ]; then
-	echo "Error: $XSVN_RELEASE not set"
+	echo "Error: XSVN_RELEASE not set"
 	exit -1
     fi
 
-    assert "release needs a collection name as first argument" $2
-    assert "release needs a port name as second argument" $3
+    assert "release needs a port name as first argument" $2
+    assert "release needs a collection name as second argument" $3
 
+    port=$2
+    coll=$3
     
-    svn ls $XSVN_BASE/tags/$XSVN_RELEASE/$2/$3 &> /dev/null
+    svn ls $XSVN_BASE_URL/tags/$XSVN_RELEASE/$coll/$port &> /dev/null
     if [ $? -eq 0 ]; then
-        out=`svn diff $XSVN_BASE_REPO/trunk/$3 $XSVN_BASE_REPO/tags/$XSVN_RELEASE/$2/$3`
+        out=`svn diff $XSVN_BASE_URL/$XSVN_ARCH/trunk/$port $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port`
         if [ $? -ne 0 ] || [ ! "$out" = "" ]; then
-            echo "Releasing $2 to $XSVN_BASE_REPO/tags/$XSVN_RELEASE/$2/$3"
+            echo "Releasing $port to $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port"
             echo "(removing old version)"
-	    svn del $XSVN_BASE_REPO/tags/$XSVN_RELEASE/$2/$3 \
+	    svn del $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port \
                     -m "drop old version"
             echo "adding new version"
-	    svn cp $XSVN_BASE_REPO/trunk/$3 \
-                   $XSVN_BASE_REPO/tags/$XSVN_RELEASE/$2/$3
+	    svn cp $XSVN_BASE_URL/$XSVN_ARCH/trunk/$port \
+                   $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port
         fi
     else
          echo "adding new version"
-         svn cp $XSVN_BASE_REPO/trunk/$3 \
-                $XSVN_BASE_REPO/tags/$XSVN_RELEASE/$2/$3
+         svn cp $XSVN_BASE_URL/$XSVN_ARCH/trunk/$port \
+                $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port
                      
-    fi     
+    fi
+else
+    echo "Usage: $0 <command>"
+    echo "   where command can be: merge-from, release"
 fi
+
+cd $PWD

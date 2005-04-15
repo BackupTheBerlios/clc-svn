@@ -1,0 +1,8 @@
+### how to merge from a tag:
+xsvn merge-from x86 tags/CRUX-2_1/base/gcc
+
+### how to merge from trunk (typical situation)
+xsvn merge-from x86 trunk/gcc
+
+### release a port
+xsvn release htop opt
