@@ -10,7 +10,7 @@ BRANCHPOINT=branch-point
 
 # done:
 #   $ merge-from x86 trunk/gcc
-#   $ release base gcc
+#   $ release gcc base
 #
 # missing
 #   $ diff x86 trunk/gcc
