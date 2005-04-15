@@ -1,3 +1,8 @@
+Flaws:
+- currently, merging only works from 'trunk/<port>'. This might be the wrong
+  approach, but implies that we merge from 'base/<port>' instead of just 
+  '<port>'
+
 Issues:
 - merge-from to a port which has not been merged before
 - merge-from from the "wrong" architecture, e.g. last merge was done from x86
