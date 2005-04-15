@@ -1,0 +1,44 @@
+# $Id: Pkgfile,v 1.24 2005/04/14 22:28:16 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=glibc
+version=2.3.5
+release=1
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.bz2 \
+	http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-2.6.11.2.tar.bz2 \
+	ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-$version.tar.bz2 \
+	$name-$version-execvp.patch hosts resolv.conf nsswitch.conf host.conf ld.so.conf)
+
+build() {
+    export CFLAGS="-Wa,-Av9a -O2"
+   
+    mkdir -p $PKG/usr/include
+    cp -r linux-libc-headers-2.6.11.2/include/linux $PKG/usr/include/linux
+    cp -r linux-libc-headers-2.6.11.2/include/asm-sparc $PKG/usr/include/asm
+    patch -p0 < $name-$version-execvp.patch
+    
+    mv linuxthreads* $name-$version
+    mkdir build
+    cd build
+    ../$name-$version/configure --prefix=/usr \
+				--libexecdir=/usr/lib \
+				--with-headers=$PKG/usr/include \
+				--with-tls \
+				--enable-kernel=2.6.0 \
+				--enable-add-ons \
+				--disable-profile \
+				--without-gd \
+                                --without-tls \
+                                --without-__thread \
+                                --enable-add-ons=linuxthreads \
+                                --build=sparc-unknown-linux-gnu \
+                                --host=sparc64-unknown-linux-gnu \
+                                --target=sparc64-unknown-linux-gnu
+    make
+    make check
+    make install_root=$PKG install
+    make install_root=$PKG localedata/install-locales
+    cp ../{hosts,resolv.conf,nsswitch.conf,host.conf,ld.so.conf} $PKG/etc
+    ln -sf ../usr/share/zoneinfo/UTC $PKG/etc/localtime
+    rm -rf $PKG/usr/share/locale
+}
