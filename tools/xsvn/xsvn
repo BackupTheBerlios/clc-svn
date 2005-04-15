@@ -1,0 +1,91 @@
+#!/bin/bash
+# subversion extension to support a special case of repeated merges
+# Johannes Winkelmann <jw@tks6.net>
+#
+# TEST VERSION!
+
+VERSION=0.3
+BRANCHPOINT=branch-point
+
+
+function assert() {
+    if [ "$2" = "" ]; then
+	echo $1
+	exit -1
+    fi
+}
+
+
+if [ "$1" = "merge-from" ]; then
+
+    if [ "$XSVN_SRC_REPO" = "" ]; then
+	echo "Error: XSVN_SRC_REPO not set"
+	exit -1
+    fi
+
+
+    assert "merge-from needs a port name as argument" $2
+
+    if [ ! -d $2 ]; then
+	echo "merging $2 from $XSVN_SRC_REPO/trunk/$2"
+	svn cp $XSVN_SRC_REPO/trunk/$2 $2
+	
+	bp=`svn log -q $XSVN_SRC_REPO/trunk/$2|grep -r '^r'|\
+	    xargs|sed -e 's/r\([^|]*\)|.*/\1/g'`
+	echo "Setting branch-point to '$bp'"
+	svn propset $BRANCHPOINT $bp $2
+
+	echo "Now commit (or revert) your changes"
+    else
+	bp=`svn propget $BRANCHPOINT $2`
+
+	if [ ! "$bp" = "" ]; then
+	    echo "Merging changes since $bp from $XSVN_SRC_REPO/trunk"
+	    svn merge -r $bp:HEAD $XSVN_SRC_REPO/trunk/$2 $2
+	    svn up $2
+
+	    bp=`svn log -q $XSVN_SRC_REPO/trunk/$2|grep -r '^r'|\
+		xargs|sed -e 's/r\([^|]*\)|.*/\1/g'`
+	    echo "Setting branch-point to '$bp'"
+	    svn propset $BRANCHPOINT $bp $2
+
+	    echo "Now commit (or revert) your changes"
+	else
+	    echo "Failed to determine branch-point; set property manually"
+	fi
+    fi
+
+elif [ "$1" = "release" ]; then
+    if [ "$XSVN_BASE_REPO" = "" ]; then
+	echo "Error: XSVN_BASE_REPO not set"
+	exit -1
+    fi
+    
+    if [ "$XSVN_RELEASE" = "" ]; then
+	echo "Error: $XSVN_RELEASE not set"
+	exit -1
+    fi
+
+    assert "release needs a collection name as first argument" $2
+    assert "release needs a port name as second argument" $3
+
+    
+    svn ls $XSVN_BASE/tags/$XSVN_RELEASE/$2/$3 &> /dev/null
+    if [ $? -eq 0 ]; then
+        out=`svn diff $XSVN_BASE_REPO/trunk/$3 $XSVN_BASE_REPO/tags/$XSVN_RELEASE/$2/$3`
+        if [ $? -ne 0 ] || [ ! "$out" = "" ]; then
+            echo "Releasing $2 to $XSVN_BASE_REPO/tags/$XSVN_RELEASE/$2/$3"
+            echo "(removing old version)"
+	    svn del $XSVN_BASE_REPO/tags/$XSVN_RELEASE/$2/$3 \
+                    -m "drop old version"
+            echo "adding new version"
+	    svn cp $XSVN_BASE_REPO/trunk/$3 \
+                   $XSVN_BASE_REPO/tags/$XSVN_RELEASE/$2/$3
+        fi
+    else
+         echo "adding new version"
+         svn cp $XSVN_BASE_REPO/trunk/$3 \
+                $XSVN_BASE_REPO/tags/$XSVN_RELEASE/$2/$3
+                     
+    fi     
+fi
