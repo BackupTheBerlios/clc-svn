@@ -1,0 +1,4 @@
+1b88a7d611dde6f9dcd0840e23a16d2f  gcc-3.4.3-fixinc.patch
+6526a9d6fa236c4e1c211c995e2b5d9d  gcc-3.4.3-linkonce.patch
+78a0babc4ca8a590e3e868b078567cc2  gcc-3.4.3-version.patch
+e744b30c834360fccac41eb7269a3011  gcc-3.4.3.tar.bz2
