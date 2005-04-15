@@ -10,10 +10,14 @@ BRANCHPOINT=branch-point
 
 function assert() {
     if [ "$2" = "" ]; then
-	echo $1
+	echo "Error: $1. Exiting"
 	exit -1
     fi
 }
+
+assert "XSVN_SRC_REPO must be set"  $XSVN_SRC_REPO
+assert "XSVN_BASE_REPO must be set" $XSVN_BASE_REPO
+assert "XSVN_RELEASE must be set" $XSVN_RELEASE
 
 
 if [ "$1" = "merge-from" ]; then
