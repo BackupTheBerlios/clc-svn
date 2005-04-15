@@ -1,12 +1,12 @@
-# $Id: Pkgfile,v 1.8 2005/03/09 14:27:52 jaeger Exp $
+# $Id: Pkgfile,v 1.9 2005/04/15 19:18:56 jaeger Exp $
 # Description: Userspace device management daemon
 # URL: http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 # Maintainer: Matt Housh, jaeger at morpheus dot net
 # Depends on: hotplug, sysfsutils
 
 name=udev
-version=054
-release=2
+version=057
+release=1
 source=(ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/$name-$version.tar.bz2 \
 	udev.rules start_udev $name-$version-makefile.diff)
 
