@@ -1,3 +1,10 @@
-- test, fix bugs
+Issues:
+- merge-from to a port which has not been merged before
+- merge-from from the "wrong" architecture, e.g. last merge was done from x86
+
+
+Features:
+- override of merge point
+- auto-guess port name
 - implement diff
 - make more reliable
