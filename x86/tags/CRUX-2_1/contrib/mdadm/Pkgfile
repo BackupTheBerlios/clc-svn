@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.5 2005/04/06 07:10:35 jue Exp $
+# $Id: Pkgfile,v 1.6 2005/04/15 13:19:04 jue Exp $
 # Description: Multiple device (RAID) admin tool
 # URL:         http://www.cse.unsw.edu.au/~neilb/source/mdadm/
 # Packager:    Gunter Coelle, gunter dot coelle at dbaudio dot com
@@ -6,7 +6,7 @@
 # Depends on: 
 
 name=mdadm
-version=1.10.0
+version=1.11.0
 release=1
 source=(http://www.cse.unsw.edu.au/~neilb/source/$name/$name-$version.tgz)
 
