@@ -1,0 +1,36 @@
+diff -Nru xca-0.5.1-old/widgets/MainWindow.cpp xca-0.5.1/widgets/MainWindow.cpp
+--- xca-0.5.1-old/widgets/MainWindow.cpp	2005-04-16 20:47:15.000000000 +0200
++++ xca-0.5.1/widgets/MainWindow.cpp	2005-04-16 21:14:32.000000000 +0200
+@@ -445,7 +445,7 @@
+ 	}
+ }
+ 
+-void MainWindow::dberr(const char *errpfx, char *msg)
++void MainWindow::dberr(const DbEnv *dbenv, const char *errpfx, const char *msg)
+ {
+ 	errorEx e(QString(errpfx) + "\n" + msg);
+ 	Error(e);
+diff -Nru xca-0.5.1-old/widgets/MainWindow.h xca-0.5.1/widgets/MainWindow.h
+--- xca-0.5.1-old/widgets/MainWindow.h	2005-04-16 20:47:15.000000000 +0200
++++ xca-0.5.1/widgets/MainWindow.h	2005-04-16 21:14:36.000000000 +0200
+@@ -104,7 +104,7 @@
+ 	int initPass();
+ 	static int passRead(char *buf, int size, int rwflag, void *userdata);
+ 	static int passWrite(char *buf, int size, int rwflag, void *userdata);
+-	static void dberr(const char *errpfx, char *msg);
++	static void dberr(const DbEnv*, const char *errpfx, const char *msg);
+ 	static NewX509 *newX509();
+ 	static QString md5passwd(const char *pass);
+ 	static void Error(errorEx &err);
+diff -Nru xca-0.5.1-old/widgets/clicklabel.cpp xca-0.5.1/widgets/clicklabel.cpp
+--- xca-0.5.1-old/widgets/clicklabel.cpp	2005-04-16 20:47:15.000000000 +0200
++++ xca-0.5.1/widgets/clicklabel.cpp	2005-04-16 20:48:11.000000000 +0200
+@@ -58,7 +58,7 @@
+ ClickLabel::ClickLabel( QWidget* parent,  const char* name, WFlags f )
+ 	:QLabel( parent, name, f )
+ {
+-	QFont font( font() );
++	QFont font;
+ 	font.setBold(true);
+ 	setFont( font );
+ 	setFrameShape( QLabel::Panel );

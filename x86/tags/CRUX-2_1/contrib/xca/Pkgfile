@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.2 2005/04/16 19:46:35 danm Exp $
+# Description: Graphical Certificate Authority
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# URL: http://xca.sourceforge.net/
+# Depends on: openssl, qt3
+
+name=xca
+version=0.5.1
+release=2
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz \
+	$name-$version.patch) 
+
+build () {
+	cd $name-$version
+	patch -p1 < $SRC/$name-$version.patch
+	prefix=/usr ./configure 
+	make
+	mkdir -p $PKG/usr/{bin,share}
+	make prefix=$PKG/usr install
+}
