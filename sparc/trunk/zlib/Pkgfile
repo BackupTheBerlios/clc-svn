@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.8 2004/11/04 22:22:10 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=zlib
+version=1.2.2
+release=1
+source=(http://www.zlib.net/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make prefix=$PKG/usr mandir=$PKG/usr/man install
+    make clean
+    export CFLAGS="${CFLAGS} -fPIC"
+    ./configure --prefix=/usr --shared
+    make
+    make prefix=$PKG/usr mandir=$PKG/usr/man install
+    chmod -x $PKG/usr/lib/libz.a
+}
