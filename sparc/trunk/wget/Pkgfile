@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.10 2004/04/11 17:31:26 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=wget
+version=1.9.1
+release=2
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.gz \
+	wgetrc wget.1)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr \
+		--sysconfdir=/etc \
+		--without-ssl \
+		--disable-debug \
+		--disable-nls
+    make
+    make prefix=$PKG/usr install.bin
+    install -D -m 644 ../wgetrc $PKG/etc/wgetrc
+    install -D -m 644 ../wget.1 $PKG/usr/man/man1/wget.1
+}

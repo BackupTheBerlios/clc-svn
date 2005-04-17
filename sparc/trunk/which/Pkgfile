@@ -1,0 +1,15 @@
+# $Id: Pkgfile,v 1.4 2003/09/17 14:23:24 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=which
+version=2.16
+release=1
+source=(http://www.xs4all.nl/~carlo17/which/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/info
+}
