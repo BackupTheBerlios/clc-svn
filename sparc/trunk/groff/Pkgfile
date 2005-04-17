@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.8 2004/05/14 15:09:36 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=groff
+version=1.19.1
+release=1
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    mkdir -p $PKG/usr
+    make datasubdir=/usr/share/groff
+    make prefix=$PKG/usr datasubdir=$PKG/usr/share/groff install
+    rm -rf $PKG/usr/{info,lib,share/doc}
+    ln -sf eqn $PKG/usr/bin/geqn
+    ln -sf tbl $PKG/usr/bin/gtbl
+    ln -sf soelim $PKG/usr/bin/zsoelim
+}
