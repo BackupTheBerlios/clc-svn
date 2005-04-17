@@ -1,0 +1,15 @@
+# $Id: Pkgfile,v 1.5 2004/04/11 17:30:51 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=make
+version=3.80
+release=1
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --disable-nls
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/info
+}
