@@ -1,0 +1,13 @@
+drwxr-xr-x	root/root	etc/
+drwxr-xr-x	root/root	etc/ports/
+-rw-r--r--	root/root	etc/ports/base.svn
+-rw-r--r--	root/root	etc/ports/contrib.svn
+drwxr-xr-x	root/root	etc/ports/drivers/
+-rwxr-xr-x	root/root	etc/ports/drivers/svn
+-rw-r--r--	root/root	etc/ports/opt.svn
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/svup
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man1/
+-rw-r--r--	root/root	usr/man/man1/svup.1.gz
