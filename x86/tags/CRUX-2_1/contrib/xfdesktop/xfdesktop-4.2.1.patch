@@ -1,0 +1,12 @@
+diff -Nru xfdesktop-4.2.1.orig/src/Makefile.in xfdesktop-4.2.1/src/Makefile.in
+--- xfdesktop-4.2.1.orig/src/Makefile.in	2005-04-17 12:58:55.000000000 +0200
++++ xfdesktop-4.2.1/src/Makefile.in	2005-04-17 12:59:24.000000000 +0200
+@@ -139,7 +139,7 @@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ INSTOBJEXT = @INSTOBJEXT@
+ INTLLIBS = @INTLLIBS@
+-LDFLAGS = @LDFLAGS@
++LDFLAGS = @LDFLAGS@ -Wl,-E
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LIBSM_CFLAGS = @LIBSM_CFLAGS@

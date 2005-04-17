@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.1 2005/04/17 11:46:31 jue Exp $
+# Description: Window manager for XFce4
+# URL:         http://www.xfce.org
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  xfce-mcs-manager
+# Group:       xfce4
+
+name=xfwm4
+version=4.2.1
+release=1
+source=(http://www.us.xfce.org/archive/xfce-$version/src/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr \
+                --disable-static \
+                --disable-debug 
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/share/locale
+    find $PKG/usr/share/themes -name README -exec rm {} \;
+}
