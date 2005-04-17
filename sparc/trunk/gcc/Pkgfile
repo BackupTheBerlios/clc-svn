@@ -22,7 +22,10 @@ build() {
 				--enable-__cxa_atexit \
 				--enable-clocale=gnu \
 				--enable-shared \
-				--disable-nls
+				--disable-nls \
+				--target=sparc-unknown-linux-gnu \
+                                --host=sparc-unknown-linux-gnu \
+                                --without-multilib --disable-multilib
     make bootstrap
     make check
     make DESTDIR=$PKG install

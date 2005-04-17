@@ -32,10 +32,10 @@ build() {
                                 --without-__thread \
                                 --enable-add-ons=linuxthreads \
                                 --build=sparc-unknown-linux-gnu \
-                                --host=sparc64-unknown-linux-gnu \
-                                --target=sparc64-unknown-linux-gnu
+                                --host=sparc-unknown-linux-gnu \
+                                --target=sparc-unknown-linux-gnu
     make
-    make check
+    #make check
     make install_root=$PKG install
     make install_root=$PKG localedata/install-locales
     cp ../{hosts,resolv.conf,nsswitch.conf,host.conf,ld.so.conf} $PKG/etc
