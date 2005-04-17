@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.5 2004/04/11 17:31:12 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=time
+version=1.7
+release=1
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.gz $name.1)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make prefix=$PKG/usr install
+    rm -rf $PKG/usr/info
+    mkdir -p $PKG/usr/man/man1
+    cp ../$name.1 $PKG/usr/man/man1
+}
