@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.14 2005/01/30 19:43:06 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=sed
+version=4.1.4
+release=2
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.gz \
+	$name-$version.patch)
+
+build() {
+    cd $name-$version
+    patch -p1 < ../$name-$version.patch
+    ./configure --prefix=/usr \
+		--exec-prefix=/ \
+		--disable-nls
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/info
+}
