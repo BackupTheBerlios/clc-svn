@@ -1,0 +1,139 @@
+diff -r -u tetex-src-2.0.2.orig/texk/web2c/omegafonts/pl.l tetex-src-2.0.2/texk/web2c/omegafonts/pl.l
+--- tetex-src-2.0.2.orig/texk/web2c/omegafonts/pl.l	2004-05-11 13:42:05.403240979 +0200
++++ tetex-src-2.0.2/texk/web2c/omegafonts/pl.l	2004-05-11 14:05:56.433193147 +0200
+@@ -61,6 +61,67 @@
+ #define BASE_MIN       2
+ #define BASE_MAX      16
+ 
++void
++scan_string(char *attribute, unsigned keep, unsigned length)
++{
++    register unsigned c, saved_ptr = 0, paren_level = 0;
++    unsigned error_msg = FALSE;
++
++    if ((keep<KEEP_MIN) || (keep>KEEP_MAX))
++        internal_error_1("scan_string (keep=%d)", keep);
++    while (((c = input()) != EOF) &&
++    	((c == ' ') || (c == '\t') || (c == '\n'))) {
++    	if (c == '\n') {line_number++;}
++    }
++    if (c==EOF) fatal_error_s("EOF while scanning %s", attribute);
++    while ((c != EOF) &&
++    	((c != ')') || (paren_level>0))) {
++    	if (c==')') {
++            paren_level--;
++            if (keep==KEEP_CONVERT) {
++                lex_error_s_1("%s character (H %X) converted to slash",
++                             attribute, c);
++                c = '/';
++            }
++        } else if (c=='(') {
++            paren_level++;
++            if (keep==KEEP_CONVERT) {
++                lex_error_s_1("%s character (H %X) converted to slash",
++                             attribute, c);
++                c = '/';
++            }
++    	} else if ((c<' ') || (c>='~')) {
++            if (c=='\n') line_number++;
++            if (keep==KEEP_CONVERT) {
++                lex_error_s_1("%s character (H %X) converted to blank",
++                             attribute, c);
++                c = ' ';
++            }
++        }
++    	if (saved_ptr<(MAX_PTR-3))
++            saved_text[saved_ptr++] = c;
++        else if (error_msg == FALSE) {
++            lex_error_s_1("%s string longer than %d characters; truncating",
++                          attribute, MAX_PTR);
++            error_msg = TRUE;
++        }
++    	c = input();
++    }
++    if (c==EOF) fatal_error_s("EOF while scanning %s", attribute);
++    unput(')');
++    saved_text[saved_ptr++] = '\0';
++    if (keep!=KEEP_NONE) {
++        if ((length != 0) && (strlen(saved_text)>length)) {
++            lex_error_s_1("%s string limited to %d characters; truncated",
++                          attribute, length);
++            saved_text[length] = '\0';
++        }
++        yylval.ystring = xstrdup(saved_text);
++    } else {
++        yylval.ystring = NULL;
++    }
++}
++
+ %}
+ 
+ /* For Solaris's lex, to increase tables sizes --RP */
+@@ -412,67 +473,6 @@
+ }
+ 
+ void
+-scan_string(char *attribute, unsigned keep, unsigned length)
+-{
+-    register unsigned c, saved_ptr = 0, paren_level = 0;
+-    unsigned error_msg = FALSE;
+-
+-    if ((keep<KEEP_MIN) || (keep>KEEP_MAX))
+-        internal_error_1("scan_string (keep=%d)", keep);
+-    while (((c = input()) != EOF) &&
+-    	((c == ' ') || (c == '\t') || (c == '\n'))) {
+-    	if (c == '\n') {line_number++;}
+-    }
+-    if (c==EOF) fatal_error_s("EOF while scanning %s", attribute);
+-    while ((c != EOF) &&
+-    	((c != ')') || (paren_level>0))) {
+-    	if (c==')') {
+-            paren_level--;
+-            if (keep==KEEP_CONVERT) {
+-                lex_error_s_1("%s character (H %X) converted to slash",
+-                             attribute, c);
+-                c = '/';
+-            }
+-        } else if (c=='(') {
+-            paren_level++;
+-            if (keep==KEEP_CONVERT) {
+-                lex_error_s_1("%s character (H %X) converted to slash",
+-                             attribute, c);
+-                c = '/';
+-            }
+-    	} else if ((c<' ') || (c>='~')) {
+-            if (c=='\n') line_number++;
+-            if (keep==KEEP_CONVERT) {
+-                lex_error_s_1("%s character (H %X) converted to blank",
+-                             attribute, c);
+-                c = ' ';
+-            }
+-        }
+-    	if (saved_ptr<(MAX_PTR-3))
+-            saved_text[saved_ptr++] = c;
+-        else if (error_msg == FALSE) {
+-            lex_error_s_1("%s string longer than %d characters; truncating",
+-                          attribute, MAX_PTR);
+-            error_msg = TRUE;
+-        }
+-    	c = input();
+-    }
+-    if (c==EOF) fatal_error_s("EOF while scanning %s", attribute);
+-    unput(')');
+-    saved_text[saved_ptr++] = '\0';
+-    if (keep!=KEEP_NONE) {
+-        if ((length != 0) && (strlen(saved_text)>length)) {
+-            lex_error_s_1("%s string limited to %d characters; truncated",
+-                          attribute, length);
+-            saved_text[length] = '\0';
+-        }
+-        yylval.ystring = xstrdup(saved_text);
+-    } else {
+-        yylval.ystring = NULL;
+-    }
+-}
+-
+-void
+ scan_hex_string(void)
+ {
+     register unsigned i=10;
