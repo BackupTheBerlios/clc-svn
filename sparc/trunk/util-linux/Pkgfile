@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.25 2005/01/27 20:24:58 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=util-linux
+version=2.12q
+release=1
+source=(http://www.kernel.org/pub/linux/utils/util-linux/$name-$version.tar.gz \
+	$name-$version.patch)
+
+build() {
+    cd $name-$version
+    patch -p1 < ../$name-$version.patch
+    ./configure
+    make
+    make DESTDIR=$PKG install
+    touch $PKG/etc/adjtime
+    rm -rf $PKG/usr/{share,man/man6,share/misc/getopt}
+    rm $PKG/sbin/{mkfs.bfs,mkfs.minix,fsck.minix,elvtune}
+    rm $PKG/usr/man/man8/{fsck.minix,mkfs.bfs,mkfs.minix,sln,elvtune}.8
+}
