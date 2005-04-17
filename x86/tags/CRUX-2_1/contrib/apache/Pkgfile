@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.7 2005/04/02 09:20:04 jue Exp $
+# $Id: Pkgfile,v 1.8 2005/04/17 17:14:49 jue Exp $
 # Description: Apache HTTP server version 2.0.x
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 # URL:         http://httpd.apache.org/
@@ -6,8 +6,8 @@
 # Group:       apache
 
 name=apache
-version=2.0.53
-release=2
+version=2.0.54
+release=1
 source=(http://www.apache.org/dist/httpd/httpd-$version.tar.gz \
         crux.layout apache)
 

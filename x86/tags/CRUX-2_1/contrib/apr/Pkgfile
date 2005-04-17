@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.5 2005/03/09 18:59:59 jue Exp $
+# $Id: Pkgfile,v 1.6 2005/04/17 17:19:31 jue Exp $
 # Description: Apache Portable Runtime library
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 # URL:         http://apr.apache.org/
@@ -6,7 +6,7 @@
 # Group:       apache
 
 name=apr
-version=2.0.53
+version=2.0.54
 release=1
 source=(http://www.apache.org/dist/httpd/httpd-$version.tar.gz)
 

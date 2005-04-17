@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.5 2005/03/08 23:13:49 sip Exp $
+# $Id: Pkgfile,v 1.6 2005/04/17 17:26:44 sip Exp $
 # Description: Use various apps as plugins for firefox
 # URL: http://mozplugger.mozdev.org/
 # Maintainer: Simone Rota, sip at varlock dot com
@@ -6,9 +6,9 @@
 # Depends on: firefox
 
 name=firefox-plugger
-version=1.7.1
+version=1.7.2
 release=1
-source=(http://mozdev.mirrors.nyphp.org/mozplugger/mozplugger-$version.tar.gz)
+source=(http://mozplugger.mozdev.org/files/mozplugger-$version.tar.gz)
 
 build() {
 	cd mozplugger-$version
