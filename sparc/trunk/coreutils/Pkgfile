@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.3 2004/03/28 12:05:59 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=coreutils
+version=5.2.1
+release=1
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    DEFAULT_POSIX2_VERSION=199209 \
+    ./configure --prefix=/usr --disable-nls --disable-assert
+    make
+    make DESTDIR=$PKG install 
+    mkdir $PKG/bin
+    mv $PKG/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo,false,ln,ls,mkdir} $PKG/bin
+    mv $PKG/usr/bin/{mknod,mv,pwd,readlink,rm,rmdir,stty,sync,touch,true,uname} $PKG/bin
+    rm $PKG/usr/bin/hostname $PKG/usr/man/man1/hostname.1  # conflicts with net-tools
+    rm $PKG/usr/bin/uptime $PKG/usr/man/man1/uptime.1      # conflicts with procps
+    rm $PKG/usr/bin/su $PKG/usr/man/man1/su.1              # conflicts with shadow
+    rm $PKG/usr/bin/groups $PKG/usr/man/man1/groups.1      # conflicts with shadow
+    rm $PKG/usr/bin/kill $PKG/usr/man/man1/kill.1          # conflicts with util-linux
+    rm -rf $PKG/usr/info $PKG/usr/lib
+}
