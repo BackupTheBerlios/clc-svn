@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.7 2005/01/03 22:35:56 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=cpio
+version=2.6
+release=1
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/{share,info,libexec} \
+	   $PKG/usr/bin/mt \
+	   $PKG/usr/man/man1/mt.1
+}
