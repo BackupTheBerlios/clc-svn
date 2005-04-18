@@ -78,6 +78,7 @@ drwxr-xr-x	root/root	usr/share/mplayer/codecs/
 -rw-r--r--	root/root	usr/share/mplayer/codecs/vdowave.drv
 -rw-r--r--	root/root	usr/share/mplayer/codecs/vid_3ivX.xa
 -rw-r--r--	root/root	usr/share/mplayer/codecs/vivog723.acm
+-rw-r--r--	root/root	usr/share/mplayer/codecs/vmnc.dll
 -rw-r--r--	root/root	usr/share/mplayer/codecs/voxmsdec.ax
 -rw-r--r--	root/root	usr/share/mplayer/codecs/vp4vfw.dll
 -rw-r--r--	root/root	usr/share/mplayer/codecs/vp5vfw.dll
@@ -94,7 +95,6 @@ drwxr-xr-x	root/root	usr/share/mplayer/codecs/
 -rw-r--r--	root/root	usr/share/mplayer/codecs/wmv9dmod.dll
 -rw-r--r--	root/root	usr/share/mplayer/codecs/wmvadvd.dll
 -rw-r--r--	root/root	usr/share/mplayer/codecs/wmvdmod.dll
--rw-r--r--	root/root	usr/share/mplayer/codecs/wnvplay1.dll
 -rw-r--r--	root/root	usr/share/mplayer/codecs/wnvwinx.dll
 drwxr-xr-x	root/root	usr/share/mplayer/font/
 drwxr-xr-x	root/root	usr/share/mplayer/font/font-arial-14-iso-8859-1/

@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.8 2005/04/04 15:29:33 jaeger Exp $
+# $Id: Pkgfile,v 1.9 2005/04/18 14:01:45 jaeger Exp $
 # Description: Media player with many codecs
 # URL: http://www.mplayerhq.hu/
 # Maintainer: Matt Housh, jaeger at morpheus dot net
@@ -11,11 +11,11 @@
 # http://www.mplayerhq.hu/DOCS/HTML/en/index.html
 
 name=mplayer
-version=1.0pre6
-release=3
+version=1.0pre7
+release=1
 source=(http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-$version.tar.bz2 \
 	http://www1.mplayerhq.hu/MPlayer/releases/fonts/font-arial-iso-8859-1.tar.bz2 \
-	http://www1.mplayerhq.hu/MPlayer/releases/codecs/essential-20050216.tar.bz2 \
+	http://www1.mplayerhq.hu/MPlayer/releases/codecs/essential-20050412.tar.bz2 \
 	mplayer.conf)
 
 build() {
@@ -46,7 +46,7 @@ build() {
 
 	# codecs
 	mkdir -p $PKG/usr/share/mplayer/codecs
-	cp $SRC/essential-20050216/* $PKG/usr/share/mplayer/codecs
+	cp $SRC/essential-20050412/* $PKG/usr/share/mplayer/codecs
 	chmod 644 $PKG/usr/share/mplayer/codecs/*
 	rm $PKG/usr/share/mplayer/codecs/README
 
