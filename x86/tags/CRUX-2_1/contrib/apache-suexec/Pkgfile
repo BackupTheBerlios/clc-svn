@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.6 2005/04/04 16:33:43 jaeger Exp $
+# $Id: Pkgfile,v 1.7 2005/04/18 15:30:03 jaeger Exp $
 # Description: Apache HTTP server version 2.0.x with suEXEC and SSL support
 # Maintainer: Matt Housh, jaeger at morpheus dot net
 # URL: http://httpd.apache.org/
@@ -6,7 +6,7 @@
 # Group: apache
 
 name=apache-suexec
-version=2.0.53
+version=2.0.54
 release=1
 source=(http://www.apache.org/dist/httpd/httpd-$version.tar.gz \
 	crux.layout apache)
