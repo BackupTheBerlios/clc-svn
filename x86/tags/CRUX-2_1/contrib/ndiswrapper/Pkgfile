@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.6 2005/03/09 19:00:01 jue Exp $
+# Description: Kernel module and user space tool to run Windows XP drivers for wireless cards
+# URL:         http://ndiswrapper.sourceforge.net/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  wireless-tools, pciutils
+
+name=ndiswrapper
+version=1.1
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz \
+        wlan)
+
+build () {
+    cd $name-$version
+    make
+    make DESTDIR=$PKG install
+    install -d $PKG/etc/{rc.d,ndiswrapper}
+    install -m 700 ../wlan $PKG/etc/rc.d
+}
