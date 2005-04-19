@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.4 2005/03/12 15:25:49 jw Exp $
+# $Id: Pkgfile,v 1.5 2005/04/19 10:35:48 jw Exp $
 # Description: Java 2 Software Development Kit
 # Maintainer: Johannes Winkelmann, jw at tks6 dot net
 # URL: http://java.sun.com/
@@ -7,9 +7,9 @@
 # place it in this dir, then make the package
 
 name=j2sdk
-version=1.5.0
+version=1.5.0_01
 release=1
-source=(http://ftp.yars.free.net/pub/software/unix/lang/java/j2se/linux/JDK-1.5/jdk-1_5_0-linux-i586.bin)
+source=(http://ftp.yars.free.net/pub/software/unix/lang/java/j2se/linux/JDK-1.5/jdk-1_5_0_01-linux-i586.bin)
 
 # source=(j2sdk-1_4_2_01-linux-i586.bin)
 
