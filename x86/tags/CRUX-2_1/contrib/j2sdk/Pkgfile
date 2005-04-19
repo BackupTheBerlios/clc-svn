@@ -1,0 +1,33 @@
+# $Id: Pkgfile,v 1.4 2005/03/12 15:25:49 jw Exp $
+# Description: Java 2 Software Development Kit
+# Maintainer: Johannes Winkelmann, jw at tks6 dot net
+# URL: http://java.sun.com/
+
+# if the dowload doesn't work download the file from java.sun.com and
+# place it in this dir, then make the package
+
+name=j2sdk
+version=1.5.0
+release=1
+source=(http://ftp.yars.free.net/pub/software/unix/lang/java/j2se/linux/JDK-1.5/jdk-1_5_0-linux-i586.bin)
+
+# source=(j2sdk-1_4_2_01-linux-i586.bin)
+
+build() {
+	mkdir -p $PKG/usr/lib
+        cd $PKG/usr/lib
+        echo "y" | sh $SRC/jdk-*-linux-i586.bin
+
+	# rm unneeded manpages
+	rm -rf j2sdk${version}/man/ja j2sdk${version}/man/ja_JP.eucJP
+	# rm demo programs
+	rm -rf j2sdk${version}/demo
+	# rm README, CHANGES, etc.
+	for i in j2sdk${version}/* j2sdk${version}/jre/*; do
+	  if [ -f $i ] && [ ! "$i" = "j2sdk${version}/src.zip" ]; then
+	    rm -rf $i;
+          fi
+	done
+	# make the user happy
+	ln -s jdk${version} java
+}
