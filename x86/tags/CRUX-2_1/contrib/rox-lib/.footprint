@@ -35,10 +35,12 @@ drwxr-xr-x	root/root	usr/lib/ROX-Lib2/python/rox/
 -rw-r--r--	root/root	usr/lib/ROX-Lib2/python/rox/tasks.py
 drwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/
 drwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/python/
+-rwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/python/testall.py
 -rwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/python/testbasedir.py
 -rwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/python/testchoices.py
 -rwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/python/testmenu.py
 -rwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/python/testoptions.py
+-rwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/python/testprocesses.py
 -rwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/python/testproxy.py
 -rwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/python/testsu.py
 -rwxr-xr-x	root/root	usr/lib/ROX-Lib2/tests/python/testtasks.py

@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.2 2005/03/08 23:13:49 sip Exp $
+# $Id: Pkgfile,v 1.3 2005/04/19 13:41:50 sip Exp $
 # Description: Archive manager for ROX
 # URL: http://rox.sourceforge.net/phpwiki/index.php/Archive
 # Maintainer: Simone Rota, sip at varlock dot com
@@ -6,14 +6,14 @@
 # Depends on: rox-lib
 
 name=rox-archive
-version=1.9.4
+version=1.9.5
 release=1
-source=(http://heanet.dl.sourceforge.net/sourceforge/rox/archive-$version.tgz)
+source=(http://dl.sourceforge.net/sourceforge/rox/archive-$version.tgz)
 
 build() {
 	cd archive-$version
 	mkdir -p $PKG/usr/ROX/Apps
-	rm -r Archive/{Help,Messages,CVS}
+	rm -rf Archive/{Help,Messages,CVS}
 	cp -r Archive $PKG/usr/ROX/Apps
 	
 }
