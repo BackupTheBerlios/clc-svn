@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.3 2005/03/08 23:13:49 sip Exp $
+# $Id: Pkgfile,v 1.4 2005/04/19 12:36:16 sip Exp $
 # Description: File Manager for X
 # URL: http://sourceforge.net/projects/xfe
 # Maintainer: Simone Rota, sip at varlock dot com
@@ -6,7 +6,7 @@
 # Depends on: fox
 
 name=xfe
-version=0.72
+version=0.80
 release=1
 source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
 

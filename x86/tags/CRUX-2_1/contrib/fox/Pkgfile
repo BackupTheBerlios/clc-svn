@@ -1,12 +1,12 @@
-# $Id: Pkgfile,v 1.7 2005/03/30 15:38:46 sip Exp $
+# $Id: Pkgfile,v 1.8 2005/04/19 12:34:21 sip Exp $
 # Description: FOX Toolkit, a nice GUI C++ toolkit
 # URL: http://www.fox-toolkit.org
 # Maintainer: Simone Rota, sip at varlock dot com
-# Packager: Petr Fischer, petr dot fischer at praguesoft dot cz
+# Packager: Petr Fischer, petr.fischer at praguesoft dot cz
 # Depends on: x11, libtiff
 
 name=fox
-version=1.2.13
+version=1.4.12
 release=1
 source=(http://www.fox-toolkit.org/ftp/$name-$version.tar.gz)
 
@@ -23,7 +23,6 @@ build () {
     make DESTDIR=$PKG install
     install -m 755 fox-config $PKG/usr/bin
     rm -r $PKG/usr/share
-    rm -r $PKG/usr/fox
     cd $PKG/usr/include
-    ln -s fox-1.2 fox
+    ln -s fox-1.4 fox
 }

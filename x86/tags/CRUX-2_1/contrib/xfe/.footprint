@@ -1,6 +1,7 @@
 drwxr-xr-x	root/root	usr/
 drwxr-xr-x	root/root	usr/bin/
 -rwxr-xr-x	root/root	usr/bin/xfe
+-rwxr-xr-x	root/root	usr/bin/xfi
 -rwxr-xr-x	root/root	usr/bin/xfq
 -rwxr-xr-x	root/root	usr/bin/xfv
 drwxr-xr-x	root/root	usr/lib/
@@ -35,6 +36,8 @@ drwxr-xr-x	root/root	usr/lib/foxicons/
 -rw-r--r--	root/root	usr/lib/foxicons/core_32x32.png
 -rw-r--r--	root/root	usr/lib/foxicons/details.png
 -rw-r--r--	root/root	usr/lib/foxicons/dirup.png
+-rw-r--r--	root/root	usr/lib/foxicons/djvu_16x16.png
+-rw-r--r--	root/root	usr/lib/foxicons/djvu_32x32.png
 -rw-r--r--	root/root	usr/lib/foxicons/dot_c_32x32.png
 -rw-r--r--	root/root	usr/lib/foxicons/dot_h_32x32.png
 -rw-r--r--	root/root	usr/lib/foxicons/dot_o_32x32.png
@@ -148,6 +151,7 @@ drwxr-xr-x	root/root	usr/lib/foxrc/
 drwxr-xr-x	root/root	usr/man/
 drwxr-xr-x	root/root	usr/man/man1/
 -rw-r--r--	root/root	usr/man/man1/xfe.1.gz
+-rw-r--r--	root/root	usr/man/man1/xfi.1.gz
 -rw-r--r--	root/root	usr/man/man1/xfq.1.gz
 -rw-r--r--	root/root	usr/man/man1/xfv.1.gz
 drwxr-xr-x	root/root	usr/share/
