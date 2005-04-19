@@ -1,0 +1,27 @@
+README POSTGRESQL
+=================
+
+To complete the installation and create a test database you need to do
+some additional steps:
+
+# useradd postgres
+# passwd -l postgres
+
+# mkdir -p /var/pgsql/data
+# touch /var/log/postgresql
+# chown postgres /var/pgsql/data /var/log/postgresql
+
+# su - postgres
+# initdb -D /var/pgsql/data
+# exit
+
+# /etc/rc.d/postgresql start
+# su - postgres
+# createdb test
+# psql test
+
+edit /etc/cron/weekly as root and add a line "/usr/sbin/rotatelog postgresql"
+
+The complete installation instructions are located here:
+
+http://www.postgresql.org/docs/current/interactive/installation.html
