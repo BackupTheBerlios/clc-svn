@@ -2,6 +2,11 @@ drwxr-xr-x	root/root	usr/
 drwxr-xr-x	root/root	usr/bin/
 -rwxr-xr-x	root/root	usr/bin/encfs
 -rwxr-xr-x	root/root	usr/bin/encfsctl
+drwxr-xr-x	root/root	usr/lib/
+lrwxrwxrwx	root/root	usr/lib/libencfs -> libencfs.1.0.0
+lrwxrwxrwx	root/root	usr/lib/libencfs.1 -> libencfs.1.0.0
+-rwxr-xr-x	root/root	usr/lib/libencfs.1.0.0
+-rwxr-xr-x	root/root	usr/lib/libencfs.la
 drwxr-xr-x	root/root	usr/man/
 drwxr-xr-x	root/root	usr/man/man1/
 -rw-r--r--	root/root	usr/man/man1/encfs.1.gz
