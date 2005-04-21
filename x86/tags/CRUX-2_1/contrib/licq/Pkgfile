@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.5 2005/03/12 15:25:49 jw Exp $
+# $Id: Pkgfile,v 1.6 2005/04/21 09:38:57 jw Exp $
 # Description: An ICQ-clone
 # URL:         http://www.licq.org
 # Packager:    Magnus Bohman, magbo at kbab dot net
@@ -12,7 +12,9 @@ source=(http://download.sourceforge.net/licq/licq-$version.tar.bz2)
 
 build () {
 	cd $name-$version
-	./configure --prefix=/usr --disable-debug 
+	./configure --prefix=/usr \
+		    --disable-debug \
+		    --disable-gpgme
 	make 
 	make DESTDIR=$PKG install
 
