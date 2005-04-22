@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.7 2005/04/02 08:14:24 jue Exp $
+# $Id: Pkgfile,v 1.8 2005/04/22 09:26:48 jue Exp $
 # Description: Enhanced periodical command scheduler like cron
 # URL:         http://fcron.free.fr
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 
 name=fcron
 version=2.9.6
-release=1
+release=2
 source=(http://fcron.free.fr/archives/$name-$version.src.tar.gz \
         $name-$version.patch fcron root.orig)
 

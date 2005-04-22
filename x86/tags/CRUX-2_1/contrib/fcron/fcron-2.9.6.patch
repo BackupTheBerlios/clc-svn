@@ -1,6 +1,6 @@
 diff -Nru fcron-2.9.6.orig/configure fcron-2.9.6/configure
---- fcron-2.9.6.orig/configure	2005-03-14 08:51:21.000000000 +0100
-+++ fcron-2.9.6/configure	2005-03-14 08:51:37.000000000 +0100
+--- fcron-2.9.6.orig/configure	2005-04-22 10:48:27.000000000 +0200
++++ fcron-2.9.6/configure	2005-04-22 10:48:56.000000000 +0200
 @@ -11767,7 +11767,7 @@
      fi
      ;;
@@ -10,3 +10,15 @@ diff -Nru fcron-2.9.6.orig/configure fcron-2.9.6/configure
        etcdir="$withval"
        echo "$as_me:$LINENO: result: $withval" >&5
  echo "${ECHO_T}$withval" >&6
+diff -Nru fcron-2.9.6.orig/job.c fcron-2.9.6/job.c
+--- fcron-2.9.6.orig/job.c	2005-04-22 10:48:27.000000000 +0200
++++ fcron-2.9.6/job.c	2005-04-22 10:49:21.000000000 +0200
+@@ -535,7 +535,7 @@
+     foreground = 0;
+ 
+     /* set stdin to the job's output */
+-    if ( fseek(mailf, 0, SEEK_SET ) != 0) die_e("Can't fseek()");
++    if ( lseek(fileno(mailf), 0, SEEK_SET ) == -1) die_e("Can't lseek()");
+     if ( dup2(fileno(mailf), 0) != 0 ) die_e("Can't dup2(fileno(mailf))");
+ 
+     xcloselog();
