@@ -1,16 +1,16 @@
-# $Id: Pkgfile,v 1.6 2005/04/13 15:43:50 danm Exp $
+# $Id: Pkgfile,v 1.7 2005/04/22 17:50:28 danm Exp $
 # Maintainer: Daniel Mueller, daniel at danm dot de 
 # URL: http://mathomatic.orgserve.de/math/
 # Description: Computer Algebra System
 
 name=mathomatic
-version=12.2d
+version=12.2e
 release=1
 source=(http://www.panix.com/~gesslein/$name-$version.tgz)
 
 build() {
 	cd $name-$version
-	sed -i -e 's|= -O|+= |g' makefile
+	sed -i -e 's|+= -O|+= |g' makefile
 	make clean
 	make READLINE=1 prefix=/usr
 	make test
