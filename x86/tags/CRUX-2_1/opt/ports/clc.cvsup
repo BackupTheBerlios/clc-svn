@@ -10,8 +10,9 @@
 *default compress
 *default base=/usr/ports
 *default prefix=/usr/ports
+*default tag=CONTRIB-2_1
 
 # Official contrib ports
-contrib tag=CONTRIB-2_1
+contrib
 
 # End of file
