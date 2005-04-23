@@ -1,0 +1,113 @@
+Description: Fixes bug in find when using -depth and -empty.
+Origin: http://savannah.gnu.org/bugs/?func=detailitem&item_id=12503
+        http://savannah.gnu.org/cgi-bin/viewcvs/findutils/findutils/find/find.c.diff?r1=1.75&r2=1.76&diff_format=u
+Upstream status: Applied in CVS.
+
+===================================================================
+RCS file: /cvsroot/findutils/cvsroot/findutils/findutils/find/find.c,v
+retrieving revision 1.75
+retrieving revision 1.76
+diff -u -r1.75 -r1.76
+--- findutils/findutils/find/find.c	2005/03/04 10:37:28	1.75
++++ findutils/findutils/find/find.c	2005/04/06 08:22:10	1.76
+@@ -1306,17 +1306,18 @@
+     }
+ }
+ 
+-/* Descend PATHNAME, which is a command-line argument.  
+-   Actions like -execdir assume that we are in the 
+-   parent directory of the file we're examining, 
+-   and on entry to this function our working directory
+-   is whetever it was when find was invoked.  Therefore
+-   If PATHNAME is "." we just leave things as they are. 
+-   Otherwise, we figure out what the parent directory is, 
+-   and move to that.
+-*/
++/* Move to the parent of a given directory and then call a function,
++ * restoring the cwd.  Don't bother changing directory if the
++ * specified directory is a child of "." or is the root directory.
++ */
+ static void
+-process_top_path (char *pathname, mode_t mode)
++at_top (char *pathname,
++	mode_t mode,
++	struct stat *pstat,
++	void (*action)(char *pathname,
++		       char *basename,
++		       int mode,
++		       struct stat *pstat))
+ {
+   int dirchange;
+   char *parent_dir = dir_name(pathname);
+@@ -1372,8 +1373,7 @@
+   free (parent_dir);
+   parent_dir = NULL;
+   
+-  process_path (pathname, base, false, ".", mode);
+-  complete_pending_execdirs(eval_tree);
++  action(pathname, base, mode, pstat);
+   
+   if (dirchange)
+     {
+@@ -1382,6 +1382,44 @@
+ }
+ 
+ 
++static void do_process_top_dir(char *pathname,
++			       char *base,
++			       int mode,
++			       struct stat *pstat)
++{
++  process_path (pathname, base, false, ".", mode);
++  complete_pending_execdirs(eval_tree);
++}
++
++static void do_process_predicate(char *pathname,
++				 char *basename,
++				 int mode,
++				 struct stat *pstat)
++{
++  state.rel_pathname = basename;
++  apply_predicate (pathname, pstat, eval_tree);
++}
++
++
++
++
++/* Descend PATHNAME, which is a command-line argument.  
++
++   Actions like -execdir assume that we are in the 
++   parent directory of the file we're examining, 
++   and on entry to this function our working directory
++   is whetever it was when find was invoked.  Therefore
++   If PATHNAME is "." we just leave things as they are. 
++   Otherwise, we figure out what the parent directory is, 
++   and move to that.
++*/
++static void
++process_top_path (char *pathname, mode_t mode)
++{
++  at_top(pathname, mode, NULL, do_process_top_dir);
++}
++
++
+ /* Info on each directory in the current tree branch, to avoid
+    getting stuck in symbolic link loops.  */
+ static struct dir_id *dir_ids = NULL;
+@@ -1601,8 +1639,14 @@
+       if (!digest_mode(mode, pathname, name, &stat_buf, leaf))
+ 	return 0;
+ 
+-      state.rel_pathname = name;
+-      apply_predicate (pathname, &stat_buf, eval_tree);
++      if (0 == dir_curr)
++	{
++	  at_top(pathname, mode, &stat_buf, do_process_predicate);
++	}
++      else
++	{
++	  do_process_predicate(pathname, name, mode, &stat_buf);
++	}
+     }
+ 
+   dir_curr--;
