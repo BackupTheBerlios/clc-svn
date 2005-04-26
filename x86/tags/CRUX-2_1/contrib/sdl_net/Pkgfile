@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.3 2005/04/26 06:34:18 vector Exp $
+# Description: Cross-platform networking library for SDL
+# URL: http://www.libsdl.org/projects/SDL_net/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Jukka Heino, jukka at karsikkopuu dot net
+# Depends on: libsdl
+
+name=sdl_net
+version=1.2.5
+release=1
+source=(http://www.libsdl.org/projects/SDL_net/release/SDL_net-$version.tar.gz)
+
+build () {
+    cd SDL_net-$version
+    ./configure --prefix=/usr
+    make 
+    make DESTDIR=$PKG install
+}

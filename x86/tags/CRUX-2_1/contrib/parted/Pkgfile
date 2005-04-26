@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.1 2005/03/30 06:22:53 vector Exp $
+# Description: Tool for managing partitions and filesystems
+# URL: http://www.gnu.org/software/parted/parted.html
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Jukka Heino, jukka at karsikkopuu dot net
+# Depends on: 
+
+name=parted
+version=1.6.22
+release=1
+source=(http://ftp.gnu.org/gnu/$name/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --disable-nls
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/{info,man/pt_BR}
+}
