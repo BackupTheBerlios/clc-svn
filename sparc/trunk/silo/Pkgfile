@@ -7,10 +7,12 @@
 name=silo
 version=1.4.9
 release=1
-source=(http://www.sparc-boot.org/pub/silo/silo-$version.tar.bz2) 
+source=(http://www.sparc-boot.org/pub/silo/silo-$version.tar.bz2 \
+	silo-$version.diff) 
 
 build() {
     cd $name-$version
+    patch -p1 < $SRC/silo-1.4.9.diff
     make 
     make DESTDIR=$PKG install
 }

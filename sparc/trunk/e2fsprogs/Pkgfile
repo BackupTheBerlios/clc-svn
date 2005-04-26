@@ -15,11 +15,9 @@ build() {
     ../configure --prefix=/usr \
 		 --with-root-prefix= \
 		 --enable-elf-shlibs \
-		 --disable-debugfs \
-		 --disable-imager \
-		 --disable-e2initrd-helper \
 		 --disable-evms \
 		 --disable-nls
+
     make
     make DESTDIR=$PKG install install-libs
     rm -rf $PKG/usr/info
