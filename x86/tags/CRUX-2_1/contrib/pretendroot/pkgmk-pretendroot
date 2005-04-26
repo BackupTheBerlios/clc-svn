@@ -1,6 +1,0 @@
-#!/bin/sh
-export PRETENDROOTDIR=`mktemp -d /tmp/pkgmk-pretendroot.XXXXXXXXXX`
-pretendroot pkgmk "$@"
-RETVAL=$?
-rm -fr $PRETENDROOTDIR
-exit $RETVAL
