@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.8 2004/08/13 22:02:05 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=ncurses
+version=5.4
+release=2
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --with-install-prefix=$PKG \
+		--prefix=/usr \
+		--with-normal \
+		--with-shared \
+		--without-debug \
+		--without-ada
+    make
+    make install
+    mkdir $PKG/lib
+    mv $PKG/usr/lib/libncurses.so.* $PKG/lib
+    ln -sf libncurses.so $PKG/usr/lib/libcurses.so
+    ln -sf ../../lib/libncurses.so.5 $PKG/usr/lib/libncurses.so
+    ln -sf ../../lib/libncurses.so.5 $PKG/usr/lib/libncurses.so.5
+}
