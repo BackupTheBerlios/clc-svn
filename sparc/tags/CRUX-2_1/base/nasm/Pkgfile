@@ -1,0 +1,15 @@
+# $Id: Pkgfile,v 1.7 2005/01/27 20:19:48 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=nasm
+version=0.98.39
+release=1
+source=(http://dl.sourceforge.net/$name/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    mkdir -p $PKG/usr/bin $PKG/usr/man/man1
+    make INSTALLROOT=$PKG install
+}
