@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.3 2002/09/10 22:11:47 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=zip
+version=2.3
+release=1
+source=(ftp://ftp.info-zip.org/pub/infozip/src/${name}23.tar.gz \
+	ftp://ftp.info-zip.org/pub/infozip/src/zcrypt29.zip)
+
+build() {
+    cd $name-$version
+    cp ../crypt.[hc] .
+    make -f unix/Makefile LOCAL_ZIP="$CFLAGS" prefix=/usr generic
+    make -f unix/Makefile prefix=$PKG/usr install
+    ln -sf zip.1.gz $PKG/usr/man/man1/zipcloak.1.gz
+    ln -sf zip.1.gz $PKG/usr/man/man1/zipnote.1.gz
+    ln -sf zip.1.gz $PKG/usr/man/man1/zipsplit.1.gz
+}
