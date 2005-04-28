@@ -1,0 +1,32 @@
+# $Id: Pkgfile,v 1.8 2005/03/24 23:58:14 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=vim
+version=6.3
+release=2
+source=(ftp://ftp.vim.org/pub/vim/unix/$name-$version.tar.bz2 \
+	$name-$version.patch)
+
+build () {
+    cd vim63
+    patch -p1 < ../$name-$version.patch
+    cd src
+    ./configure --prefix=/usr \
+		--with-vim-name=vim \
+		--with-x=no \
+		--enable-gui=no \
+		--disable-gpm \
+		--disable-nls
+    make VIMRTDIR=
+    make VIMRTDIR= DESTDIR=$PKG installvimbin installruntime installlinks
+    mv $PKG/usr/share/vim/vimrc_example.vim $PKG/usr/share/vim/vimrc
+    rm -rf $PKG/usr/man/man?/vimtutor* $PKG/usr/share/vim/tutor
+    ln -sf vim $PKG/usr/bin/vi
+    ln -sf vim $PKG/usr/bin/evim
+    ln -sf vim.1.gz $PKG/usr/man/man1/ex.1.gz
+    ln -sf vim.1.gz $PKG/usr/man/man1/vi.1.gz
+    ln -sf vim.1.gz $PKG/usr/man/man1/rvim.1.gz
+    ln -sf vim.1.gz $PKG/usr/man/man1/view.1.gz
+    ln -sf vim.1.gz $PKG/usr/man/man1/rview.1.gz
+    ln -sf vim.1.gz $PKG/usr/man/man1/gvim.1.gz
+}
