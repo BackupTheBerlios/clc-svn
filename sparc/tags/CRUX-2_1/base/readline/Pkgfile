@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.8 2005/02/06 01:49:15 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=readline
+version=5.0
+release=1
+source=(http://mirrors.sunsite.dk/gnu/$name/$name-$version.tar.gz \
+	$name-$version-001-005.patch inputrc)
+
+build() {
+    cd $name-$version
+    patch -p1 < ../$name-$version-001-005.patch
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    install -D -m 644 ../inputrc $PKG/etc/inputrc
+    rm -rf $PKG/usr/info
+}
