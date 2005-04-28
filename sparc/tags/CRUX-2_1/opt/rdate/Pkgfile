@@ -1,0 +1,15 @@
+# $Id: Pkgfile,v 1.6 2004/04/25 16:06:32 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=rdate
+version=1.4
+release=1
+source=(ftp://people.redhat.com/sopwith/$name-$version.tar.gz rdate)
+
+build() {
+    cd $name-$version
+    make CFLAGS="$CFLAGS"
+    install -D -m 755 rdate $PKG/usr/bin/rdate
+    install -D -m 755 ../rdate $PKG/etc/cron/daily/rdate
+    install -D -m 644 rdate.1 $PKG/usr/man/man1/rdate.1
+}
