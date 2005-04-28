@@ -1,0 +1,14 @@
+# $Id: Pkgfile,v 1.1 2003/07/31 08:07:44 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=mktemp
+version=1.5
+release=1
+source=(ftp://ftp.mktemp.org/pub/mktemp/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make prefix=$PKG/usr install
+}
