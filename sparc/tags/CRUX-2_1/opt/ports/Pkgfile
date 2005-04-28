@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.21 2005/04/13 14:48:48 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=ports
+version=1.5
+release=1
+source=(http://www.fukt.bth.se/~per/crux/files/ports/$name-$version.tar.gz \
+        http://jw.tks6.net/files/crux/svn.driver \
+	base.svn opt.svn contrib.svn)
+build () {
+    cd $name-$version
+    make
+    make DESTDIR=$PKG install
+    install -m 0644 ../base.svn $PKG/etc/ports/base.svn
+    install -m 0644 ../opt.svn $PKG/etc/ports/opt.svn
+    install -m 0644 ../contrib.svn $PKG/etc/ports/contrib.svn
+    install -m 0755 ../svn.driver $PKG/etc/ports/drivers/svn
+}

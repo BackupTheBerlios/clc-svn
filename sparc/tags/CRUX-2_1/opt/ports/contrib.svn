@@ -1,0 +1,4 @@
+
+ROOT_DIR=/usr/ports
+URL=svn://svn.berlios.de/clc/sparc/tags/CRUX-2_1/contrib
+COLLECTION=contrib
