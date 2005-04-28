@@ -1,0 +1,15 @@
+# $Id: Pkgfile,v 1.1 2002/01/20 14:43:31 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=libjpeg
+version=6b
+release=1
+source=(ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v$version.tar.gz)
+
+build() {
+    cd jpeg-$version
+    ./configure --prefix=/usr --enable-shared --enable-static
+    make
+    mkdir -p $PKG/usr/include $PKG/usr/lib
+    make prefix=/$PKG/usr install-lib
+}
