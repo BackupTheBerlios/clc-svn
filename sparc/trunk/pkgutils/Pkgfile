@@ -4,9 +4,11 @@
 name=pkgutils
 version=5.19
 release=1
-source=(http://www.fukt.bth.se/~per/pkgutils/$name-$version.tar.gz)
+source=(http://www.fukt.bth.se/~per/pkgutils/$name-$version.tar.gz
+        pkgmk.conf)
 
 build () {
     cd $name-$version
     make DESTDIR=$PKG install
+    cp $SRC/pkgmk.conf $PKG/etc
 }

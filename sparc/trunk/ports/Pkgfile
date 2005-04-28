@@ -5,12 +5,12 @@ name=ports
 version=1.5
 release=1
 source=(http://www.fukt.bth.se/~per/crux/files/ports/$name-$version.tar.gz \
-	crux.cvsup clc.cvsup)
-
+	base.svn opt.svn contrib.svn)
 build () {
     cd $name-$version
     make
     make DESTDIR=$PKG install
-    install -m 0644 ../crux.cvsup $PKG/etc/ports/crux.cvsup
-    install -m 0644 ../clc.cvsup $PKG/etc/ports/clc.cvsup
+    install -m 0644 ../base.svn $PKG/etc/ports/base.svn
+    install -m 0644 ../opt.svn $PKG/etc/ports/opt.svn
+    install -m 0644 ../contrib.svn $PKG/etc/ports/contrib.svn
 }

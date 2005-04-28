@@ -1,8 +1,9 @@
 drwxr-xr-x	root/root	etc/
 drwxr-xr-x	root/root	etc/ports/
--rw-r--r--	root/root	etc/ports/clc.cvsup
--rw-r--r--	root/root	etc/ports/crux.cvsup
+-rw-r--r--	root/root	etc/ports/base.svn
+-rw-r--r--	root/root	etc/ports/contrib.svn
 drwxr-xr-x	root/root	etc/ports/drivers/
+-rw-r--r--	root/root	etc/ports/opt.svn
 drwxr-xr-x	root/root	usr/
 drwxr-xr-x	root/root	usr/bin/
 -rwxr-xr-x	root/root	usr/bin/ports
