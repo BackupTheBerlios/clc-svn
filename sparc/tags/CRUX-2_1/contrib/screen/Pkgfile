@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 19:00:04 jue Exp $
+# Description: A screen manager with VT100/ANSI terminal emulation 
+# URL:         http://www.gnu.org/software/screen/
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+
+name=screen
+version=4.0.2
+release=2
+source=(ftp://ftp.uni-erlangen.de/pub/utilities/$name/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    export TERMINFO=$PKG/usr/share/terminfo
+    ./configure --prefix=/usr --enable-colors256
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/{info,share/terminfo}
+}
