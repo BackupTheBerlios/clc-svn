@@ -1,0 +1,39 @@
+# $Id: Pkgfile,v 1.1 2004/12/25 16:18:30 jw Exp $
+# Maintainer: Johannes Winkelmann <jw@tks6.net> 
+# Depends: binutils
+
+name=binutils64
+version=2.15.94.0.2.2
+release=1
+source=(ftp://ftp.kernel.org/pub/linux/devel/binutils/binutils-$version.tar.bz2)
+
+build() {
+    mkdir build
+    cd build
+    ../binutils-$version/configure --prefix=/usr \
+				--enable-shared \
+				--enable-64-bit-bfd \
+				--host=sparc-unknown-linux-gnu \
+				--build=sparc-unknown-linux-gnu \
+				--target=sparc64-unknown-linux-gnu \
+				--disable-nls
+    make tooldir=$PKG/usr
+    make check
+    make prefix=$PKG/usr tooldir=$PKG/usr install
+
+    mkdir -p $PKG/usr/include
+    cp ../binutils-$version/include/libiberty.h $PKG/usr/include/libiberty.h
+    rm -rf $PKG/usr/info
+
+    if [ -f $PKG/usr/lib/libbfd.la ]; then
+        sed -i "s|-L$SRC[^ ]* ||g" $PKG/usr/lib/libbfd.la
+    fi
+
+   rm $PKG/usr/bin/{nm,strip,ranlib,as,ld,ar}
+
+   # provided by binutils
+   rm -r $PKG/usr/lib/ldscripts
+
+   rm -r $PKG/usr/{include/libiberty.h,lib/libiberty.a}
+
+}

@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.2 2004/08/11 21:41:18 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=freetype
+version=2.1.9
+release=1
+source=(http://dl.sourceforge.net/freetype/freetype-$version.tar.bz2 \
+	freetype-$version.patch)
+
+build() {
+    cd freetype-$version
+    patch -p1 < ../freetype-$version.patch
+    ./configure --prefix=/usr \
+		--with-zlib \
+		--disable-nls
+    make
+    make DESTDIR=$PKG install
+}

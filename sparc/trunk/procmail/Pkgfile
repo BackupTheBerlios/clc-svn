@@ -1,0 +1,14 @@
+# $Id: Pkgfile,v 1.3 2002/09/10 22:11:47 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=procmail
+version=3.22
+release=2
+source=(ftp://ftp.procmail.net/pub/procmail/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    make CFLAGS0="$CFLAGS" LOCKINGTEST=/tmp all
+    make BASENAME=$PKG/usr install
+    make BASENAME=$PKG/usr install-suid
+}

@@ -1,0 +1,23 @@
+# $Id: Pkgfile,v 1.17 2005/04/12 21:43:17 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=xchat
+version=2.4.3
+release=1
+source=(http://www.xchat.org/files/source/2.4/$name-$version.tar.bz2)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr \
+		--enable-openssl \
+		--enable-perl \
+		--enable-ipv6 \
+		--disable-gnome \
+		--disable-textfe \
+		--disable-python \
+		--disable-tcl \
+		--disable-nls
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/{etc,share}
+}

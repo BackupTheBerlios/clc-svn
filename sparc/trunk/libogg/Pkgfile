@@ -1,0 +1,15 @@
+# $Id: Pkgfile,v 1.5 2004/09/26 18:41:43 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=libogg
+version=1.1.2
+release=1
+source=(http://downloads.xiph.org/releases/ogg/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/share/doc
+}

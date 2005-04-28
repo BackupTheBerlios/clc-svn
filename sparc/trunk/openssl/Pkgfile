@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.18 2005/04/12 18:53:27 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=openssl
+version=0.9.7g
+release=1
+source=(http://www.openssl.org/source/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./config --prefix=/usr --openssldir=/etc/ssl shared
+    make
+    make INSTALL_PREFIX=$PKG MANDIR=/usr/man MANSUFFIX=ssl install
+    find $PKG -name "*fips*" -exec rm -f {} \;
+    chmod -R +w $PKG
+}

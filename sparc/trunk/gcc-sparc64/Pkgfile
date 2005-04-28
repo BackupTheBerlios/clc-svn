@@ -1,0 +1,37 @@
+# $Id: Pkgfile,v 1.2 2004/12/25 19:54:35 jw Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=gcc-sparc64
+version=3.4.3
+release=1
+source=(ftp://sources.redhat.com/pub/gcc/releases/gcc-$version/gcc-$version.tar.bz2)
+
+build() {
+    mkdir build
+    cd build
+    ../gcc-$version/configure --prefix=/usr \
+				--enable-languages=c \
+				--enable-threads=single \
+				--disable-shared \
+				--disable-nls \
+                                --target=sparc64-unknown-linux-gnu \
+                                --host=sparc-unknown-linux-gnu \
+                                --build=sparc-unknown-linux-gnu \
+                                --without-multilib --disable-multilib
+    make 
+    
+    make DESTDIR=$PKG install
+
+    cd $PKG/usr/bin
+    ln -s sparc64-unknown-linux-gnu-gcc gcc64
+    ln -s sparc64-unknown-linux-gnu-gcc sparc64-linux-gcc
+
+
+    rm -rf $PKG/usr/info $PKG/usr/lib/libiberty.a \
+	   $PKG/usr/bin/{c++filt,*-pc-linux-gnu-*} \
+	   $PKG/usr/lib/gcc-lib/*/$version/install-tools \
+	   $PKG/usr/lib/gcc-lib/*/$version/include/README
+
+    rm -rf $PKG/usr/man/man7
+    # rm $PKG/usr/man/man1/{cpp.1,gcov.1}
+}

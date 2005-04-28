@@ -1,0 +1,23 @@
+# $Id: Pkgfile,v 1.23 2005/03/26 00:23:06 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=openssh
+version=4.0p1
+release=2
+source=(ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/$name-$version.tar.gz sshd)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr \
+		--libexecdir=/usr/lib/ssh \
+		--sysconfdir=/etc/ssh \
+		--with-mantype=man \
+		--with-tcp-wrappers \
+		--with-md5-passwords \
+		--with-privsep-user=nobody \
+		--with-privsep-path=/usr/lib/ssh/empty
+    make
+    make DESTDIR=$PKG install
+    install -D -m 755 ../sshd $PKG/etc/rc.d/sshd
+    rm -rf $PKG/usr/share
+}

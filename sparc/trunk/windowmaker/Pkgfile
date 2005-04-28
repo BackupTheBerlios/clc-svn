@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.7 2004/10/27 20:36:07 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=windowmaker
+version=0.91.0
+release=1
+source=(ftp://ftp.windowmaker.org/pub/source/release/WindowMaker-$version.tar.bz2)
+
+build() {
+    cd WindowMaker-$version
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/share/WindowMaker/{README*,menu.*,plmenu.*} \
+	   $PKG/usr/lib/locale $PKG/usr/man/sk $PKG/usr/bin/wm-oldmenu2new
+}
