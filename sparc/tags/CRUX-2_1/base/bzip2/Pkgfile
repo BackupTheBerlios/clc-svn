@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.4 2002/12/06 22:24:07 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=bzip2
+version=1.0.2
+release=1
+source=(ftp://sources.redhat.com/pub/bzip2/v102/$name-$version.tar.gz \
+	$name-$version.patch)
+
+build() {
+    cd $name-$version
+    patch -p1 < ../$name-$version.patch
+    make
+    make PREFIX=$PKG/usr install
+    rm $PKG/usr/bin/{bunzip2,bzcat,bzcmp,bzfgrep,bzegrep,bzmore}
+    ln -sf bzip2 $PKG/usr/bin/bunzip2
+    ln -sf bzip2 $PKG/usr/bin/bzcat
+    ln -sf bzdiff $PKG/usr/bin/bzcmp
+    ln -sf bzgrep $PKG/usr/bin/bzegrep
+    ln -sf bzgrep $PKG/usr/bin/bzfgrep
+    ln -sf bzless $PKG/usr/bin/bzmore
+    ln -sf bzip2.1.gz $PKG/usr/man/man1/bunzip2.1.gz
+    ln -sf bzip2.1.gz $PKG/usr/man/man1/bzcat.1.gz
+}
