@@ -1,0 +1,13 @@
+# $Id: Pkgfile,v 1.9 2005/03/22 20:02:59 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=webfs
+version=1.21
+release=2
+source=(http://dl.bytesex.org/releases/webfs/webfs-$version.tar.gz httpd)
+
+build() {
+    cd $name-$version
+    make prefix=$PKG/usr mandir=$PKG/usr/man install
+    install -D -m 0755 ../httpd $PKG/etc/rc.d/httpd
+}
