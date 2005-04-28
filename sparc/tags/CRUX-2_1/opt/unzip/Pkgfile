@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.7 2005/03/21 21:39:55 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=unzip
+version=5.52
+release=1
+source=(ftp://ftp.info-zip.org/pub/infozip/src/unzip552.tar.gz \
+	crypt.h crypt.c)
+
+build() {
+    cd $name-$version
+    cp ../crypt.[hc] .
+    make -f unix/Makefile LOCAL_UNZIP="$CFLAGS" prefix=/usr linux_noasm
+    make -f unix/Makefile prefix=$PKG/usr install
+    ln -sf unzip $PKG/usr/bin/zipinfo
+}
