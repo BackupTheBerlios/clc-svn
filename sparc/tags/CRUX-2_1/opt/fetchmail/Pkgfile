@@ -1,0 +1,15 @@
+# $Id: Pkgfile,v 1.13 2003/10/17 12:17:04 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=fetchmail
+version=6.2.5
+release=1
+source=(http://catb.org/~esr/fetchmail/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --with-ssl=/usr --disable-nls
+    make
+    make DESTDIR=$PKG install
+    rm $PKG/usr/bin/fetchmailconf $PKG/usr/man/man?/fetchmailconf.?
+}
