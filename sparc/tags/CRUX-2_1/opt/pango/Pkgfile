@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.7 2005/03/21 21:30:58 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=pango
+version=1.8.1
+release=1
+source=(ftp://ftp.gnome.org/pub/gnome/sources/$name/1.8/$name-$version.tar.bz2 \
+	pango.modules)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+    install -D -m 644 ../pango.modules $PKG/usr/etc/pango/pango.modules
+    rm -r $PKG/usr/share
+}
