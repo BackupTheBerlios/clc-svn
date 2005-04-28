@@ -1,0 +1,30 @@
+# $Id: Pkgfile,v 1.12 2005/04/17 22:32:17 per Exp $
+# Maintainer: Per Lidén <per@fukt.bth.se>
+
+name=firefox
+version=1.0.3
+release=1
+source=(http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$version/source/$name-$version-source.tar.bz2 \
+	http://www.fukt.bth.se/~per/crux/files/firefox/$name-$version-init.tar.bz2 \
+	mozconfig)
+
+build() {
+    export MOZILLA_CLIENT=1
+    export BUILD_OPT=1
+    export NO_STATIC_LIB=1
+    export USE_PTHREADS=1
+    export MOZ_PHOENIX=1
+    CXXFLAGS="${CXXFLAGS} -Wno-deprecated"
+    cd mozilla
+    sed "s/#CFLAGS#/$CFLAGS/" ../mozconfig > .mozconfig
+    make -f client.mk build
+    mkdir -p $PKG/usr/{bin,lib}
+    cp -rL dist/bin $PKG/usr/lib/firefox
+    ln -sf ../lib/firefox/firefox $PKG/usr/bin/firefox
+    cd $PKG/usr/lib/firefox
+    rm -rf Test* bloaturls.txt res/samples res/throbber
+    MOZILLA_FIVE_HOME=$PWD LD_LIBRARY_PATH=$PWD ./regxpcom
+    MOZILLA_FIVE_HOME=$PWD LD_LIBRARY_PATH=$PWD ./regchrome
+    touch chrome/user-skins.rdf chrome/user-locales.rdf
+    cp -rf $SRC/{components.ini,defaults.ini,extensions,plugins} $PKG/usr/lib/firefox
+}
