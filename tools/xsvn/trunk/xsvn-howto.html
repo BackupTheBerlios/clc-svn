@@ -94,6 +94,17 @@ $ cd myport
 $ svn add Pkgfile .md5sum .footprint
 $ svn ci -m "add myport to sparc"</pre>
 
+<h4>Checking which ports are in another arch, but not in ours; and the other way around</h4>
+
+It's interesting to compare the contents of our repository against
+another one. This way, it's possible to see which ports we're still
+missing, or which ones we have in addition.
+      
+<pre>$ xsvn missing x86/tags/CRUX-2_1/contrib
+$ xsvn additional x86/tags/CRUX-2_1/contrib</pre>
+Note that this will consider the tagged branch
+(sparc/tags/CRUX-2_1/contrib), not your working copy or trunk.
+      
 
     </div>
     <div class="sectitle">Additional notes</div>

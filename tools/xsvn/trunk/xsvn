@@ -4,7 +4,7 @@
 #
 # TEST VERSION!
 
-VERSION=0.6
+VERSION=0.7
 BRANCHPOINT=branch-point
 
 
@@ -116,17 +116,39 @@ elif [ "$1" = "release" ]; then
 		-m "add $XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port"
                      
     fi
-elif [ "$1" = "missing" ]; then
+elif [ "$1" = "diff" ]; then
     
     if [ "$XSVN_RELEASE" = "" ]; then
 	echo "Error: XSVN_RELEASE not set"
 	exit -1
-    fi
-    
+    fi    
     assert "missing needs a collection name as first argument" $2
 
     fromarch=$2
     coll=$XSVN_COLLECTION
+    if [ ! -z "$3" ]; then
+	port="/$3"
+    fi
+
+    svn diff $XSVN_BASE_URL/$2$port \
+             $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port
+    
+elif [ "$1" = "missing" ] || [ "$1" = "additional" ]; then
+    
+    if [ "$XSVN_RELEASE" = "" ]; then
+	echo "Error: XSVN_RELEASE not set"
+	exit -1
+    fi    
+    assert "missing needs a collection name as first argument" $2
+
+    fromarch=$2
+    coll=$XSVN_COLLECTION
+    
+    filter="grep -v ^+"
+    if [ "$1" = "additional" ]; then
+	filter="grep -v ^-"
+    fi
+
 
     remote="`svn ls $XSVN_BASE_URL/$2`"
     local="`svn ls $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll`"
@@ -134,11 +156,11 @@ elif [ "$1" = "missing" ]; then
     diff -w -t -U 0 <(for r in `echo $remote`; do echo $r; done) \
          <(for l in `echo $local`; do echo $l; done)|sed '/^@@/d' | \
          sed '/^+++/d' | \
-         sed '/^---/d'|grep -v ^+|sed -e 's/^-//g'
+         sed '/^---/d'|$filter|sed -e 's/^[+-]//g'
     
 else
     echo "Usage: $0 <command>"
-    echo "   where command can be: merge-from, release, missing"
+    echo "   where command can be: merge-from, release, missing, additional"
 fi
 
 cd $PWD
