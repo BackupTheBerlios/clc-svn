@@ -1,0 +1,40 @@
+# $Id: Pkgfile,v 1.8 2005/04/17 17:14:49 jue Exp $
+# Description: Apache HTTP server version 2.0.x
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# URL:         http://httpd.apache.org/
+# Depends on:  apr, openssl
+# Group:       apache
+
+name=apache
+version=2.0.54
+release=1
+source=(http://www.apache.org/dist/httpd/httpd-$version.tar.gz \
+        crux.layout apache)
+
+build(){
+   cd httpd-$version
+   cat ../crux.layout >> config.layout
+   ./configure --enable-layout=CRUX \
+               --with-apr=/usr \
+               --with-apr-util=/usr \
+               --enable-so \
+               --enable-modules=all \
+               --enable-mods-shared=all \
+               --enable-ssl \
+               --enable-deflate \
+               --enable-proxy{,-connect,-ftp,-http} \
+               --enable{,-disk,-mem}-cache \
+               --with-gdbm \
+               --with-expat=/usr \
+               --with-mpm=prefork
+   make 
+   make DESTDIR=$PKG install
+
+   mkdir -p $PKG/etc/apache/{ssl.key,ssl.crt}
+   touch $PKG/etc/apache/ssl.key/server.key
+   touch $PKG/etc/apache/ssl.crt/server.crt
+   install -D -m 755 ../apache $PKG/etc/rc.d/apache
+
+   rm -R $PKG/var/www/htdocs/*
+   chown -R root:root $PKG
+}

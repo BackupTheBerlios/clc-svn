@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# /etc/rc.d/apache: start/stop/restart apache HTTP server
+#
+
+#START=start
+START=startssl
+
+KEY=/etc/apache/ssl.key/server.key
+CRT=/etc/apache/ssl.crt/server.crt
+
+make_cert() {
+	HOST=`hostname -s` || HOST=localhost
+	DOMAIN=`hostname -d` || DOMAIN=localdomain
+	echo "Creating SSL certificate for host $HOST.$DOMAIN"
+	INFO=".\n.\n.\n$DOMAIN\n$HOST\n$HOST.$DOMAIN\nroot@$HOST.$DOMAIN"
+	openssl genrsa -rand /proc/meminfo 1024 > $KEY 2> /dev/null
+	echo -e $INFO | openssl req -new -key $KEY -x509 -days 365 -out $CRT 2> /dev/null
+	chmod 0600 $KEY $CRT
+}
+
+case $1 in
+start)
+	if [ ! -s $KEY -o ! -s $CRT ]; then 
+		make_cert
+	fi
+	/usr/sbin/apachectl $START 
+	;;
+stop)
+	/usr/sbin/apachectl stop 
+	;;
+restart)
+	/usr/sbin/apachectl restart 
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file
