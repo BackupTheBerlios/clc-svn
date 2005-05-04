@@ -129,14 +129,31 @@ Note that this will consider the tagged branch
 $ xsvn additional</pre>
       
     </div>
+
     <div class="sectitle">Additional notes</div>
     <div class="section">
 
 Missing features:
       <ul>
 <li>diff'ing against other archs</li>
-      </div>
+    </div>
 
+    <div class="sectitle">Errors</div>
+    <div class="section">
+      <pre>Path 'svn+ssh://svn.berlios.de/svnroot/repos/clc/sparc/trunk/contrib/&lt;port&gt;'</pre>: most likely, you forgot to commit and tried to release.
+
+    </div>
+
+    <div class="sectitle">Typical section</div>
+    <div class="section">
+<pre>$ cd ~/crux/sparc/contrib
+$ xsvn merge tree
+$ cd tree
+$ fakeroot pkgmk -d # or build as root, if you prefer
+$ cd ..
+$ svn ci tree -m "initial commit of 'tree'"
+$ xsvn release tree
+    </div>
     
     <div class="sectitle">The concept of xsvn</div>
     <div class="section">
