@@ -45,10 +45,10 @@ $ echo "export XSVN_ARCH=sparc"         >> .xsvn-config
 $ echo "export XSVN_SOURCE_ARCH=x86"    >> .xsvn-config</pre>
 
 xsvn uses those variables to understand where to merge from, and where
-to release to. The last variable, XSVN_SOURCE_ARCH, is the
+to release to. The last variable, <code>XSVN_SOURCE_ARCH</code>, is the
 architecture you're usually merging from and will be used by xsvn to
 safe you some typing. This file is simply sourced, so you can put
-other stuff there too (like the SVN_SSH setting).
+other stuff there too (like the <code>SVN_SSH</code> setting).
       
 </div>
       
@@ -77,7 +77,7 @@ etc) like this:
 
 Since we specified a default source architecture, xsvn can guess the
 default URL (which will be the tagged version for the same release
-we're in, for the architecture specified in XSVN_SOURCE_ARCH)
+we're in, for the architecture specified in <code>XSVN_SOURCE_ARCH</code>)
 
 <pre>$ xsvn merge someport</pre>
 
@@ -118,7 +118,7 @@ $ xsvn additional x86/tags/CRUX-2_1/contrib</pre>
 Note that this will consider the tagged branch
 (sparc/tags/CRUX-2_1/contrib), not your working copy or trunk.
       
-<p>Also note that you can omit the arguments, and xsvn will then guess the most likely case (XSVN_SOURCE_ARCH for the same crux release, in the same collection:</p>
+<p>Also note that you can omit the arguments, and xsvn will then guess the most likely case (<code>XSVN_SOURCE_ARCH</code> for the same crux release, in the same collection:</p>
 <pre>$ xsvn missing
 $ xsvn additional</pre>
       
