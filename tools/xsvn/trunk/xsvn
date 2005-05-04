@@ -4,7 +4,7 @@
 #
 # TEST VERSION!
 
-VERSION=0.4
+VERSION=0.6
 BRANCHPOINT=branch-point
 
 
@@ -86,34 +86,59 @@ elif [ "$1" = "release" ]; then
 	echo "Error: XSVN_RELEASE not set"
 	exit -1
     fi
+    if [ "$XSVN_COLLECTION" = "" ]; then
+	echo "Error: XSVN_COLLECTION not set"
+	exit -1
+    fi
 
     assert "release needs a port name as first argument" $2
-    assert "release needs a collection name as second argument" $3
 
     port=$2
-    coll=$3
+    coll=$XSVN_COLLECTION
     
-    svn ls $XSVN_BASE_URL/tags/$XSVN_RELEASE/$coll/$port &> /dev/null
+    svn ls $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port &> /dev/null
     if [ $? -eq 0 ]; then
-        out=`svn diff $XSVN_BASE_URL/$XSVN_ARCH/trunk/$port $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port`
+        out=`svn diff $XSVN_BASE_URL/$XSVN_ARCH/trunk/$coll/$port $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port`
         if [ $? -ne 0 ] || [ ! "$out" = "" ]; then
             echo "Releasing $port to $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port"
             echo "(removing old version)"
 	    svn del $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port \
                     -m "drop old version"
             echo "adding new version"
-	    svn cp $XSVN_BASE_URL/$XSVN_ARCH/trunk/$port \
-                   $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port
+	    svn cp $XSVN_BASE_URL/$XSVN_ARCH/trunk/$coll/$port \
+                   $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll \
+		   -m "update $XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port"
         fi
     else
          echo "adding new version"
-         svn cp $XSVN_BASE_URL/$XSVN_ARCH/trunk/$port \
-                $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port
+         svn cp $XSVN_BASE_URL/$XSVN_ARCH/trunk/$coll/$port \
+                $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port $msg \
+		-m "add $XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port"
                      
     fi
+elif [ "$1" = "missing" ]; then
+    
+    if [ "$XSVN_RELEASE" = "" ]; then
+	echo "Error: XSVN_RELEASE not set"
+	exit -1
+    fi
+    
+    assert "missing needs a collection name as first argument" $2
+
+    fromarch=$2
+    coll=$XSVN_COLLECTION
+
+    remote="`svn ls $XSVN_BASE_URL/$2`"
+    local="`svn ls $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll`"
+
+    diff -w -t -U 0 <(for r in `echo $remote`; do echo $r; done) \
+         <(for l in `echo $local`; do echo $l; done)|sed '/^@@/d' | \
+         sed '/^+++/d' | \
+         sed '/^---/d'|grep -v ^+|sed -e 's/^-//g'
+    
 else
     echo "Usage: $0 <command>"
-    echo "   where command can be: merge-from, release"
+    echo "   where command can be: merge-from, release, missing"
 fi
 
 cd $PWD

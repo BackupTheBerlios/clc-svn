@@ -1,3 +1,10 @@
+0.7     04.05.2005
+	* add 'missing' command
+	* use .xsvn-config
+
+0.[56]  (no one knows)
+	* same here, sorry :-)
+
 0.4	15.4.2004
 	* switch order of arguments in release
 	* change arguments of merge-from to <arch> <coll>/<port>

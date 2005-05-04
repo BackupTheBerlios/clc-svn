@@ -1,8 +1,87 @@
-### how to merge from a tag:
-xsvn merge-from x86 tags/CRUX-2_1/base/gcc
+                 xsvn-howto / maintaining ports for CRUX/SPARC
 
-### how to merge from trunk (typical situation)
-xsvn merge-from x86 trunk/gcc
+   Preparation
 
-### release a port
-xsvn release htop opt
+$ export SVN_SSH="ssh -l <username>"
+$ mkdir -p ~/crux/sparc  # location doesn't matter, really
+$ cd ~/crux/sparc
+$ wget http://jw.tks6.net/files/crux/xsvn/xsvn
+$ mv xsvn <somewhere in your path>
+
+   Also read [1]the svn howto at berlios
+
+   NOTE: we might eventually run into permission problems since I
+   currently don't set my umask to 002
+
+   Setup
+
+Initial checkout
+
+$ svn co svn+ssh://svn.berlios.de/svnroot/repos/clc/sparc/trunk/contrib
+$ cd contrib
+
+Prepare xsvn
+
+$ echo "export XSVN_RELEASE=CRUX-2_1"   >  .xsvn-config
+$ echo "export XSVN_BASE_URL=svn+ssh://svn.berlios.de/svnroot/repos/clc >> .xsv
+n-config
+$ echo "export XSVN_COLLECTION=contrib" >> .xsvn-config
+$ echo "export XSVN_ARCH=sparc"         >> .xsvn-config
+
+   xsvn uses those variables to understand where to merge from, and where
+   to release to.
+
+   Working on the ports
+
+Merge a port from another architecture
+
+$ xsvn merge-from x86/tags/CRUX-2_1/contrib someport
+
+   This will fetch the port and add it you your working copy. After that,
+   build, test and fix if needed, then commit:
+$ svn ci someport -m "import someport to sparc/contrib"
+
+   The above assume you're in the base directory of your working copy; if
+   you cd'ed into the directory before to build it, you can also do:
+$ svn ci -m import someport to sparc/contrib"
+
+   You can check the current status (files modified, files to be added
+   etc) like this:
+$ svn status
+
+   Repeated merges should work just the same; to get the changes in from
+   x86 since the last merge, just do a 'merge-from' like shown above.
+
+Release a port for a specific crux release
+
+   In order to run this, you must be in the base directory of your
+   working copy (~crux/sparc/contrib for the example above)
+$ xsvn release someport
+
+   xsvn will read your .xsvn-config, and combine base url, release,
+   collection and architecture to the correct URL. It'll also release it
+   immediately
+
+Adding a new port (not merging from another arch)
+
+$ svn add -N myport
+$ cd myport
+$ svn add Pkgfile .md5sum .footprint
+$ svn ci -m "add myport to sparc"
+
+   Additional notes
+
+   Missing features:
+     * checking for ports missing in a certain collection compared to
+       another arch
+     * dropping a port from a collection easily
+     * diff'ing against other archs
+       The concept of xsvn
+       xsvn stores merge points as subversion properties. This way, it is
+       possible to calculate the chances since the last merge operation.
+       Obviously, this does not consider the fact that we could be
+       merging from a different branch.
+
+References
+
+   1. https://developer.berlios.de/docman/display_doc.php?docid=394&group_id=2
