@@ -3,6 +3,7 @@
 	* use .xsvn-config
 	* add 'additional' command
 	* add preliminary 'diff' command
+	* add 'merge' command; use XSVN_SOURCE_ARCH in missing and additional
 
 0.[56]  (no one knows)
 	* same here, sorry :-)

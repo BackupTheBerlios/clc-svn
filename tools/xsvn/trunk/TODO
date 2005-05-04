@@ -1,3 +1,11 @@
+add new variable XSVN_SOURCE_ARCH
+- use in new command 'merge': xsvn merge bash 
+  (looks in $base/tags/$release/$coll)
+- use in 'missing' and 'additional' if called without argument
+
+
+
+
 Flaws:
 - currently, merging only works from 'trunk/<port>'. This might be the wrong
   approach, but implies that we merge from 'base/<port>' instead of just 

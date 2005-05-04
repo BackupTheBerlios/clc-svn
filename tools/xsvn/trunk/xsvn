@@ -43,15 +43,24 @@ fi
 assert "XSVN_BASE_URL must be set in .xsvn-config" $XSVN_BASE_URL
 assert "XSVN_ARCH must be set in .xsvn-config"  $XSVN_ARCH
 
-if [ "$1" = "merge-from" ]; then
+if [ "$1" = "merge-from" ] || [ "$1" = "merge" ] ; then
 
-    assert "merge-from needs a collection name as first argument" $2
-    assert "merge-from needs a port name as second argument" $3
 
-    fromarch=$2
-    port=$3
-    portname=`basename $port`
+    if [ "$1" = "merge-from" ]; then
+	assert "merge-from needs a collection name as first argument" $2
+	assert "merge-from needs a port name as second argument" $3
 
+	fromarch=$2
+	port=$3
+    else
+	assert "merge-from needs a port name as first argument" $2
+	assert "XSVN_SOURCE_ARCH must be set in .xsvn-config" $XSVN_SOURCE_ARCH
+
+	port=$2
+	fromarch=$XSVN_SOURCE_ARCH/tags/$XSVN_RELEASE/$XSVN_COLLECTION
+    fi
+    
+    portname=`basename $port` # TODO: really needed?
     if [ ! -d $portname ]; then
 	echo "merging $port from $XSVN_BASE_URL/$fromarch/$port"
 	svn cp $XSVN_BASE_URL/$fromarch/$port $portname
@@ -138,10 +147,19 @@ elif [ "$1" = "missing" ] || [ "$1" = "additional" ]; then
     if [ "$XSVN_RELEASE" = "" ]; then
 	echo "Error: XSVN_RELEASE not set"
 	exit -1
-    fi    
-    assert "missing needs a collection name as first argument" $2
+    fi
+
+    if [ -z "$2" ]; then
+	if [ -z "$XSVN_SOURCE_ARCH" ]; then
+	    assert "Please either specify a collection name as argument, or  set XSVN_SOURCE_ARCH in .xsvn-config" ""
+	fi
+    fi
 
     fromarch=$2
+    if [ -z "$fromarch" ]; then
+	fromarch=$XSVN_SOURCE_ARCH/tags/$XSVN_RELEASE/$XSVN_COLLECTION
+    fi
+
     coll=$XSVN_COLLECTION
     
     filter="grep -v ^+"
@@ -150,7 +168,7 @@ elif [ "$1" = "missing" ] || [ "$1" = "additional" ]; then
     fi
 
 
-    remote="`svn ls $XSVN_BASE_URL/$2`"
+    remote="`svn ls $XSVN_BASE_URL/$fromarch`"
     local="`svn ls $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll`"
 
     diff -w -t -U 0 <(for r in `echo $remote`; do echo $r; done) \
