@@ -100,6 +100,12 @@ collection and architecture to the correct URL. It'll also release it
 immediately
 
 
+<h4>Removing a port from a release branch</h4>
+To remove a previously released port, just execute:
+
+<pre>$ xsvn drop someport</pre>
+
+
 <h4>Adding a new port (not merging from another arch)</h4>
 
 <pre>$ svn add -N myport
@@ -128,7 +134,6 @@ $ xsvn additional</pre>
 
 Missing features:
       <ul>
-<li>dropping a port from a collection easily</li>
 <li>diff'ing against other archs</li>
       </div>
 
