@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.1 2004/08/18 18:59:55 vector Exp $
+# Description: Recursive directory listing program
+# URL: http://mama.indstate.edu/users/ice/tree/
+# Maintainer: Jukka Heino <vector@pp.nic.fi>
+# Packager: Jukka Heino <vector@pp.nic.fi>
+# Depends on:
+
+name=tree
+version=1.5.0
+release=1
+source=(ftp://mama.indstate.edu/linux/tree/$name-$version.tgz)
+
+build() {
+    cd $name-1.5.0
+    sed -i "s/-O2/$CFLAGS/g" Makefile
+    make
+    make -e prefix=$PKG/usr install
+}
