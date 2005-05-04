@@ -42,6 +42,8 @@ fi
 
 assert "XSVN_BASE_URL must be set in .xsvn-config" $XSVN_BASE_URL
 assert "XSVN_ARCH must be set in .xsvn-config"  $XSVN_ARCH
+assert "$XSVN_RELEASE must be set in .xsvn-config"  $XSVN_RELEASE
+assert "$XSVN_COLLECTION must be set in .xsvn-config"  $XSVN_COLLECTION
 
 if [ "$1" = "merge-from" ] || [ "$1" = "merge" ] ; then
 
@@ -89,17 +91,21 @@ if [ "$1" = "merge-from" ] || [ "$1" = "merge" ] ; then
 	    echo "Failed to determine branch-point; set property manually"
 	fi
     fi
+elif [ "$1" = "drop" ]; then
+    
+    assert "release needs a port name as first argument" $2
+
+    port=$2
+    coll=$XSVN_COLLECTION
+
+    svn ls $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port &> /dev/null
+    if [ $? -eq 0 ]; then
+	svn del $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port \
+                    -m "drop old version"
+    fi
+    
 elif [ "$1" = "release" ]; then
     
-    if [ "$XSVN_RELEASE" = "" ]; then
-	echo "Error: XSVN_RELEASE not set"
-	exit -1
-    fi
-    if [ "$XSVN_COLLECTION" = "" ]; then
-	echo "Error: XSVN_COLLECTION not set"
-	exit -1
-    fi
-
     assert "release needs a port name as first argument" $2
 
     port=$2
@@ -144,11 +150,6 @@ elif [ "$1" = "diff" ]; then
     
 elif [ "$1" = "missing" ] || [ "$1" = "additional" ]; then
     
-    if [ "$XSVN_RELEASE" = "" ]; then
-	echo "Error: XSVN_RELEASE not set"
-	exit -1
-    fi
-
     if [ -z "$2" ]; then
 	if [ -z "$XSVN_SOURCE_ARCH" ]; then
 	    assert "Please either specify a collection name as argument, or  set XSVN_SOURCE_ARCH in .xsvn-config" ""
@@ -178,7 +179,7 @@ elif [ "$1" = "missing" ] || [ "$1" = "additional" ]; then
     
 else
     echo "Usage: $0 <command>"
-    echo "   where command can be: merge-from, release, missing, additional"
+    echo "   where command can be: merge, merge-from, release, drop,  missing, additional"
 fi
 
 cd $PWD
