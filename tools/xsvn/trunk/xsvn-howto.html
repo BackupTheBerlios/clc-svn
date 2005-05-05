@@ -113,6 +113,10 @@ $ cd myport
 $ svn add Pkgfile .md5sum .footprint
 $ svn ci -m "add myport to sparc"</pre>
 
+    </div>
+
+    <div class="sectitle">Keeping your collection up to date</div>
+    <div class="section">
 <h4>Checking which ports are in another arch, but not in ours; and the other way around</h4>
 
 It's interesting to compare the contents of our repository against
@@ -128,16 +132,21 @@ Note that this will consider the tagged branch
 <pre>$ xsvn missing
 $ xsvn additional</pre>
       
+<h4>Checking for ports which were changed since the last merge</h4>
+<pre>$ xsvn changed
+$ xsvn changed someport</pre>
+
+      The former will check the whole collection and might take a
+      while (depending on the number of ports in the collection on
+      your architecture).
+
+<h4>Seeing differences</h4>
+<pre>$ xsvn diff someport</pre>
+
+      Note that diff is very stupid and just shows differences,
+      including those you did after a merge.
+      
     </div>
-
-    <div class="sectitle">Additional notes</div>
-    <div class="section">
-
-Missing features:
-      <ul>
-<li>diff'ing against other archs</li>
-    </div>
-
 
     <!--
     <div class="sectitle">Errors</div>

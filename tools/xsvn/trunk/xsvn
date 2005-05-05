@@ -17,11 +17,15 @@ BRANCHPOINT=branch-point
 #   $ merge-from sparc -r 25 base/gcc
 
 
-function assert() {
+assert() {
     if [ "$2" = "" ]; then
 	echo "Error: $1. Exiting"
 	exit -1
     fi
+}
+
+getLatestRevision() {
+    svn ls -v $1|awk '{print $1}'|awk '{print $1}'|sort -r -n|head -n 1
 }
 
 if [ -f .xsvn-config ]; then
@@ -153,15 +157,16 @@ elif [ "$1" = "changed" ]; then
     fi
 
 
-    for p in $ports; do
-	port="/$p"
-        bp=`svn propget $BRANCHPOINT $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port 2> /dev/null`
-	if [ $? = 0 ]; then
-	    out=`svn diff -r $bp:HEAD $XSVN_BASE_URL/$fromarch$port`
-	    if [ "$out" != "" ] ; then
-		echo "M $p"
-	    else
-	        echo "- $p"
+    for port in $ports; do
+
+	bp=`svn propget $BRANCHPOINT $port 2> /dev/null`	
+	# more correct, but problably slower:
+        # bp=`svn propget $BRANCHPOINT $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port 2> /dev/null`
+
+	if [ ! -z "$bp" ]; then
+	    head=`getLatestRevision $XSVN_BASE_URL/$fromarch/$port`
+	    if [ $bp -ne $head ]; then
+		echo "M $port"
 	    fi
 	fi
     done
