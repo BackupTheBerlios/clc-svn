@@ -149,7 +149,7 @@ elif [ "$1" = "changed" ]; then
     if [ ! -z "$2" ]; then
 	ports="$*"
     else
-	ports="`svn ls $XSVN_BASE_URL/$fromarch`"
+	ports="`svn ls $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll`"
     fi
 
 
