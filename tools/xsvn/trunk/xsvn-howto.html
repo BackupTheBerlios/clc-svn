@@ -106,6 +106,16 @@ To remove a previously released port, just execute:
 <pre>$ xsvn drop someport</pre>
 
 
+<h4>Undoing a merge</h4>
+
+I have to agree this is currently not very nice, but the easiest way
+to do it is the following:
+<pre>$ rm someport
+$ svn up</pre>
+
+<pre>$ xsvn drop someport</pre>
+
+
 <h4>Adding a new port (not merging from another arch)</h4>
 
 <pre>$ svn add -N myport
