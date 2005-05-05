@@ -132,7 +132,7 @@ elif [ "$1" = "release" ]; then
 		-m "add $XSVN_ARCH/tags/$XSVN_RELEASE/$coll/$port"
                      
     fi
-elif [ "$1" = "diff" ]; then
+elif [ "$1" = "changed" ]; then
     
     if [ "$XSVN_RELEASE" = "" ]; then
 	echo "Error: XSVN_RELEASE not set"
@@ -143,11 +143,20 @@ elif [ "$1" = "diff" ]; then
     fromarch=$2
     coll=$XSVN_COLLECTION
     if [ ! -z "$3" ]; then
-	port="/$3"
+	ports="$3"
+    else
+	ports="`svn ls $XSVN_BASE_URL/$fromarch`"
     fi
 
-    svn diff $XSVN_BASE_URL/$2$port \
-             $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port
+
+    for p in $ports; do
+	port="/$p"
+        bp=`svn propget $BRANCHPOINT $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port`
+        svn diff -r $bp:HEAD $XSVN_BASE_URL/$fromarch$port &> /dev/null
+	if [ $? -ne 0 ]; then
+	    echo "M $p"
+	fi
+    done
     
 elif [ "$1" = "missing" ] || [ "$1" = "additional" ]; then
     
@@ -177,6 +186,24 @@ elif [ "$1" = "missing" ] || [ "$1" = "additional" ]; then
          <(for l in `echo $local`; do echo $l; done)|sed '/^@@/d' | \
          sed '/^+++/d' | \
          sed '/^---/d'|$filter|sed -e 's/^[+-]//g'
+elif [ "$1" = "diff" ]; then
+    
+    if [ "$XSVN_RELEASE" = "" ]; then
+        echo "Error: XSVN_RELEASE not set"
+        exit -1
+    fi    
+    assert "missing needs a collection name as first argument" $2
+    assert "missing needs a port name as second argument" $3
+
+    fromarch=$2
+    coll=$XSVN_COLLECTION
+    port="/$3"
+
+    bp=`svn propget $BRANCHPOINT $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port`
+
+    svn diff $XSVN_BASE_URL/$2$port \
+             $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port
+    
     
 else
     echo "Usage: $0 <command>"

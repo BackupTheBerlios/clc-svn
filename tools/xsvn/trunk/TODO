@@ -1,8 +1,4 @@
-add new variable XSVN_SOURCE_ARCH
-- use in new command 'merge': xsvn merge bash 
-  (looks in $base/tags/$release/$coll)
-- use in 'missing' and 'additional' if called without argument
-
+new command 'init': create remote pathes
 
 
 
