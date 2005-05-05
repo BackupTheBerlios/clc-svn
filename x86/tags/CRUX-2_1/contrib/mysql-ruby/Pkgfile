@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.5 2005/03/09 19:00:00 jue Exp $
+# $Id: Pkgfile,v 1.6 2005/04/27 16:32:10 jue Exp $
 # Description: Extention library to use MySQL via Ruby
 # URL:         http://www.tmtm.org/en/mysql/ruby/
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 # Depends on:  ruby, mysql
 
 name=mysql-ruby
-version=2.5.2
+version=2.6
 release=1
 source=(http://www.tmtm.org/en/mysql/ruby/$name-$version.tar.gz)
 

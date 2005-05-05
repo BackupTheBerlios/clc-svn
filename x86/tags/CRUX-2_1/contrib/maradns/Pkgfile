@@ -1,10 +1,10 @@
-# $Id: Pkgfile,v 1.5 2005/03/27 10:01:42 jue Exp $
+# $Id: Pkgfile,v 1.6 2005/05/03 15:40:25 jue Exp $
 # Description: A authoritative,recursive (caching) DNS server that strives to be secure and fast
 # URL:         http://www.maradns.org/
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 
 name=maradns
-version=1.0.26
+version=1.0.27
 release=1
 source=(http://www.maradns.org/download/$name-$version.tar.bz2 \
         mararc maradns db.localhost db.0.0.127)

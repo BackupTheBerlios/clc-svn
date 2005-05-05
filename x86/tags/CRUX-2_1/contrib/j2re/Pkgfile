@@ -1,30 +1,29 @@
-# $Id: Pkgfile,v 1.7 2005/04/04 17:13:43 sip Exp $
-# Description: The Blackdown version of the Java 2 runtime environment
-# URL: http://www.blackdown.org/java-linux/java2-status/
-# Packager: Jürgen Daubert, juergen dot aubert at t-online dot de
-# Maintainer: Simone Rota, sip at varlock dot com
+# $Id: Pkgfile,v 1.9 2005/04/30 16:02:40 jdolan Exp $
+# Maintainer: Jay Dolan, jasonthomasdolan at yahoo dot com
+# Description: Java 2 Runtime Environment
+# URL: http://java.sun.com
+
+# Please download the source files from http://java.sun.com after
+# accepting the license terms, and place them in this directory.
 
 name=j2re
-version=1.4.2-01
-release=1
-source=(ftp://ftp.gwdg.de/pub/languages/java/linux/JDK-1.4.2/i386/01/$name-$version-linux-i586.bin)
+version=1.5.0
+release=03
+source=(jre-${version//./_}_${release}-linux-i586.bin)
 
-build() {
-    local JAVA ; JAVA=${name}${version%-*}
-    
-    mkdir -p $PKG/usr/{lib,bin}
-    cd $PKG/usr/lib
-    (sh $SRC/$name-$version-linux-i586.bin)
-    
-    rm -r $JAVA/{man/ja*,lib/locale}
-    rm $JAVA/javaws/{readme_*.html,resources/messages_*.properties}
-    rm $JAVA/lib/font.properties.*
-    find $JAVA/* -prune -type f -exec rm {} \;
-    
-    ln -s libjavaplugin_oji.so $JAVA/plugin/i386/mozilla/javaplugin_oji.so
-    ln -s $JAVA java
-    ln -s /usr/lib/$JAVA/bin/java $PKG/usr/bin/java
-    
-    chown -R root:root $PKG
-    chmod 755 $JAVA
+build(){
+	sed -i 's|more <<"EOF"|cat <<"EOF"|' jre-*.bin
+        mkdir -p $PKG/usr/lib; cd $PKG/usr/lib
+        yes | sh $SRC/jre-*.bin
+
+        export GLOBIGNORE="*/man1"
+        rm -rf jre*/{man/,lib/javaws/messages_,demo,sample}*
+        rm -rf jre*/lib/fontconfig.{RedHat,SuSE,Sun,Turbo}.*
+	rm -rf jre*/plugin/i386/ns7-gcc29
+	
+        for i in jre*/*; do
+          test -f $i && rm -rf $i;
+        done
+
+        ln -s jre* java    
 }

@@ -1,6 +1,6 @@
-# $Id: Pkgfile,v 1.10 2005/04/21 13:55:54 tilman Exp $
-# Packager: Tilman Sauerbeck <tilman at code-monkey de>
-# Maintainer: Tilman Sauerbeck <tilman at code-monkey de>
+# $Id: Pkgfile,v 1.11 2005/04/26 13:28:54 tilman Exp $
+# Packager: Tilman Sauerbeck, tilman at code-monkey dot de
+# Maintainer: Tilman Sauerbeck, tilman at code-monkey dot de
 # Description: Sophisticated command line based FTP client
 # URL: http://lftp.yar.ru/
 

@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.3 2005/03/08 23:13:49 sip Exp $
+# $Id: Pkgfile,v 1.4 2005/05/04 22:20:42 sip Exp $
 # Description: Java Servlet container (binary version)
 # URL: http://jakarta.apache.org/tomcat/index.html
 # Maintainer: Simone Rota, sip at varlock dot com
@@ -6,10 +6,10 @@
 # Depends on: j2sdk
 
 name=jakarta-tomcat
-version=5.0.28
+version=5.5.9
 release=1
-source=(http://markoer.org/apache/jakarta/tomcat-5/v$version/bin/$name-$version.tar.gz
-    tomcat)
+source=(http://markoer.org/apache/jakarta/tomcat-5/v$version/bin/$name-$version.tar.gz \
+	tomcat)
 
 build() {
   

@@ -90,6 +90,7 @@ drwxr-xr-x	root/root	usr/include/magick/
 -rw-r--r--	root/root	usr/include/magick/shear.h
 -rw-r--r--	root/root	usr/include/magick/signature.h
 -rw-r--r--	root/root	usr/include/magick/splay-tree.h
+-rw-r--r--	root/root	usr/include/magick/statistic.h
 -rw-r--r--	root/root	usr/include/magick/stream.h
 -rw-r--r--	root/root	usr/include/magick/string_.h
 -rw-r--r--	root/root	usr/include/magick/timer.h
@@ -107,35 +108,35 @@ drwxr-xr-x	root/root	usr/include/wand/
 -rw-r--r--	root/root	usr/include/wand/pixel-iterator.h
 -rw-r--r--	root/root	usr/include/wand/pixel-wand.h
 drwxr-xr-x	root/root	usr/lib/
-drwxr-xr-x	root/root	usr/lib/ImageMagick-6.2.1/
-drwxr-xr-x	root/root	usr/lib/ImageMagick-6.2.1/config/
--rw-r--r--	root/root	usr/lib/ImageMagick-6.2.1/config/colors.xml
--rw-r--r--	root/root	usr/lib/ImageMagick-6.2.1/config/configure.xml
--rw-r--r--	root/root	usr/lib/ImageMagick-6.2.1/config/delegates.xml
--rw-r--r--	root/root	usr/lib/ImageMagick-6.2.1/config/english.xml
--rw-r--r--	root/root	usr/lib/ImageMagick-6.2.1/config/locale.xml
--rw-r--r--	root/root	usr/lib/ImageMagick-6.2.1/config/type-ghostscript.xml
--rw-r--r--	root/root	usr/lib/ImageMagick-6.2.1/config/type-solaris.xml
--rw-r--r--	root/root	usr/lib/ImageMagick-6.2.1/config/type-windows.xml
--rw-r--r--	root/root	usr/lib/ImageMagick-6.2.1/config/type.xml
-drwxr-xr-x	root/root	usr/lib/ImageMagick-6.2.1/modules-Q16/
-drwxr-xr-x	root/root	usr/lib/ImageMagick-6.2.1/modules-Q16/coders/
-drwxr-xr-x	root/root	usr/lib/ImageMagick-6.2.1/modules-Q16/filters/
+drwxr-xr-x	root/root	usr/lib/ImageMagick-6.2.2/
+drwxr-xr-x	root/root	usr/lib/ImageMagick-6.2.2/config/
+-rw-r--r--	root/root	usr/lib/ImageMagick-6.2.2/config/colors.xml
+-rw-r--r--	root/root	usr/lib/ImageMagick-6.2.2/config/configure.xml
+-rw-r--r--	root/root	usr/lib/ImageMagick-6.2.2/config/delegates.xml
+-rw-r--r--	root/root	usr/lib/ImageMagick-6.2.2/config/english.xml
+-rw-r--r--	root/root	usr/lib/ImageMagick-6.2.2/config/locale.xml
+-rw-r--r--	root/root	usr/lib/ImageMagick-6.2.2/config/type-ghostscript.xml
+-rw-r--r--	root/root	usr/lib/ImageMagick-6.2.2/config/type-solaris.xml
+-rw-r--r--	root/root	usr/lib/ImageMagick-6.2.2/config/type-windows.xml
+-rw-r--r--	root/root	usr/lib/ImageMagick-6.2.2/config/type.xml
+drwxr-xr-x	root/root	usr/lib/ImageMagick-6.2.2/modules-Q16/
+drwxr-xr-x	root/root	usr/lib/ImageMagick-6.2.2/modules-Q16/coders/
+drwxr-xr-x	root/root	usr/lib/ImageMagick-6.2.2/modules-Q16/filters/
 -rw-r--r--	root/root	usr/lib/libMagick++.a
 -rwxr-xr-x	root/root	usr/lib/libMagick++.la
-lrwxrwxrwx	root/root	usr/lib/libMagick++.so -> libMagick++.so.6.2.1
-lrwxrwxrwx	root/root	usr/lib/libMagick++.so.6 -> libMagick++.so.6.2.1
--rwxr-xr-x	root/root	usr/lib/libMagick++.so.6.2.1
+lrwxrwxrwx	root/root	usr/lib/libMagick++.so -> libMagick++.so.6.2.2
+lrwxrwxrwx	root/root	usr/lib/libMagick++.so.6 -> libMagick++.so.6.2.2
+-rwxr-xr-x	root/root	usr/lib/libMagick++.so.6.2.2
 -rw-r--r--	root/root	usr/lib/libMagick.a
 -rwxr-xr-x	root/root	usr/lib/libMagick.la
-lrwxrwxrwx	root/root	usr/lib/libMagick.so -> libMagick.so.6.2.1
-lrwxrwxrwx	root/root	usr/lib/libMagick.so.6 -> libMagick.so.6.2.1
--rwxr-xr-x	root/root	usr/lib/libMagick.so.6.2.1
+lrwxrwxrwx	root/root	usr/lib/libMagick.so -> libMagick.so.6.2.2
+lrwxrwxrwx	root/root	usr/lib/libMagick.so.6 -> libMagick.so.6.2.2
+-rwxr-xr-x	root/root	usr/lib/libMagick.so.6.2.2
 -rw-r--r--	root/root	usr/lib/libWand.a
 -rwxr-xr-x	root/root	usr/lib/libWand.la
-lrwxrwxrwx	root/root	usr/lib/libWand.so -> libWand.so.6.2.1
-lrwxrwxrwx	root/root	usr/lib/libWand.so.6 -> libWand.so.6.2.1
--rwxr-xr-x	root/root	usr/lib/libWand.so.6.2.1
+lrwxrwxrwx	root/root	usr/lib/libWand.so -> libWand.so.6.2.2
+lrwxrwxrwx	root/root	usr/lib/libWand.so.6 -> libWand.so.6.2.2
+-rwxr-xr-x	root/root	usr/lib/libWand.so.6.2.2
 drwxr-xr-x	root/root	usr/lib/perl5/
 drwxr-xr-x	root/root	usr/lib/perl5/site_perl/
 drwxr-xr-x	root/root	usr/lib/perl5/site_perl/5.8.6/
@@ -170,13 +171,9 @@ drwxr-xr-x	root/root	usr/man/man1/
 -rw-r--r--	root/root	usr/man/man1/montage.1.gz
 drwxr-xr-x	root/root	usr/man/man3/
 -r--r--r--	root/root	usr/man/man3/Image::Magick.3pm.gz
-drwxr-xr-x	root/root	usr/man/man4/
--rw-r--r--	root/root	usr/man/man4/miff.4.gz
-drwxr-xr-x	root/root	usr/man/man5/
--rw-r--r--	root/root	usr/man/man5/quantize.5.gz
 drwxr-xr-x	root/root	usr/share/
-drwxr-xr-x	root/root	usr/share/ImageMagick-6.2.1/
-drwxr-xr-x	root/root	usr/share/ImageMagick-6.2.1/config/
--rw-r--r--	root/root	usr/share/ImageMagick-6.2.1/config/coder.xml
--rw-r--r--	root/root	usr/share/ImageMagick-6.2.1/config/log.xml
--rw-r--r--	root/root	usr/share/ImageMagick-6.2.1/config/magic.xml
+drwxr-xr-x	root/root	usr/share/ImageMagick-6.2.2/
+drwxr-xr-x	root/root	usr/share/ImageMagick-6.2.2/config/
+-rw-r--r--	root/root	usr/share/ImageMagick-6.2.2/config/coder.xml
+-rw-r--r--	root/root	usr/share/ImageMagick-6.2.2/config/log.xml
+-rw-r--r--	root/root	usr/share/ImageMagick-6.2.2/config/magic.xml

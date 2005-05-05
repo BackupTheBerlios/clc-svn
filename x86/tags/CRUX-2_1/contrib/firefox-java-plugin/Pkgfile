@@ -1,28 +1,29 @@
-# $Id: Pkgfile,v 1.3 2005/04/12 22:21:04 sip Exp $
-# Description: java plugin for Firefox
-# URL: http://www.blackdown.org http://java.sun.com
-# Maintainer: Simone Rota, sip at varlock dot com
-# Packager: Simone Rota, sip at varlock dot com
-# Depends on: j2re, firefox
+# $Id: Pkgfile,v 1.4 2005/04/29 21:05:37 jdolan Exp $
+# Maintainer: Jay Dolan, jasonthomasdolan at yahoo dot com
+# Description: Java plugin for Mozilla Firefox
+# URL: http://java.sun.com
+# Depends on: j2re,firefox
 
 name=firefox-java-plugin
-version=1.4.2
-release=1
+version=1.5.0
+release=02
 source=()
 
-build() {
-	mkdir -p $PKG/usr/lib/firefox/plugins
-	ln -sf .footprint.j2re $PKGMK_ROOT/.footprint
+build(){
+	plugins=(
+	  /usr/lib/java/plugin/i386/ns7/javaplugin_oji.so
+	  /usr/lib/java/jre/plugin/i386/ns7/libjavaplugin_oji.so
+	)
 
-	if [ "`pkginfo -i | grep '^j2re'`" ]; then
-	  ln -s /usr/lib/java/plugin/i386/mozilla/javaplugin_oji.so \
-	  $PKG/usr/lib/firefox/plugins/    	
-	else
-	  if [ "`pkginfo -i | grep '^j2sdk'`" ]; then
-	    ln -sf .footprint.j2sdk $PKGMK_ROOT/.footprint
-	    ln -s /usr/lib/java/jre/plugin/i386/ns7/libjavaplugin_oji.so \
-	    $PKG/usr/lib/firefox/plugins
-	  fi
+	for p in ${plugins[@]}; do
+	  test -f $p && break
+	done
+
+	if [ ! -f $p ]; then
+	  echo "Java Runtime Environment not found"
+	  return
 	fi
 
+	mkdir -p $PKG/usr/lib/firefox/plugins
+	ln -s $p $PKG/usr/lib/firefox/plugins	
 }

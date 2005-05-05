@@ -47,8 +47,13 @@ echo -n "Creating initial udev device nodes... "
 create_missing
 echo "done."
 
-echo -n "Setting /sbin/udev as default hotplugger... "
-echo "/sbin/udev" > /proc/sys/kernel/hotplug
-echo "done."
+# Uncomment these lines if you'd prefer /sbin/udev to do hotplugging. This
+# generally doesn't cause problems but will prevent some devices from
+# having their firmware uploaded via hotplug. (wireless cards like the
+# ipw2200)
+
+#echo -n "Setting /sbin/udev as default hotplugger... "
+#echo "/sbin/udev" > /proc/sys/kernel/hotplug
+#echo "done."
 
 exit 0

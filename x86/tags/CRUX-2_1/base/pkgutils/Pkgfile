@@ -1,8 +1,8 @@
-# $Id: Pkgfile,v 1.25 2005/03/28 22:18:26 per Exp $
+# $Id: Pkgfile,v 1.26 2005/05/04 00:26:01 per Exp $
 # Maintainer: Per Lidén <per@fukt.bth.se>
 
 name=pkgutils
-version=5.19
+version=5.20
 release=1
 source=(http://www.fukt.bth.se/~per/pkgutils/$name-$version.tar.gz)
 

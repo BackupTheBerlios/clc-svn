@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.7 2005/04/02 08:38:37 jw Exp $
+# $Id: Pkgfile,v 1.8 2005/05/03 21:06:44 jw Exp $
 # Maintainer:  Johannes Winkelmann, jw at tks6 dot net 
 # Description: One way sync over http
 # URL:         http://jw.tks6.net/files/crux/httpup_manual.html 
 # Depends on:  curl
 
 name=httpup
-version=0.4.0a
+version=0.4.0b
 release=1
 source=(http://jw.tks6.net/files/crux/${name}-$version.tar.gz httpup)
 

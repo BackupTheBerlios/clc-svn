@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.4 2005/03/08 22:06:39 danm Exp $
+# $Id: Pkgfile,v 1.5 2005/05/01 19:04:59 danm Exp $
 # Description: IPv4 and IPv6 networking utilities
 # Maintainer: Daniel Mueller, daniel at danm dot de
 # URL: ftp://ftp.free.fr/mirrors/ftp.inr.ac.ru/ip-routing
 
 name=iputils
 version=ss021109
-release=6
+release=7
 source=(ftp://ftp.inr.ac.ru/ip-routing/$name-$version-try.tar.bz2 \
 	$name-$version.patch ifenslave.c ifenslave.8) 
 
@@ -27,13 +27,12 @@ build () {
 	mkdir -p $PKG/{bin,sbin,usr/sbin} $PKG/usr/man/man8
 	
 	install -m 755 arping clockdiff ping6 tracepath tracepath6 traceroute6 $PKG/bin
-	install -m 755 tftpd rdisc ipg rarpd $PKG/usr/sbin
+	install -m 755 rdisc ipg rarpd $PKG/usr/sbin
 	install -m 755 ifenslave $PKG/sbin
 	install -m 644 doc/*.8 $SRC/*.8 $PKG/usr/man/man8
 	(cd $PKG/usr/sbin; \
 		ln -s rarpd in.rarpd; \
-		ln -s rdisc in.rdisc; \
-		ln -s tftpd in.tftpd)
+		ln -s rdisc in.rdisc)
 	(cd $PKG/usr/man/man8; \
 		ln -s tracepath.8 tracepath6.8; \
 		ln -s rarpd.8 in.rarpd.8; \
@@ -42,5 +41,5 @@ build () {
 	(cd $PKG/usr/sbin; ln -s ../../sbin/ifenslave)
 
 	chmod u+s $PKG/bin/*
-	rm $PKG/usr/man/man8/setkey.8
+	rm $PKG/usr/man/man8/{setkey.8,tftpd.8}
 }

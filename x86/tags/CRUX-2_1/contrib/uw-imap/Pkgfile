@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.5 2005/03/09 19:00:07 jue Exp $
+# $Id: Pkgfile,v 1.6 2005/04/30 08:03:38 jue Exp $
 # Description: University of Washington's IMAP/POP server
 # URL:         http://www.washington.edu/imap/
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 # Depends on:  openssl
 
 name=uw-imap
-version=2004c1
+version=2004d
 release=1
 source=(ftp://ftp.cac.washington.edu/imap/imap-$version.tar.Z)
 

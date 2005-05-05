@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.2 2005/04/08 08:32:02 sten Exp $
+# $Id: Pkgfile,v 1.3 2005/04/30 02:19:28 sten Exp $
 # Description: a Point&Click tool for system administrators to enable KDE's KIOSK features or otherwise preconfigure KDE for groups of users
 # URL: http://extragear.kde.org/apps/kiosktool/
 # Maintainer: 
@@ -6,7 +6,7 @@
 # Depends on: kdelibs
 
 name=kiosktool
-version=0.9
+version=1.0
 release=1
 source=(http://download.kde.org/stable/apps/KDE3.x/admin/$name-$version.tar.gz)
 

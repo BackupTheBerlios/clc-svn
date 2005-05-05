@@ -1,7 +1,7 @@
-# $Id: Pkgfile,v 1.2 2005/03/09 14:27:52 jaeger Exp $
+# $Id: Pkgfile,v 1.3 2005/04/26 13:17:09 tilman Exp $
 # Description: tools used to create/alter ogg/vorbis files
 # Packager: Matt Housh, jaeger at morpheus dot net
-# Maintainer: Tilman Sauerbeck <tilman@code-monkey.de>
+# Maintainer: Tilman Sauerbeck, tilman at code-monkey dot de
 # URL: http://www.vorbis.com/
 # Depends on: libao, libogg, libvorbis, curl
 

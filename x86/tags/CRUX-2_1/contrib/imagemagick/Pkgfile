@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.12 2005/04/17 11:57:27 sip Exp $
+# $Id: Pkgfile,v 1.13 2005/04/26 14:22:41 sip Exp $
 # Description: Image manipulation wizard
 # Packager: danm, maol, jaeger
 # Maintainer: Simone Rota, sip at varlock dot com
@@ -6,9 +6,9 @@
 # Depends on: freetype ghostscript lcms libungif libxml2
 
 name=imagemagick
-version=6.2.1
+version=6.2.2
 release=1
-source=(http://dl.sf.net/sourceforge/imagemagick/ImageMagick-$version-3.tar.bz2)
+source=(http://dl.sourceforge.net/sourceforge/imagemagick/ImageMagick-$version-0.tar.bz2)
 
 build () {
     cd ImageMagick-$version

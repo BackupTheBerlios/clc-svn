@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.2 2005/03/08 23:13:49 sip Exp $
+# $Id: Pkgfile,v 1.3 2005/05/01 16:59:50 sip Exp $
 # Packager: Rune Stokka, rune at stokka dot no
 # Maintainer: Simone Rota, sip at varlock dot com
 # Description: Ant is a Java-based build tool.
@@ -6,7 +6,7 @@
 # Depends on: j2sdk
 
 name=ant
-version=1.6.2
+version=1.6.3
 release=1
 source=(http://mirrors.publicshout.org/apache/ant/source/apache-${name}-${version}-src.tar.gz)
 
@@ -20,6 +20,6 @@ build() {
 	ln -sf /usr/lib/ant/bin/ant $PKG/usr/bin/ant
 	rm -rf $PKG/usr/lib/ant/bin/*.bat
 	rm -rf $PKG/usr/lib/ant/docs
-	rm -rf $PKG/usr/lib/ant/{welcome.html,TODO,KEYS,LICENS*,README,NOTICE,WHATSNEW}
+	rm -rf $PKG/usr/lib/ant/{welcome.html,TODO,KEYS,LICENS*,README,NOTICE,WHATSNEW,INSTALL}
 	rm -rf $PKG/usr/lib/ant/lib/README
 }

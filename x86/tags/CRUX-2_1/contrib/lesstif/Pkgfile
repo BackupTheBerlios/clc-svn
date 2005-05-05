@@ -1,7 +1,8 @@
-# $Id: Pkgfile,v 1.6 2005/03/31 20:26:37 danm Exp $
+# $Id: Pkgfile,v 1.7 2005/04/26 19:35:00 danm Exp $
 # Description: GUI toolkit, which is compatible with motif.
 # URL: http://www.lesstif.org/
 # Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: x11
 
 name=lesstif
 version=0.94.2
