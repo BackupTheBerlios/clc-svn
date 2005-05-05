@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.7 2005/04/27 08:57:25 danielw Exp $
+# Description: A 'virtual machine' for several classic graphical point-and-click adventure games.
+# URL: http://www.scummvm.org/
+# Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
+# Depends on: libsdl, libogg, libmad, zlib, mpeg2dec
+
+name=scummvm
+version=0.7.1
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	./configure
+	make
+	mkdir -p $PKG/usr/{bin,share/icons}
+	install -m 0755 scummvm $PKG/usr/bin/
+	install -m 0644 scummvm.xpm $PKG/usr/share/icons
+}

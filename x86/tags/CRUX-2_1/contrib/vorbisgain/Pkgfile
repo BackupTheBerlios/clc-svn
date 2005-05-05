@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.2 2005/04/26 13:17:09 tilman Exp $
+# Description: Computes replaygain information for Ogg Vorbis files
+# Maintainer: Tilman Sauerbeck, tilman at code-monkey dot de
+# URL: http://sjeng.org/vorbisgain.html
+# Depends on: libogg, libvorbis
+
+name=vorbisgain
+version=0.34
+release=1
+source=(http://sjeng.org/ftp/vorbis/$name-$version.zip)
+
+build () {
+	cd $name-$version
+
+	sh configure --prefix=/usr
+
+	make
+	make DESTDIR=$PKG install
+}

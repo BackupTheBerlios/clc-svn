@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.2 2005/04/26 13:17:09 tilman Exp $
+# Maintainer: Tilman Sauerbeck, tilman at code-monkey dot de
+# Description: copy stdin to a qmail-style maildir.
+# URL: http://www.pobox.com/~lbudney/linux/software/safecat.html
+
+name=safecat
+version=1.12
+release=1
+source=(http://www.pobox.com/~lbudney/linux/software/$name/$name-$version.tar.gz)
+
+build () {
+	cd $name-$version
+
+	echo "/usr" > conf-root
+	make
+
+	install -d $PKG/usr/{bin,man/man1}
+	install -m 755 {safecat,maildir} $PKG/usr/bin
+	install -m 644 {safecat,maildir}.1 $PKG/usr/man/man1
+}

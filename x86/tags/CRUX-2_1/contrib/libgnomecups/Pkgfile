@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.4 2005/04/27 16:44:02 jaeger Exp $
+# Description: GNOME Printing Library CUPS extension
+# URL: http://www.gnome.org/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: cups
+# Group: gnome
+
+name=libgnomecups
+version=0.2.0
+release=1
+source=(http://ftp.gnome.org/pub/GNOME/sources/$name/0.2/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	rm po/*.po
+	sed -i -e 's/USE_NLS=yes/USE_NLS=no/' \
+		-e 's/ENABLE_NLS 1/ENABLE_NLS 0/' configure
+	./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+}

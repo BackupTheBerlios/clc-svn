@@ -1,0 +1,23 @@
+# $Id: Pkgfile,v 1.2 2005/04/26 13:17:09 tilman Exp $ 
+# Packager: Tilman Sauerbeck, tilman at code-monkey dot de
+# Maintainer: Tilman Sauerbeck, tilman at code-monkey dot de
+# Description: A library for posting electronic mail
+# URL: http://www.stafford.uklinux.net/libesmtp/
+# Depends on: openssl
+
+name=libesmtp
+version=1.0.3r1
+release=1
+source=(http://www.stafford.uklinux.net/$name/$name-$version.tar.bz2)
+
+build () {
+	cd $name-$version
+	./configure \
+		--prefix=/usr \
+		--with-openssl=/usr \
+		--includedir=/usr/include/libesmtp
+
+	make
+	make DESTDIR=$PKG install
+}
+

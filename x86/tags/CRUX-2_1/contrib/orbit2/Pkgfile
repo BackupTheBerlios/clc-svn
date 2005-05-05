@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.5 2005/04/27 16:21:35 jaeger Exp $
+# Description: Code for an ORB written in C will spontaneously evolve here
+# URL: http://www.labs.redhat.com/orbit/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: glib, libidl, popt
+# Group: gnome
+
+name=orbit2
+version=2.12.2
+release=1
+source=(http://ftp.gnome.org/pub/gnome/platform/2.10/2.10.1/sources/ORBit2-$version.tar.bz2)
+
+build() {
+	cd ORBit2-$version
+	./configure --prefix=/usr \
+		--enable-debug=no \
+		--disable-indent \
+		--disable-gtk-doc
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/gtk-doc
+}

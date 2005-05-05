@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.8 2005/04/29 23:10:12 jaeger Exp $
+# Description: GNOME 2.10 lite meta-port
+# URL: http://www.gnome.org/
+# Packager: Matt Housh, jaeger at morpheus dot net
+# Depends on: control-center, dasher, file-roller, gcalctool, gconf-editor, gdm, gnome-applets, gnome-games, gnome-netstatus, gnome-system-monitor, gnome-terminal, gnome-utils, gnome2-user-docs, gnopernicus, gok, gpdf, gtk-doc, gucharmap, libgail-gnome, zenity, desktop-file-utils, gnome-nettool, vino, gnome-themes, gnome-media
+# Group: gnome
+
+name=gnome-lite
+version=2.10.1
+release=1
+source=()
+
+build() {
+	mkdir -p $PKG/usr/etc
+	echo "$name version $version" > $PKG/usr/etc/$name
+}

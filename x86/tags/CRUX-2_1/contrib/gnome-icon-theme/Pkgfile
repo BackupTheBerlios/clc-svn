@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.6 2005/04/27 20:57:58 jaeger Exp $
+# Description: icons used in the default gnome desktop
+# URL: http://art.gnome.org/themes/icon/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: hicolor-icon-theme, p5-xml-parser
+# Group: gnome
+
+name=gnome-icon-theme
+version=2.10.1
+release=1
+source=(http://ftp.gnome.org/pub/gnome/desktop/2.10/2.10.1/sources/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	rm po/*.{po,gmo}
+	sed -i -e 's/USE_NLS=yes/USE_NLS=no/' \
+		-e 's/ENABLE_NLS 1/ENABLE_NLS 0/' configure
+	./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+}

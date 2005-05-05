@@ -1,0 +1,20 @@
+# $Id: README,v 1.2 2005/05/01 13:23:54 danm Exp $
+
+README for dhcp
+
+REQUIREMENTS
+
+This software requires the following kernel networking options:
+
+Networking options
+	<*> Packet socket	(Kernel 2.6.x)
+	<*> Socket filtering 	(Kernel 2.4.x)
+
+PRE-INSTALL
+
+POST-INSTALL
+
+PRECAUTION
+
+Warning! The default configuration path has been changed from /etc to /etc/dhcp.
+

@@ -1,0 +1,27 @@
+# $Id: Pkgfile,v 1.6 2005/05/01 12:03:48 sten Exp $
+# Description: A lightweight window manager
+# URL: http://fluxbox.sourceforge.net/
+# Maintainer: Victor, victor at v600 dot net
+# Packager: Victor, victor at v600 dot net
+# Depends on:
+
+name=fluxbox
+version=0.9.12
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.bz2)
+
+build () {
+    cd $name-$version
+    export CXXFLAGS="$CXXFLAGS -DHAVE_STRFTIME"
+    ### sed -i '36a\#include <assert.h>' util/fbrun/FbRun.cc
+    ./configure --prefix=/usr \
+                --enable-xinerama \
+                --enable-kde \
+                --enable-gnome \
+                --disable-nls
+    make
+    make DESTDIR=$PKG install
+    rm -f $PKG/usr/share/fluxbox/menu
+    $PKG/usr/bin/fluxbox-generate_menu -o $PKG/usr/share/fluxbox/menu
+    rm -f $PKG/usr/share/fluxbox/menu.bak
+}

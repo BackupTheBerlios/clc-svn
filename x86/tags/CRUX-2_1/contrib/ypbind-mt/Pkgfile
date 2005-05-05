@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.5 2005/05/02 17:02:16 jdolan Exp $
+# Maintainer: Jay Dolan, jasonthomasdolan at yahoo dot com
+# Description: NIS binding daemon
+# URL: ftp://ftp.de.kernel.org/pub/linux/utils/net/NIS/
+# Depends on:
+
+name=ypbind-mt
+version=1.18
+release=2
+source=(ftp://ftp.kernel.org/pub/linux/utils/net/NIS/$name-$version.tar.bz2 yp.conf ypbind)
+
+build() {
+	cd $name-$version
+	./configure --disable-nls
+	make && make DESTDIR=$PKG install
+	
+	install -d $PKG/etc/rc.d
+	install -m 644 ../yp.conf $PKG/etc
+	install ../ypbind $PKG/etc/rc.d
+}

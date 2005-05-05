@@ -1,0 +1,8 @@
+POST-INSTALL:
+
+
+
+    * In order for the help menus to work properly, you need to update
+      the scrollkeeper database.  Se the post-install command for
+      details.
+

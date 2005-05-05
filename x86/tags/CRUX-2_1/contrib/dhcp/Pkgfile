@@ -1,0 +1,40 @@
+# $Id: Pkgfile,v 1.5 2005/05/04 22:47:04 danm Exp $
+# Description: The ISC DHCP Server
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# URL: http://www.isc.org/products/DHCP/
+# Depends on:
+
+name=dhcp
+version=3.0.3b2
+release=1
+source=(ftp://ftp.isc.org/isc/dhcp/$name-$version.tar.gz \
+        dhcpd \
+	site.conf \
+	dhcpd.conf)
+
+build() {
+	cd $name-$version
+
+	sed -i \
+        -e 's;^[^#]*\(#define[^_]*_PATH_DHCPD_PID[^"]*\).*;\1 "/var/run/dhcp/dhcpd.pid";' \
+        -e 's;^[^#]*\(#define[^_]*_PATH_DHCPD_DB[^"]*\).*;\1 "/var/lib/dhcp/dhcpd.leases";' \
+        -e 's;^[^#]*\(#define[^_]*_PATH_DHCPD_CONF[^"]*\).*;\1 "/etc/dhcp/dhcpd.conf";' \
+        includes/site.h
+
+	cp $SRC/site.conf .
+	
+	./configure --with-nsupdate
+
+	make CC_OPTIONS="$CFLAGS" DEBUG=""
+	make DESTDIR=$PKG install
+	
+	mkdir -p $PKG/etc/{rc.d,dhcp} $PKG/var/lib/dhcp $PKG/var/run/dhcp
+	install -m 755 $SRC/dhcpd $PKG/etc/rc.d
+	install -m 640 $SRC/dhcpd.conf $PKG/etc/dhcp
+
+	touch $PKG/var/lib/dhcp/dhcpd.leases
+	
+	# remove DHCP client 
+	rm $PKG/usr/sbin/dhclient*
+	rm $PKG/usr/man/man?/dhclient*
+}

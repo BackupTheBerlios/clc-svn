@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.4 2005/03/09 14:27:51 jaeger Exp $
+# Description: default fallback used by the icon theme specification
+# URL: http://www.freedesktop.org/Software/icon-theme/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: x11
+# Group: gnome
+
+name=hicolor-icon-theme
+version=0.5
+release=1
+source=(http://gentoo.oregonstate.edu/distfiles/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr
+	make DESTDIR=$PKG install
+}

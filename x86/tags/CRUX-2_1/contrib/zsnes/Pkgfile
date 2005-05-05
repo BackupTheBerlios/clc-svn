@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.7 2005/04/27 08:57:25 danielw Exp $
+# Description: An open-source Super Nintendo emulator.
+# URL: http://www.zsnes.com/
+# Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
+# Depends on: libpng, libsdl, nasm, zlib
+
+name=zsnes
+version=1.42
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/${name}142src.tar.gz)
+
+build() {
+	cd ${name}_1_42/src
+	./configure --prefix=/usr
+	make
+	mkdir -p $PKG/usr/{bin,share/icons,man/man1}
+	install -m 0755 zsnes $PKG/usr/bin
+	install -m 0644 linux/zsnes.1 $PKG/usr/man/man1
+	install -m 0644 icons/*.png $PKG/usr/share/icons
+}

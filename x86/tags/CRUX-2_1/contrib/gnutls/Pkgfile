@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.4 2005/04/27 17:25:05 jaeger Exp $
+# Description: A library that provides a secure layer over a reliable transport layer
+# URL: http://www.gnu.org/software/gnutls/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: pkgconfig, libgcrypt, opencdk
+
+name=gnutls
+version=1.0.24
+release=1
+source=(ftp://ftp.gnutls.org/pub/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+}

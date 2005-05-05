@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.1 2005/04/27 23:05:21 jaeger Exp $
+# Description: An EXIF tag parsing library
+# URL: http://libexif.sourceforge.net/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+
+name=libexif
+version=0.6.12
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.bz2)
+
+build () {
+	cd $name-$version
+	./configure --prefix=/usr --disable-nls
+	make
+	make DESTDIR=$PKG install
+}

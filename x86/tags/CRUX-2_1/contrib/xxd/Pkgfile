@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.3 2005/04/26 13:17:09 tilman Exp $
+# Packager: Tilman Sauerbeck, tilman at code-monkey dot de
+# Maintainer: Tilman Sauerbeck tilman at code-monkey dot de
+# Description: xxd creates a hex dump of a given file or standard input.
+# URL: none
+
+name=xxd
+version=1.10
+release=1
+source=(http://grail.cba.csuohio.edu/~somos/$name-$version.tar.gz)
+
+build () {
+	cd $name-$version
+	make
+	
+	mkdir -p $PKG/usr/bin
+	mkdir -p $PKG/usr/man/man1
+
+	cp xxd $PKG/usr/bin
+	cp xxd.1 $PKG/usr/man/man1
+}
+

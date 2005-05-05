@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.7 2005/04/27 16:27:02 jaeger Exp $
+# Description: framework for streaming media
+# URL: http://gstreamer.net/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Packager: sten, nick dot steeves at shaw dot ca
+# Depends on: glib, libxml2, popt
+
+
+name=gstreamer
+version=0.8.9
+release=1
+source=(http://gstreamer.freedesktop.org/src/$name/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	rm po/*.{po,gmo}
+	./configure --prefix=/usr \
+		--disable-debug \
+		--disable-docs-build \
+		--disable-gst-debug \
+		--disable-nls
+	make
+	make DESTDIR=$PKG install
+}

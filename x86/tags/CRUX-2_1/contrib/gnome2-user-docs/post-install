@@ -1,0 +1,9 @@
+#!/bin/sh
+
+/usr/bin/scrollkeeper-update -p /var/lib/scrollkeeper \
+                             -o /usr/share/omf/gnome2-user-docs
+
+/usr/bin/scrollkeeper-update -p /var/lib/scrollkeeper \
+                             -o /usr/share/omf/user-guide
+
+# End of file

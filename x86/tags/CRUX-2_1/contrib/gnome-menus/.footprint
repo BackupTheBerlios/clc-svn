@@ -1,0 +1,37 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/gnome-menu-spec-test
+drwxr-xr-x	root/root	usr/etc/
+drwxr-xr-x	root/root	usr/etc/xdg/
+drwxr-xr-x	root/root	usr/etc/xdg/menus/
+-rw-r--r--	root/root	usr/etc/xdg/menus/applications.menu
+-rw-r--r--	root/root	usr/etc/xdg/menus/preferences.menu
+-rw-r--r--	root/root	usr/etc/xdg/menus/settings.menu
+drwxr-xr-x	root/root	usr/include/
+drwxr-xr-x	root/root	usr/include/gnome-menus/
+-rw-r--r--	root/root	usr/include/gnome-menus/menu-tree.h
+drwxr-xr-x	root/root	usr/lib/
+-rw-r--r--	root/root	usr/lib/libgnome-menu.a
+-rwxr-xr-x	root/root	usr/lib/libgnome-menu.la
+lrwxrwxrwx	root/root	usr/lib/libgnome-menu.so -> libgnome-menu.so.0.0.0
+lrwxrwxrwx	root/root	usr/lib/libgnome-menu.so.0 -> libgnome-menu.so.0.0.0
+-rwxr-xr-x	root/root	usr/lib/libgnome-menu.so.0.0.0
+drwxr-xr-x	root/root	usr/lib/pkgconfig/
+-rw-r--r--	root/root	usr/lib/pkgconfig/libgnome-menu.pc
+drwxr-xr-x	root/root	usr/share/
+drwxr-xr-x	root/root	usr/share/desktop-directories/
+-rw-r--r--	root/root	usr/share/desktop-directories/Accessibility.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Accessories.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Applications.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Development.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Edutainment.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Games.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Graphics.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Internet.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Multimedia.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Office.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Other.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Settings-Accessibility.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/Settings.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/System-Settings.directory
+-rw-r--r--	root/root	usr/share/desktop-directories/System-Tools.directory

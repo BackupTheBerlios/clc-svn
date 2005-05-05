@@ -1,0 +1,18 @@
+REQUIREMENTS
+
+PRE-INSTALL
+
+POST-INSTALL
+
+In order to use the QEMU Accelerator Module, add the following lines to 
+/etc/devfsd.conf:
+
+LOOKUP		^kqemu$		EXECUTE /bin/mknod -m 0666 $devpath c 250 0
+
+After this you need to load the kqemu kernel module either in 
+/etc/rc.modules or manually.
+
+Also remember to enable /dev/shm in /etc/fstab. This is the area kqemu 
+uses for the virtual machine RAM.
+
+PRECAUTION

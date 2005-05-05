@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# /etc/rc.d/dhcpd: start/stop ISC DHCP daemon
+#
+
+case $1 in
+start)
+	/usr/sbin/dhcpd -q 
+	;;
+stop)
+	killall -q /usr/sbin/dhcpd
+	;;
+restart)
+	$0 stop && sleep 2 && $0 start
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file

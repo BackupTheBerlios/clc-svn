@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.3 2005/03/28 01:50:20 danielw Exp $
+# Description: OpenGL billard game for linux.
+# URL: http://foobillard.sunsite.dk/
+# Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
+# Depends on: libpng, libsdl, freetype
+
+name=foobillard
+version=3.0a
+release=1
+source=(http://foobillard.sunsite.dk/dnl/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure 	--prefix=/usr
+	make
+	make DESTDIR=$PKG install
+}

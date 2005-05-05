@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.3 2005/03/24 15:00:19 tilman Exp $
+# Maintainer: Tilman Sauerbeck, tilman at code-monkey dot de
+# Description: An open-source memory debugger for x86-GNU/Linux
+# URL: http://valgrind.org
+
+name=valgrind
+version=2.4.0
+release=1
+source=(http://$name.org/downloads/$name-$version.tar.bz2)
+
+build () {
+	cd $name-$version
+	./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share
+}

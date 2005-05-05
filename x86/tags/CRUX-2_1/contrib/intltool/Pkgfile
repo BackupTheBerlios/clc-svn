@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.6 2005/04/27 16:38:29 jaeger Exp $
+# Description: internationalization tool collection
+# URL: http://cvs.gnome.org/viewcvs/intltool/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: libxml2, p5-xml-parser, popt
+# Group: gnome
+
+name=intltool
+version=0.33
+release=1
+source=(http://ftp.gnome.org/pub/gnome/platform/2.10/2.10.1/sources/$name-$version.tar.bz2)
+
+build() {
+	cp /usr/share/automake-*/{install-sh,mkinstalldirs} .
+	cd $name-$version
+	./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+}

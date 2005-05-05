@@ -1,0 +1,153 @@
+#!/bin/sh
+#* VPNGATEWAY             -- vpn gateway address (always present)
+#* TUNDEV                 -- tunnel device (always present)
+#* INTERNAL_IP4_ADDRESS   -- address (always present)
+#* INTERNAL_IP4_NETMASK   -- netmask (often unset)
+#* INTERNAL_IP4_DNS       -- list of dns serverss
+#* INTERNAL_IP4_NBNS      -- list of wins servers
+#* CISCO_DEF_DOMAIN       -- default domain name
+#* CISCO_BANNER           -- banner from server
+
+PATH=/sbin:$PATH
+export PATH
+
+fix_ip_get_output () {
+	sed 's/cache//;s/metric[0-9]\+ [0-9]\+//g' | xargs echo
+}
+
+test -e /proc/sys/kernel/modprobe && `cat /proc/sys/kernel/modprobe` tun 2>/dev/null
+
+if [ $? != 0 ]; then
+   # all this checks fail on a self-compiled kernel 2.4, though
+	( grep -q " tun_init" /proc/k*syms || test -e /sys/class/misc/tun || grep -q CONFIG_TUN=y /boot/config-`uname -r` ) 2>/dev/null || echo -e "WARNING: failed to load the tun module\n"
+fi
+
+if [ -f "$1" ]; then
+config="$1"
+elif [ -f "/etc/vpnc/$1.conf" ]; then
+	config="/etc/vpnc/$1.conf"
+elif [ -f /etc/vpnc/default.conf ]; then
+	config=/etc/vpnc/default.conf
+elif [ -f /etc/vpnc.conf ]; then
+	config=/etc/vpnc.conf
+else 
+     cat <<ECHO 1>&2
+Usage: $0 [config]
+
+ <config> can either be an absolute path or the name
+ of a config file located in /etc/vpnc/<config>.conf
+ If no config is specified, $0 will try
+ /etc/vpnc/default.conf and /etc/vpnc.conf
+
+ECHO
+exit 1
+fi
+
+if [ "$1" ] ; then shift ; fi
+
+# fix for broken devfs in kernel 2.6.x
+if [ "`readlink /dev/net/tun`" = misc/net/tun \
+   -a ! -e /dev/net/misc/net/tun -a -e /dev/misc/net/tun ] ; then
+   ln -sf /dev/misc/net/tun /dev/net/tun
+fi
+
+# make sure tun device exists
+if [ ! -e /dev/net/tun ]; then
+	mkdir -p /dev/net
+	mknod /dev/net/tun c 10 200
+fi
+
+# usual blah, blah, if the command above still failed
+test -e /dev/net/tun || echo -e "Warning, /dev/net/tun does not exist.\nPossible reasons:\n - tun driver not available\n - device file needs to be created (howto: cd /dev; /sbin/MAKEDEV tun) "
+
+getvar () {
+	if [ $# -ne 2 ]; then
+		echo "Usage: $0 <parameter file> <variable name>" 1>&2
+		return 1
+	fi
+	sed -n 's/^'"$2"' //p' "${config}"
+	return 0
+}
+
+fix_ip_get_output () {
+	sed 's/cache//;s/metric[0-9]\+ [0-9]\+//g' | xargs echo
+}
+
+defr=/var/run/vpnc/defaultroute
+gateway=/var/run/vpnc/gateway
+pid=/var/run/vpnc/pid
+dnsdev=/var/run/vpnc/dev
+
+if [ -z "$VPNGATEWAY" ]; then
+	for i in "$(dirname $0)/vpnc" /usr/local/sbin/vpnc /usr/sbin/vpnc ; do
+		if [ -x "$i" ]; then
+			break
+		fi
+	done
+	if [ -x "$i" ]; then
+		VPNC="$i"
+	else
+		echo No vpnc daemon found, aborting...
+		exit 1
+	fi
+	
+	for i in "$gateway" "$defr" "$pid" "$dnsdev" ; do
+		mkdir -p $(dirname "$i")
+	done
+	
+	PID="$(cat "$pid" 2> /dev/null)"
+	
+	if [ "$PID" ]; then
+		if kill -0 "$PID" > /dev/null 2>&1; then
+			echo "vpnc found running (pid: $PID, pidfile: $pid)"
+			exit 1
+		fi
+	fi
+	
+	exec "$VPNC" --pid-file "$pid" --script "$0 ${config} $*" "${config}" "$@" || exit 1
+fi
+
+# started from vpnc..
+
+if [ "$CISCO_BANNER" ] ; then echo "$CISCO_BANNER" ; fi
+
+ifconfig $TUNDEV inet $INTERNAL_IP4_ADDRESS \
+	pointopoint $INTERNAL_IP4_ADDRESS \
+	netmask 255.255.255.255 mtu 1412 up
+
+networks="$(getvar "${config}" "Target networks")"
+
+ip route add $(ip route get $VPNGATEWAY | fix_ip_get_output)
+echo "$VPNGATEWAY" > "$gateway"
+
+if [ -z "$networks" ]; then
+    ip route | grep '^default' | fix_ip_get_output > "$defr"
+    networks=default
+fi
+for network in $networks; do
+    ip route del $network 2>/dev/null
+    ip route add $network dev $TUNDEV
+done
+
+# Debian specific resolv.conf management
+
+if [ "$INTERNAL_IP4_DNS" ] ; then
+   if test -x /sbin/resolvconf && [ "$(getvar "${config}" "DNSUpdate")" != "no" ] ; then
+      ( 
+      if [ "$CISCO_DEF_DOMAIN" ] ; then
+         echo domain "$CISCO_DEF_DOMAIN"
+         echo search "$CISCO_DEF_DOMAIN"
+      fi
+      for ip in "$INTERNAL_IP4_DNS" ; do
+         echo nameserver $ip
+      done
+      ) | /sbin/resolvconf -a $TUNDEV
+      echo $TUNDEV > $dnsdev
+   fi
+   for ip in $INTERNAL_IP4_DNS ; do
+      ip route get $ip | grep -q "dev $TUNDEV" || ip route add $ip dev $TUNDEV
+   done
+fi
+
+ip route flush cache
+exit 0

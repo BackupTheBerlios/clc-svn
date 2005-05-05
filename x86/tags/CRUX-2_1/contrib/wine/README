@@ -1,0 +1,22 @@
+README for wine 20050419
+
+
+REQUIREMENTS
+
+
+PRE-INSTALL
+
+
+POST-INSTALL
+
+1. Run the 'wine.inst' script to install the configuration files.
+   (or run 'wineprefixcreate' and simply copy the configuration 
+   file from /usr/share/wine/configs/config)
+
+2. Edit ~/.wine/config to customize mount locations under wine.
+
+
+PRECAUTION
+
+It is recommmended that you clean out your wine-config directory 
+after each new release, as old registry data can cause problems.

@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.1 2005/04/29 06:28:43 vector Exp $
+# Description: High quality television application
+# URL: http://tvtime.sourceforge.net/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Jukka Heino, jukka at karsikkopuu dot net
+# Depends on: libxml2, x11
+
+name=tvtime
+version=0.9.15
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --disable-nls
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/man/de
+}

@@ -1,0 +1,29 @@
+# $Id: Pkgfile,v 1.4 2005/05/03 11:08:35 sten Exp $
+# Maintainer: sten, nick dot steeves at shaw dot ca
+# Packager: Erlend Bergsås Mikkelsen, howl at online dot no
+# Description: Allows X desktops on computers that has the vncviewer installed 
+# URL: http://www.tightvnc.org
+# Depends on: x11
+
+# Might conflict with the vncviewer
+
+name=tightvnc
+version=1.2.9
+release=1
+source=(http://download.sourceforge.net/sourceforge/vnc-tight/tightvnc-${version}_unixsrc.tar.bz2)
+
+build() {
+	cd vnc_unixsrc;
+	xmkmf
+	make World
+	cd Xvnc
+	./configure
+	make
+	cd ..
+	mkdir -p $PKG/usr/man/man1 $PKG/usr/bin $PKG/usr/share/vnc/classes
+	cp Xvnc/programs/Xserver/Xvnc vncviewer/vncviewer vncpasswd/vncpasswd vncconnect/vncconnect $PKG/usr/bin
+	cp vncserver $PKG/usr/bin
+	cp classes/* $PKG/usr/share/vnc/classes
+	cp Xvnc/programs/Xserver/Xvnc.man $PKG/usr/man/man1/Xvnc.1
+	cp vncserver.man $PKG/usr/man/man1/vncserver.1
+}

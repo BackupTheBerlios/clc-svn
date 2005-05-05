@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.6 2005/03/28 01:50:20 danielw Exp $
+# Description: A fast, 3D multiplayer tank battle game.
+# URL: http://bzflag.org/
+# Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
+
+name=bzflag
+version=2.0.2
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.20050318.tar.bz2)
+
+build() {
+	cd $name-$version.20050318
+	./configure 	--prefix=/usr
+	make
+	make DESTDIR=$PKG install
+}

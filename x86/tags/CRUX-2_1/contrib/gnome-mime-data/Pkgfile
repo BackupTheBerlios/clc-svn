@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.5 2005/04/27 17:07:51 jaeger Exp $
+# Description: base MIME and Application database for GNOME
+# URL: http://freshmeat.net/projects/gnome-mime-data/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: gtk, shared-mime-info
+# Group: gnome
+
+name=gnome-mime-data
+version=2.4.2
+release=1
+source=(http://ftp.gnome.org/pub/gnome/platform/2.10/2.10.1/sources/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	rm po/*.{po,gmo}
+	sed -i -e "s/USE_NLS=yes/USE_NLS=no/" \
+		-e "s/ENABLE_NLS 1/ENABLE_NLS 0/" configure
+	./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+}

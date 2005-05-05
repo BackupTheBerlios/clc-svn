@@ -1,0 +1,25 @@
+# $Id: Pkgfile,v 1.5 2005/04/27 17:40:22 jaeger Exp $
+# Description: GNOME Accessibility Interface Library
+# URL: http://developer.gnome.org/projects/gap/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: libgnomecanvas
+# Group: gnome
+
+name=gail
+version=1.8.3
+release=1
+source=(http://ftp.gnome.org/pub/gnome/platform/2.10/2.10.1/sources/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	rm po/*.{po,gmo}
+	sed -i -e 's/USE_NLS=yes/USE_NLS=no/' \
+		-e 's/ENABLE_NLS 1/ENABLE_NLS 0/' configure
+	export CFLAGS="$CFLAGS -L$PKG/usr/lib"
+	./configure --prefix=/usr \
+		--disable-gtk-doc
+	make
+	make DESTDIR=$PKG install
+	sed -i "s|-L${PKG}/usr/lib||g" $PKG/usr/lib/*.la
+	rm -rf $PKG/usr/share/gtk-doc
+}

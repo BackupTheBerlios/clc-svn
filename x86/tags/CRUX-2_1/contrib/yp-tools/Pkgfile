@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.4 2005/05/02 17:00:29 jdolan Exp $
+# Maintainer: Jay Dolan, jasonthomasdolan at yahoo dot com
+# Description: NIS Yellow Pages utilities
+# URL: ftp://ftp.de.kernel.org/pub/linux/utils/net/NIS/
+# Depends on:
+
+name=yp-tools
+version=2.9
+release=1
+source=(ftp://ftp.de.kernel.org/pub/linux/utils/net/NIS/$name-$version.tar.gz)
+
+build(){
+	cd $name-$version
+	./configure --mandir=/usr/man --disable-nls
+	make && make DESTDIR=$PKG install
+	
+	rm -rf $PKG/bin
+	rm -f $PKG/usr/man/man8/*domainname*
+}

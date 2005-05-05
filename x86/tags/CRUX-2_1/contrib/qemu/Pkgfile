@@ -1,0 +1,26 @@
+# $Id: Pkgfile,v 1.1 2005/05/02 18:42:20 vector Exp $
+# Description: Fast CPU emulator and virtualizer
+# URL: http://fabrice.bellard.free.fr/qemu/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Jukka Heino, jukka at karsikkopuu dot net
+# Depends on: libsdl
+
+name=qemu
+version=0.7.0
+release=1
+source=(http://fabrice.bellard.free.fr/$name/$name-0.7.0.tar.gz \
+        http://fabrice.bellard.free.fr/$name/kqemu-0.6.2-1.tar.gz)
+
+build() {
+    cd $name-$version
+    mv $SRC/kqemu .
+
+    ./configure --prefix=/usr --enable-adlib --target-list=i386-softmmu
+    make
+
+    sed -i 's:cd kqemu ; ./install.sh::' Makefile
+    make bindir=$PKG/usr/bin datadir=$PKG/usr/share/qemu docdir=$PKG/usr/share/doc mandir=$PKG/usr/man install
+    install -D -m 0755 kqemu/kqemu.ko $PKG/lib/modules/`uname -r`/misc/kqemu.ko
+
+    rm -rf $PKG/usr/share/doc
+}

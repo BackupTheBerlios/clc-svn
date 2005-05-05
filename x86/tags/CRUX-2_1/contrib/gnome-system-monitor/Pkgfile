@@ -1,0 +1,27 @@
+# $Id: Pkgfile,v 1.5 2005/04/27 21:36:22 jaeger Exp $
+# Description: Procman is a nicer, simpler, easier to use replacement to gtop
+# URL: http://www.personal.psu.edu/users/k/f/kfv101/procman/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: libgnomeui, libgtop, libwnck
+# Group: gnome
+
+name=gnome-system-monitor
+version=2.10.1
+release=1
+source=(http://ftp.gnome.org/pub/gnome/desktop/2.10/2.10.1/sources/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	rm po/*.{po,gmo}
+	sed -i -e 's/USE_NLS=yes/USE_NLS=no/' \
+		-e 's/ENABLE_NLS 1/ENABLE_NLS 0/' configure
+	sed -i -e '/scrollkeeper-update/d' help/C/Makefile.in
+	./configure --prefix=/usr \
+		--disable-schemas-install
+	make
+	for omf in `find . -path '*/C/*' -name '*.omf'`; do
+		test -f $omf.out || cp $omf $omf.out
+	done
+	export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
+	make DESTDIR=$PKG install
+}

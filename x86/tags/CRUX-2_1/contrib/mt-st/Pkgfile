@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.2 2005/05/01 13:05:24 sten Exp $
+# Description: controls magnetic tape drive operation (SCSI & QIC-02)
+# URL: ftp://ftp.ibiblio.org/pub/linux/system/backup/
+# Maintainer: sten, nick dot steeves at shaw dot ca
+# Packager: Martin Opel, mo at obbl-net dot de
+# Depends on:
+
+name=mt-st
+version=0.8
+release=1
+source=(http://www.ibiblio.org/pub/Linux/system/backup/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	make CFLAGS="$CFLAGS" CC=gcc
+	mkdir -p $PKG/usr/{bin,man/man1,man/man8}
+	cp mt stinit $PKG/usr/bin/
+	cp mt.1 $PKG/usr/man/man1/
+	cp stinit.8 $PKG/usr/man/man8/ 
+}

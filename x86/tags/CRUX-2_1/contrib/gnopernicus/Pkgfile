@@ -1,0 +1,33 @@
+# $Id: Pkgfile,v 1.5 2005/04/27 22:24:07 jaeger Exp $
+# Description: Early Release of the BAUM Gnopernicus Project
+# URL: http://www.baum.ro/gnopernicus.html
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: at-spi, gnome-mag, gnome-speech, libgnomeui
+# Group: gnome
+
+name=gnopernicus
+version=0.10.6
+release=1
+source=(http://ftp.gnome.org/pub/gnome/desktop/2.10/2.10.1/sources/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	rm po/*.{po,gmo}
+	sed -i -e 's/USE_NLS=yes/USE_NLS=no/' \
+		-e 's/ENABLE_NLS 1/ENABLE_NLS 0/' configure
+	sed -i -e 's/= C .*/= C/' help/*/Makefile.in
+	sed -i -e '/scrollkeeper-update/d' help/*/*/Makefile.in
+	./configure --prefix=/usr \
+		--disable-gtk-doc \
+		--disable-brltty \
+		--enable-ipv6 \
+		--with-default-fonts-path=/usr/share/fonts/$name
+	make
+	for omf in help/*/C/*.omf
+	do
+		test -f $omf.out || cp $omf{,.out}
+	done
+	export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
+	make DESTDIR=$PKG DEFAULT_FONTS_PATH=$PKG/usr/share/fonts/$name install
+	rm -rf $PKG/usr/share/gtk-doc
+}

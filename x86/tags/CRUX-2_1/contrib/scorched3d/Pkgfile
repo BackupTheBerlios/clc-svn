@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.1 2005/03/28 03:07:04 danielw Exp $
+# Description: A 3D recreation of the classic DOS game Scorched Earth.
+# URL: http://www.scorched3d.co.uk/
+# Maintainer: Daniel Walpole, danielw at netspace dot net dot au
+# Depends on: sdl_mixer, sdl_net, wxgtk
+
+name=scorched3d
+version=38.1
+release=1
+source=(http://dl.sourceforge.net/$name/Scorched3D-$version-src.tar.gz)
+
+build() {
+	cd scorched
+	./configure	--prefix=/usr \
+			--datadir=/usr/share/$name
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/$name/documentation
+}

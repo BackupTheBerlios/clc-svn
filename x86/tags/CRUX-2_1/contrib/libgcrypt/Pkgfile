@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 14:27:51 jaeger Exp $
+# Description: A general purpose cryptographic library based on GnuPG
+# URL: http://directory.fsf.org/security/libgcrypt.html
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: libgpg-error
+
+name=libgcrypt
+version=1.2.0
+release=1
+source=(ftp://ftp.gnupg.org/gcrypt/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/info
+}

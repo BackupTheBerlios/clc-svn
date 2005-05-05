@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.3 2005/03/28 01:50:20 danielw Exp $
+# Description: An OpenGL racing game featuring Tux.
+# URL: http://projects.planetpenguin.de/racer/
+# Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
+# Depends on: libpng, libsdl, sdl_mixer, tcl, freetype
+
+name=ppracer
+version=0.3.1
+release=1
+source=(http://download.berlios.de/$name/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	./configure 	--prefix=/usr
+	make
+	make DESTDIR=$PKG install
+}

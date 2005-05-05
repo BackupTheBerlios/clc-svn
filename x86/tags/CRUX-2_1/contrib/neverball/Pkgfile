@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.1 2005/03/28 07:14:40 danielw Exp $
+# Description: Tilt the floor to roll a ball through an obstacle course before time runs out.
+# URL: http://icculus.org/neverball/
+# Maintainer: Daniel Walpole, danielw at netspace dot net dot au
+# Depends on: sdl_mixer, sdl_image, libsdl-ttf
+
+name=neverball
+version=1.4.0
+release=1
+source=(http://0day.icculus.org/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	sed -i -e '/CONFIG_DATA/s:"\./data":"'/usr/share/neverball'":g' share/config.h
+	make
+	mkdir -p $PKG/usr/{bin,share/icons}
+	install -m 0755 {neverball,neverputt} $PKG/usr/bin
+	mv -f icon $PKG/usr/share/icons/neverball
+	mv -f data $PKG/usr/share/neverball
+	find $PKG/usr/share/ -type f -exec chmod 0644 \{\} \;
+	chown -R root.root $PKG
+}

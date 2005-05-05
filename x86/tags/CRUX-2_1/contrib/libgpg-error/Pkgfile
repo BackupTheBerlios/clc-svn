@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.2 2005/03/09 14:27:51 jaeger Exp $
+# Description: A small library defining error values for GnuPG components
+# URL: http://www.gnupg.org/(en)/related_software/libgpg-error/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+
+name=libgpg-error
+version=1.0
+release=1
+source=(ftp://ftp.gnupg.org/gcrypt/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr --disable-nls
+	make
+	make DESTDIR=$PKG install
+}

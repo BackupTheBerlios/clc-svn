@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.3 2005/04/29 01:17:19 danielw Exp $
+# Description: An SDL/OpenGL space shoot'em up game.
+# URL: http://criticalmass.sourceforge.net/critter.php
+# Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
+# Depends on: libsdl, sdl_mixer, sdl_image, libpng, zlib
+
+name=criticalmass
+version=0.9.11
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/CriticalMass-$version.tar.bz2)
+
+build() {
+	cd CriticalMass-$version
+	./configure 	--prefix=/usr
+	make
+	make DESTDIR=$PKG install
+}

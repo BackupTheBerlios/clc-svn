@@ -1,0 +1,19 @@
+$Id: README,v 1.2 2005/04/28 19:33:30 jaeger Exp $
+
+
+README for gnome-lite 2.10
+
+With Gnome 2.10 the menu specifications have changed. This now requires the
+setting of 2 environment variables or the making of a symlink. Gnome will run
+without one of these fixes but the menus are quite underwhelming and perhaps
+unuseful in that case.
+
+The environment way: add the following lines to /etc/profile (for bash users):
+
+	export XDG_DATA_DIRS=/usr/share
+	export XDG_CONFIG_DIRS=/usr/etc/xdg
+
+The symlink way:
+
+	ln -s /usr/etc/xdg /etc/xdg
+

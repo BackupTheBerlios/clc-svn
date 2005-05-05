@@ -1,0 +1,26 @@
+# $Id: Pkgfile,v 1.2 2005/04/26 13:08:04 tilman Exp $
+# Packager: Tilman Sauerbeck, tilman at code-monkey dot de
+# Maintainer: Tilman Sauerbeck, tilman at code-monkey dot de
+# Description: rxvt fork with unicode and xft support
+# URL: http://software.schmorp.de/#rxvt-unicode
+# Depends on: x11
+
+name=rxvt-unicode
+version=5.5
+release=1
+source=(http://dist.schmorp.de/$name/$name-$version.tar.bz2)
+
+build () {
+	cd $name-$version
+
+	./configure --prefix=/usr \
+	            --enable-utmp --enable-wtmp \
+	            --enable-transparency --enable-tinting --enable-fading \
+	            --enable-mousewheel \
+	            --enable-xft --enable-font-styles 
+
+	make
+
+	mkdir -p $PKG/usr/share/terminfo
+	make TERMINFO=$PKG/usr/share/terminfo DESTDIR=$PKG install
+}

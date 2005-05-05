@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.4 2005/04/27 08:57:25 danielw Exp $
+# Description: A turn-based strategy game with a fantasy theme.
+# URL: http://www.wesnoth.org/
+# Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
+# Depends on: libsdl-ttf, sdl_image, sdl_mixer, sdl_net
+
+name=wesnoth
+version=0.9.1
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure 	--prefix=/usr \
+			--disable-nls
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/man/de
+}

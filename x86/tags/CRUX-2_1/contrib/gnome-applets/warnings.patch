@@ -1,0 +1,26 @@
+diff -urN gnome-applets-2.8.0.orig/mini-commander/src/mini-commander_applet.h gnome-applets-2.8.0/mini-commander/src/mini-commander_applet.h
+--- gnome-applets-2.8.0.orig/mini-commander/src/mini-commander_applet.h	2004-08-16 03:45:42.000000000 -0500
++++ gnome-applets-2.8.0/mini-commander/src/mini-commander_applet.h	2004-09-17 02:39:08.694087360 -0500
+@@ -21,6 +21,8 @@
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  */
+ 
++#include <stdlib.h>
++
+ #ifndef __MC_APPLET_H__
+ #define __MC_APPLET_H__
+ 
+diff -urN gnome-applets-2.8.0.orig/multiload/linux-proc.c gnome-applets-2.8.0/multiload/linux-proc.c
+--- gnome-applets-2.8.0.orig/multiload/linux-proc.c	2004-02-19 18:31:23.000000000 -0600
++++ gnome-applets-2.8.0/multiload/linux-proc.c	2004-09-17 02:39:08.694087360 -0500
+@@ -38,10 +38,6 @@
+ static unsigned needed_loadavg_flags =
+ (1 << GLIBTOP_LOADAVG_LOADAVG);
+ 
+-static unsigned needed_netload_flags =
+-(1 << GLIBTOP_NETLOAD_IF_FLAGS) +
+-(1 << GLIBTOP_NETLOAD_BYTES_TOTAL);
+-
+ void
+ GetLoad (int Maximum, int data [4], LoadGraph *g)
+ {

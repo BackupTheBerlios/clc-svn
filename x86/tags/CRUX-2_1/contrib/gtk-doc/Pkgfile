@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.2 2005/04/27 17:21:21 jaeger Exp $
+# Description: GTK+ DocBook Documentation Generator
+# URL: http://www.gtk.org/rdp/download.html
+# Packager: Huynh, Ngoc Chau Tran <tran.huynh@laposte.net>
+# Depends on: docbook-xml-gnome,openjade,perl
+# Group: gnome
+
+name=gtk-doc
+version=1.3
+release=1
+source=(http://ftp.gnome.org/pub/gnome/platform/2.10/2.10.1/sources/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	sed -i "s|xsl/current|xsl/1.45|" configure $name.xsl
+	./configure --prefix=/usr
+	make DESTDIR=$PKG install
+}

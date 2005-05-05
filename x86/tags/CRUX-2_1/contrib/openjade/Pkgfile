@@ -1,0 +1,23 @@
+# $Id: Pkgfile,v 1.3 2005/03/09 14:27:52 jaeger Exp $
+# Description: DSSSL Processor
+# URL: http://openjade.sourceforge.net/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: opensp
+
+name=openjade
+version=1.3.2
+release=4
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+		--datadir=/usr/share/$name \
+		--enable-http \
+		--disable-mif \
+		--enable-default-catalog=/etc/sgml/catalog:/etc/xml/catalog \
+		--enable-default-search-path=/usr/share/sgml:/usr/share/xml
+	make
+	make DESTDIR=$PKG install
+	ln -s openjade $PKG/usr/bin/jade
+}

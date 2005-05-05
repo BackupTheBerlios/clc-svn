@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.5 2005/04/27 21:15:46 jaeger Exp $
+# Description: editor for the GConf configuration system
+# URL: http://www.gnome.org/projects/gconf/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: gconf, gtk, p5-xml-parser, scrollkeeper, libgnome, libgnomeui
+# Group: gnome
+
+name=gconf-editor
+version=2.10.0
+release=1
+source=(http://ftp.gnome.org/pub/gnome/desktop/2.10/2.10.1/sources/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	rm po/*.{po,gmo}
+	sed -i -e 's/USE_NLS=yes/USE_NLS=no/' \
+		-e 's/ENABLE_NLS 1/ENABLE_NLS 0/' configure
+	find . -name "Makefile.in" -exec \
+		sed -i -e '/scrollkeeper-update/d' '{}' \;
+	./configure --prefix=/usr \
+		--disable-schemas-install
+	make
+	make DESTDIR=$PKG install
+}

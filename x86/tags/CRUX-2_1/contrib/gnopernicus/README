@@ -1,0 +1,13 @@
+POST-INSTALL:
+
+
+
+    * /usr/share/fonts/gnopernicus/fonts.cache-1 was created during the
+      build so it needs to by updated by running fc-cache.
+
+
+    * For this application to work properly default configuration files
+      need to be installed with gconftool-2.  See the post-install
+      command for details.
+
+

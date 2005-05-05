@@ -1,0 +1,17 @@
+README for emelfm2 20050207
+
+
+REQUIREMENTS
+
+
+PRE-INSTALL
+
+
+POST-INSTALL
+
+If emelfm2 crashes on startup make sure you remove your old ~/.emelfm2 directory. 
+Older config files have been known to break newer versions of emelfm2.
+
+PRECAUTION
+
+This version is a pre-release and may still contain bugs. Please use with caution.

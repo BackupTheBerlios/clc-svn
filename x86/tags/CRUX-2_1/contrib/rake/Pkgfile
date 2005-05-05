@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.4 2005/04/30 18:23:12 tilman Exp $
+# Packager: Tilman Sauerbeck, tilman at code-monkey dot de
+# Maintainer: Tilman Sauerbeck, tilman at code-monkey dot de
+# Description: Make like utility with Ruby syntax
+# URL: http://rake.rubyforge.org
+# Depends on: ruby
+
+name=rake
+version=0.5.4
+release=1
+source=(http://rubyforge.org/frs/download.php/4259/$name-$version.tgz)
+
+build () {
+	cd $name-$version
+
+	DESTDIR=$PKG ruby install.rb
+}

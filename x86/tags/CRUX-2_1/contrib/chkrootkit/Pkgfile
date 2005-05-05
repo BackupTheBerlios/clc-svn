@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.5 2005/03/28 01:50:20 danielw Exp $
+# Description: A shell script that checks system binaries for rootkit modification.
+# URL: http://www.chkrootkit.org/
+# Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
+
+name=chkrootkit
+version=0.45
+release=1
+source=(ftp://ftp.pangeia.com.br/pub/seg/pac/$name-$version.tar.gz \
+        chkrootkit)
+
+build() {
+	cd $name-$version
+	make sense
+	mkdir -p $PKG/usr/sbin
+	mv -f chkrootkit chkrootkit.scr
+	install -m 0755 {check_wtmpx,chkdirs,chklastlog,chkproc,chkrootkit.scr,chkutmp,chkwtmp,ifpromisc,strings-static} $PKG/usr/sbin
+	install -m 0755 $SRC/chkrootkit $PKG/usr/sbin
+}

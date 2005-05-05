@@ -1,0 +1,31 @@
+# $Id: Pkgfile,v 1.4 2005/04/27 17:35:53 jaeger Exp $
+# Description: virtual filesystem abstraction library for GNOME2
+# URL: http://developer.gnome.org/doc/API/gnome-vfs/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: cdparanoia, fam, gconf, libbonobo, gnome-mime-data, openssl
+# Group: gnome
+
+name=gnome-vfs
+version=2.10.1
+release=1
+source=(http://ftp.gnome.org/pub/gnome/platform/2.10/2.10.1/sources/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	rm po/*.{po,gmo}
+	sed -i -e 's/USE_NLS=yes/USE_NLS=no/' \
+		-e 's/ENABLE_NLS 1/ENABLE_NLS 0/' configure
+	./configure --prefix=/usr \
+		--libexecdir=/usr/lib/$name \
+		--disable-schemas-install \
+		--disable-samba \
+		--enable-openssl \
+		--disable-gnutls \
+		--disable-gtk-doc \
+		--enable-ipv6 \
+		--with-gtk=no
+	make
+	export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/{doc,share} 
+}

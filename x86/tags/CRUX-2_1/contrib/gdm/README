@@ -1,0 +1,15 @@
+$Id: README,v 1.1.1.1 2004/08/17 20:01:43 crux Exp $
+
+REQUIREMENTS
+
+PRE-INSTALL
+1. Create user/group gdm with an unused id < 99:
+   'groupadd -g 42 gdm'
+   'useradd -g gdm -u 42 -d /var/gdm -s /bin/false gdm'
+   'passwd -l gdm'
+	    
+POST-INSTALL
+
+PRECAUTION
+
+Daniel Mueller  <danm@gmx.li> 

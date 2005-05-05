@@ -1,0 +1,21 @@
+#!/bin/bash
+# 
+# /usr/bin/wine.inst: setup and initialize a user's wine installation
+#
+
+BINDIR="/usr/bin"
+WINEDIR="$HOME/.wine"
+CONFIGSDIR="/usr/share/wine/configs"
+
+
+if [ -d $WINEDIR ]; then
+	echo; echo " - Wine directory already exists!"
+	echo "   rm -rf $WINEDIR for a new set of defaults."; echo
+else
+	echo; echo " - Building $WINEDIR with reasonable defaults..."
+	$BINDIR/wineprefixcreate --quiet
+	cp "$CONFIGSDIR/config" "$WINEDIR"
+	echo; echo " - Now edit $WINEDIR/config to customize mount locations under wine."; echo
+fi
+
+# End of file

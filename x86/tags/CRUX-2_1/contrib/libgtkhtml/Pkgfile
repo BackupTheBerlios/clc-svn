@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.4 2005/04/27 20:14:00 jaeger Exp $
+# Description: HTML rendering/editing library
+# URL: http://freshmeat.net/projects/libgtkhtml/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: gail, gnome-vfs
+# Group: gnome
+
+name=libgtkhtml
+version=2.6.3
+release=1
+source=(http://ftp.gnome.org/pub/GNOME/desktop/2.10/2.10.1/sources/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+		--enable-accessibility
+	make
+	make DESTDIR=$PKG install
+}
