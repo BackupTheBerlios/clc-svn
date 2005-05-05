@@ -1,8 +1,8 @@
-# $Id: Pkgfile,v 1.10 2005/02/06 01:48:20 per Exp $
+# $Id: Pkgfile,v 1.12 2005/05/02 21:24:49 per Exp $
 # Maintainer: Per Lidén <per@fukt.bth.se>
 
 name=db
-version=4.3.27
+version=4.3.28
 release=1
 source=(ftp://ftp.sleepycat.com/releases/$name-$version.tar.gz)
 
