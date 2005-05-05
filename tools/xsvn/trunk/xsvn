@@ -42,8 +42,13 @@ fi
 
 assert "XSVN_BASE_URL must be set in .xsvn-config" $XSVN_BASE_URL
 assert "XSVN_ARCH must be set in .xsvn-config"  $XSVN_ARCH
-assert "$XSVN_RELEASE must be set in .xsvn-config"  $XSVN_RELEASE
-assert "$XSVN_COLLECTION must be set in .xsvn-config"  $XSVN_COLLECTION
+assert "XSVN_RELEASE must be set in .xsvn-config"  $XSVN_RELEASE
+assert "XSVN_COLLECTION must be set in .xsvn-config"  $XSVN_COLLECTION
+assert "XSVN_SOURCE_ARCH must be set in .xsvn-config"  $XSVN_SOURCE_ARCH
+
+if [ $XSVN_SOURCE_ARCH = $XSVN_ARCH ]; then
+    assert "XSVN_SOURCE_ARCH equals XSVN_ARCH which is a bad thing :-)" ""
+fi
 
 if [ "$1" = "merge-from" ] || [ "$1" = "merge" ] ; then
 
@@ -138,12 +143,11 @@ elif [ "$1" = "changed" ]; then
 	echo "Error: XSVN_RELEASE not set"
 	exit -1
     fi    
-    assert "missing needs a collection name as first argument" $2
 
-    fromarch=$2
+    fromarch=$XSVN_SOURCE_ARCH/tags/$XSVN_RELEASE/$XSVN_COLLECTION
     coll=$XSVN_COLLECTION
-    if [ ! -z "$3" ]; then
-	ports="$3"
+    if [ ! -z "$2" ]; then
+	ports="$*"
     else
 	ports="`svn ls $XSVN_BASE_URL/$fromarch`"
     fi
@@ -151,21 +155,19 @@ elif [ "$1" = "changed" ]; then
 
     for p in $ports; do
 	port="/$p"
-        bp=`svn propget $BRANCHPOINT $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port`
-        svn diff -r $bp:HEAD $XSVN_BASE_URL/$fromarch$port &> /dev/null
-	if [ $? -ne 0 ]; then
-	    echo "M $p"
+        bp=`svn propget $BRANCHPOINT $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port 2> /dev/null`
+	if [ $? = 0 ]; then
+	    out=`svn diff -r $bp:HEAD $XSVN_BASE_URL/$fromarch$port`
+	    if [ "$out" != "" ] ; then
+		echo "M $p"
+	    else
+	        echo "- $p"
+	    fi
 	fi
     done
     
 elif [ "$1" = "missing" ] || [ "$1" = "additional" ]; then
     
-    if [ -z "$2" ]; then
-	if [ -z "$XSVN_SOURCE_ARCH" ]; then
-	    assert "Please either specify a collection name as argument, or  set XSVN_SOURCE_ARCH in .xsvn-config" ""
-	fi
-    fi
-
     fromarch=$2
     if [ -z "$fromarch" ]; then
 	fromarch=$XSVN_SOURCE_ARCH/tags/$XSVN_RELEASE/$XSVN_COLLECTION
@@ -186,22 +188,22 @@ elif [ "$1" = "missing" ] || [ "$1" = "additional" ]; then
          <(for l in `echo $local`; do echo $l; done)|sed '/^@@/d' | \
          sed '/^+++/d' | \
          sed '/^---/d'|$filter|sed -e 's/^[+-]//g'
+
+	 
 elif [ "$1" = "diff" ]; then
     
     if [ "$XSVN_RELEASE" = "" ]; then
         echo "Error: XSVN_RELEASE not set"
         exit -1
     fi    
-    assert "missing needs a collection name as first argument" $2
-    assert "missing needs a port name as second argument" $3
+    assert "missing needs a port name as second argument" $2
 
-    fromarch=$2
+    fromarch=$XSVN_SOURCE_ARCH/tags/$XSVN_RELEASE/$XSVN_COLLECTION
+
     coll=$XSVN_COLLECTION
-    port="/$3"
+    port="/$2"
 
-    bp=`svn propget $BRANCHPOINT $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port`
-
-    svn diff $XSVN_BASE_URL/$2$port \
+    svn diff $XSVN_BASE_URL/$fromarch$port \
              $XSVN_BASE_URL/$XSVN_ARCH/tags/$XSVN_RELEASE/$coll$port
     
     
