@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.4 2005/04/02 18:38:19 danm Exp $
+# Description: Image Manipulation Library 2 
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# URL: http://www.enlightenment.org
+# Depends on: freetype
+
+name=imlib2
+version=1.2.0
+release=1
+source=(http://dl.sourceforge.net/sourceforge/enlightenment/$name-$version.tar.gz)
+
+build () {
+	cd $name-$version
+	./configure --prefix=/usr
+	make	
+	make DESTDIR=$PKG install
+}
+	
