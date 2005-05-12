@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.3 2005/03/30 21:20:50 danm Exp $
+# Description: Enlightenment online help
+# URL: http://www.enlightenment.org
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: 
+
+name=enlightenment-docs
+version=0.16.7
+release=1
+source=(http://dl.sourceforge.net/sourceforge/enlightenment/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr \
+    		--enable-fsstd \
+		--disable-nls
+    make
+    make DESTDIR=$PKG install
+    chown -R root:root $PKG
+}
