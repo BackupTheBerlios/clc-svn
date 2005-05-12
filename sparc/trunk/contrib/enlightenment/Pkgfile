@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.4 2005/03/08 22:06:39 danm Exp $
+# Description: Themeable window manager
+# URL: http://www.enlightenment.org
+# Maintainer: Daniel Mueller, daniel at danm dot de
+# Depends on: esound, freetype, imlib2, enlightenment-docs
+
+name=enlightenment
+version=0.16.7.2
+release=1
+source=(http://dl.sourceforge.net/enlightenment/$name-$version.tar.gz) 
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr \
+    		--enable-fsstd \
+                --enable-sound \
+		--disable-nls
+    make
+    make DESTDIR=$PKG install
+    chown -R root:root $PKG
+    mkdir $PKG/usr/share/xsessions
+    mv $PKG/usr/etc/X11/dm/Sessions/* $PKG/usr/share/xsessions
+    rm -rf $PKG/usr/etc
+}
