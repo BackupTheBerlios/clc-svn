@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.2 2004/09/21 18:22:11 vector Exp $
+# Description: irssi - Console IRC client.
+# URL: http://www.irssi.org/
+# Maintainer: Jukka Heino <vector@pp.nic.fi>
+# Packager: Daniel K. Gebhart <dkg@con-fuse.org>
+# Depends on: glib
+# Group: ipv6
+
+name=irssi
+version=0.8.9
+release=3
+source=(http://www.irssi.org/files/$name-$version.tar.bz2)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr --with-textui \
+		--with-bot --with-proxy \
+		--enable-perl --enable-curses-windows \
+		--enable-ipv6 --disable-nls
+    make
+    make DESTDIR=$PKG install
+    find $PKG \( -name perllocal.pod -o -name .packlist \) -exec rm {} \;
+    rm -rf $PKG/usr/share/doc
+}
