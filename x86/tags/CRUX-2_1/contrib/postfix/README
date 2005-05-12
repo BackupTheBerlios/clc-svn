@@ -1,0 +1,153 @@
+$Id: README,v 1.1.1.1 2004/08/17 20:01:42 crux Exp $
+
+REQUIREMENTS
+
+   1. Remove Sendmail.
+      Postfix and Sendmail can NOT coexist.
+      You can change postfix setup to make it NOT install postfix
+      compatible sendmail executable and then they could coexist.
+      But this is not a supported feature of this package.
+   
+   2. Group "postdrop" MUST exist and _NOT_ have any users
+
+   3. Per CRUX guidelines, user mail is used for postfix. Some
+      might prefer making a postfix user. Update Post-Install
+      commands to reflect your preferences.
+
+   4. To allow people to quickly get the system running for simple
+      hosts, I now include postfix.cf.example. It is a clean config
+      for simple hosts that will allow you to get your box up and
+      running in no time and can be tweaked as needed.
+      NOTE: edit your domains, and check that you have the maps
+            created (access maps, aliases, header_checks, etc.)
+
+PRE-INSTALL
+
+   pkgrm sendmail
+   groupadd postdrop
+
+   NOTICE: If upgrading from 1.x.x series STOP postfix before
+           update. Read notes on postfix.org website for info and
+           release notes.
+
+POST-INSTALL
+
+   cd /etc/postfix
+
+   sh post-install \
+       command_directory=/usr/sbin \
+       config_directory=/etc/postfix \
+       setgid_group=postdrop \
+       mail_owner=mail \
+       upgrade-package
+
+   sh post-install \
+       command_directory=/usr/sbin \
+       config_directory=/etc/postfix \
+       setgid_group=postdrop \
+       mail_owner=mail \
+       create-missing
+
+    Rebuild hash maps:
+
+       /usr/sbin/postalias /etc/postfix/aliases
+       /usr/sbin/postmap hash:/etc/postfix/{virtual,relocated,access,transport}
+
+    Run this only if you are using example config:
+
+       touch regex.header-check regex.body-checks regexp.mime-header-checks
+       touch access.client access.sender access.recpnt access.helo
+       /usr/sbin/postmap hash:/etc/postfix/access.{client,helo,sender,recpnt}
+
+    Note: You can ignore these warnings:
+
+       postmap: warning: removing zero-length database file: /etc/postfix/<some-name>.db
+
+    NOTICE: Since 2.0.10 (or so :) Postfix wants network addresses, i.e.:
+            -> WRONG: 192.168.1.1/24
+            -> RIGHT: 192.168.1.0/24
+
+PRECAUTION:
+
+   1. Building postfix with PCRE support
+   
+      In the future, Postfix will have a plug-in interface for adding
+      map types. Until then you need to compile PCRE support into Postfix.
+   
+      You need the PCRE library (Perl Compatible Regular Expressions),
+      which can be obtained from:
+   
+         ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
+   
+      Postfix was tested with PCRE versions 2.8 and 3.7.
+   
+      In order to build Postfix with PCRE support you need to add -DHAS_PCRE
+      and a -I for the PCRE include file to CCARGS, and add the path to the
+      PCRE library to AUXLIBS, for example:
+   
+         make -f Makefile.init makefiles \
+                 "CCARGS=-DHAS_PCRE -I/usr/local/include" \
+                 "AUXLIBS=-L/usr/local/lib -lpcre"
+   
+      One CRUX example is to insert this line after "make tidy" in Pkgfile:
+   
+         make makefiles CCARGS="-DHAS_DB -DHAS_PCRE -I/usr/include" \
+                        AUXLIBS="-L/usr/lib -ldb -lpcre"
+
+      Same can be done for cdb instead of db:
+
+         make makefiles CCARGS="-DHAS_CDB -DHAS_PCRE -I/usr/include" \
+                        AUXLIBS="-L/usr/lib -lcdb -lpcre"
+
+   2. Linux syslogd performance
+   
+      LINUX syslogd uses synchronous writes by default. Because of this,
+      syslogd can actually use more system resources than Postfix.  To
+      avoid such madness, disable synchronous mail logfile writes by
+      editing /etc/syslog.conf and by prepending a - to the logfile name:
+   
+         mail.*                        -/var/log/mail.log
+   
+      Send a "kill -HUP" to the syslogd to make the change effective.
+
+   3. Stopping emails with attachments/extensions
+
+      Look at main.cf.example. Notice that it uses regexp files:
+
+         regexp:/etc/postfix/regex.header-checks
+         regexp:/etc/postfix/regex.mime-header-checks
+         regexp:/etc/postfix/regex.body-checks
+
+      These files can contain regular expressions (POSIX, to use pcre, renamed type to pcre:/file/name)
+      to prevent certain matches:
+
+         # ------ file /etc/postfix/regex.mime-header-checks ------ #
+         /filename=\"?(.*)\.(bat|chm|cmd|com|do|exe|hta|jse|rm|scr|pif|vbe|vbs|vxd|xl)\"?$/
+            REJECT For security reasons we reject attachments of this type "$2"
+         /^\s*Content-(Disposition|Type).*name\s*=\s*"?(.+\.(lnk|asd|hlp|ocx|reg|bat|c[ho]m|cmd|exe|dll|vxd|pif|scr|hta|jse?|sh[mbs]|vb[esx]|ws[fh]|wav|mov|wmf|xl))"?\s*$/
+            REJECT Attachment type not allowed. File "$2" has the unacceptable extension "$3"
+         # ------ file /etc/postfix/regex.mime-header-checks ------ #
+
+         # ------ file /etc/postfix/regex.body-checks ------ #
+         /^RSLxwtYBDB6FCv8ybBcS0zp9VU5of3K4BXuwyehTM0RI9IrSjVuwP94xfn0wgOjouKWzGXHVk3qg$/
+            REJECT sobig.f virus detected
+         /^TVqQAAMAAAAEAAAA\/\/8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA$/
+            REJECT DOS executable
+         # ------ file /etc/postfix/regex.body-checks ------ #
+
+      For more explanations:
+
+         http://www.stahl.bau.tu-bs.de/~hildeb/postfix/postfix_sobigf.shtml
+         http://www.stahl.bau.tu-bs.de/~hildeb/postfix/
+
+      Ralf is a frequent and very knowledgeable contributor to the Postfix mailing list.
+
+   4. Example config: setting up HELO restrictions in /etc/postfix/access.helo
+
+         # ------ file /etc/postfix/access.helo ------ #
+         $domain               554 Liar Liar pants on Fire: (Nose is long as a telephone wire) You are not Me
+         localhost             554 Liar Liar pants on Fire: (Nose is long as a telephone wire) You are not Me
+         localdomain           554 Liar Liar pants on Fire: (Nose is long as a telephone wire) You are not Me
+         localhost.localdomain 554 Liar Liar pants on Fire: (Nose is long as a telephone wire) You are not Me
+         YOUR.IP.ADDRESS       554 Liar Liar pants on Fire: (Nose is long as a telephone wire) You are not Me
+         # ------ file /etc/postfix/access.helo ------ #

@@ -1,0 +1,36 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/ffmpeg
+-rwxr-xr-x	root/root	usr/bin/ffplay
+-rwxr-xr-x	root/root	usr/bin/ffserver
+drwxr-xr-x	root/root	usr/include/
+drwxr-xr-x	root/root	usr/include/ffmpeg/
+-rw-r--r--	root/root	usr/include/ffmpeg/avcodec.h
+-rw-r--r--	root/root	usr/include/ffmpeg/avformat.h
+-rw-r--r--	root/root	usr/include/ffmpeg/avio.h
+-rw-r--r--	root/root	usr/include/ffmpeg/common.h
+-rw-r--r--	root/root	usr/include/ffmpeg/rational.h
+-rw-r--r--	root/root	usr/include/ffmpeg/rtp.h
+-rw-r--r--	root/root	usr/include/ffmpeg/rtsp.h
+-rw-r--r--	root/root	usr/include/ffmpeg/rtspcodes.h
+drwxr-xr-x	root/root	usr/include/postproc/
+-rw-r--r--	root/root	usr/include/postproc/postprocess.h
+drwxr-xr-x	root/root	usr/lib/
+-rwxr-xr-x	root/root	usr/lib/libavcodec-0.4.9-pre1.so
+lrwxrwxrwx	root/root	usr/lib/libavcodec.so -> libavcodec-0.4.9-pre1.so
+-rwxr-xr-x	root/root	usr/lib/libavformat-0.4.9-pre1.so
+lrwxrwxrwx	root/root	usr/lib/libavformat.so -> libavformat-0.4.9-pre1.so
+lrwxrwxrwx	root/root	usr/lib/libpostproc.so -> libpostproc.so.0.0.1
+-rwxr-xr-x	root/root	usr/lib/libpostproc.so.0.0.1
+drwxr-xr-x	root/root	usr/lib/vhook/
+-rwxr-xr-x	root/root	usr/lib/vhook/drawtext.so
+-rwxr-xr-x	root/root	usr/lib/vhook/fish.so
+-rwxr-xr-x	root/root	usr/lib/vhook/imlib2.so
+-rwxr-xr-x	root/root	usr/lib/vhook/null.so
+-rwxr-xr-x	root/root	usr/lib/vhook/ppm.so
+-rwxr-xr-x	root/root	usr/lib/vhook/watermark.so
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man1/
+-rw-r--r--	root/root	usr/man/man1/ffmpeg.1.gz
+-rw-r--r--	root/root	usr/man/man1/ffplay.1.gz
+-rw-r--r--	root/root	usr/man/man1/ffserver.1.gz

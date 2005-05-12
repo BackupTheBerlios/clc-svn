@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.3 2005/02/16 05:58:31 victord Exp $
+# Description: Advanced Configuration and Power Interface Management Daemon
+# Maintainer: Victor <victord@v600.net>
+# Packager: Markus Heinz <su1690@studserver.uni-dortmund.de>
+# URL: http://acpid.sf.net/
+
+name=acpid
+version=1.0.4
+release=1
+source=(http://dl.sourceforge.net/${name}/${name}-$version.tar.gz \
+	acpid.rc default default.sh)
+
+build() {
+	cd $name-$version
+	mkdir -p $PKG/usr/{bin,sbin,man/man8}
+	make INSTPREFIX=/usr
+	make INSTPREFIX=$PKG MAN8DIR=$PKG/usr/man/man8 install
+	mkdir -p $PKG/etc/{acpi/events,rc.d}
+	mv ../acpid.rc $PKG/etc/rc.d/acpid
+	mv ../default $PKG/etc/acpi/events
+	mv ../default.sh $PKG/etc/acpi
+	chmod 00755 $PKG/etc/rc.d/acpid $PKG/etc/acpi/default.sh
+	chown -R root:root $PKG
+}

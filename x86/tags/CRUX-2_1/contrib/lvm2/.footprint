@@ -1,0 +1,89 @@
+drwxr-xr-x	root/root	etc/
+drwxr-xr-x	root/root	etc/lvm/
+-rw-r--r--	root/root	etc/lvm/lvm.conf
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man5/
+-r--r--r--	root/root	usr/man/man5/lvm.conf.5.gz
+drwxr-xr-x	root/root	usr/man/man8/
+-r--r--r--	root/root	usr/man/man8/lvchange.8.gz
+-r--r--r--	root/root	usr/man/man8/lvcreate.8.gz
+-r--r--r--	root/root	usr/man/man8/lvdisplay.8.gz
+-r--r--r--	root/root	usr/man/man8/lvextend.8.gz
+-r--r--r--	root/root	usr/man/man8/lvm.8.gz
+-r--r--r--	root/root	usr/man/man8/lvmchange.8.gz
+-r--r--r--	root/root	usr/man/man8/lvmdiskscan.8.gz
+-r--r--r--	root/root	usr/man/man8/lvreduce.8.gz
+-r--r--r--	root/root	usr/man/man8/lvremove.8.gz
+-r--r--r--	root/root	usr/man/man8/lvrename.8.gz
+-r--r--r--	root/root	usr/man/man8/lvresize.8.gz
+-r--r--r--	root/root	usr/man/man8/lvs.8.gz
+-r--r--r--	root/root	usr/man/man8/lvscan.8.gz
+-r--r--r--	root/root	usr/man/man8/pvchange.8.gz
+-r--r--r--	root/root	usr/man/man8/pvcreate.8.gz
+-r--r--r--	root/root	usr/man/man8/pvdisplay.8.gz
+-r--r--r--	root/root	usr/man/man8/pvmove.8.gz
+-r--r--r--	root/root	usr/man/man8/pvremove.8.gz
+-r--r--r--	root/root	usr/man/man8/pvs.8.gz
+-r--r--r--	root/root	usr/man/man8/pvscan.8.gz
+-r--r--r--	root/root	usr/man/man8/vgcfgbackup.8.gz
+-r--r--r--	root/root	usr/man/man8/vgcfgrestore.8.gz
+-r--r--r--	root/root	usr/man/man8/vgchange.8.gz
+-r--r--r--	root/root	usr/man/man8/vgck.8.gz
+-r--r--r--	root/root	usr/man/man8/vgconvert.8.gz
+-r--r--r--	root/root	usr/man/man8/vgcreate.8.gz
+-r--r--r--	root/root	usr/man/man8/vgdisplay.8.gz
+-r--r--r--	root/root	usr/man/man8/vgexport.8.gz
+-r--r--r--	root/root	usr/man/man8/vgextend.8.gz
+-r--r--r--	root/root	usr/man/man8/vgimport.8.gz
+-r--r--r--	root/root	usr/man/man8/vgmerge.8.gz
+-r--r--r--	root/root	usr/man/man8/vgmknodes.8.gz
+-r--r--r--	root/root	usr/man/man8/vgreduce.8.gz
+-r--r--r--	root/root	usr/man/man8/vgremove.8.gz
+-r--r--r--	root/root	usr/man/man8/vgrename.8.gz
+-r--r--r--	root/root	usr/man/man8/vgs.8.gz
+-r--r--r--	root/root	usr/man/man8/vgscan.8.gz
+-r--r--r--	root/root	usr/man/man8/vgsplit.8.gz
+drwxr-xr-x	root/root	usr/sbin/
+lrwxrwxrwx	root/root	usr/sbin/lvchange -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvcreate -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvdisplay -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvextend -> lvm
+-r-xr-xr-x	root/root	usr/sbin/lvm
+-r-xr-xr-x	root/root	usr/sbin/lvm.static
+lrwxrwxrwx	root/root	usr/sbin/lvmchange -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvmdiskscan -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvmsadc -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvmsar -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvreduce -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvremove -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvrename -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvresize -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvs -> lvm
+lrwxrwxrwx	root/root	usr/sbin/lvscan -> lvm
+lrwxrwxrwx	root/root	usr/sbin/pvchange -> lvm
+lrwxrwxrwx	root/root	usr/sbin/pvcreate -> lvm
+lrwxrwxrwx	root/root	usr/sbin/pvdisplay -> lvm
+lrwxrwxrwx	root/root	usr/sbin/pvmove -> lvm
+lrwxrwxrwx	root/root	usr/sbin/pvremove -> lvm
+lrwxrwxrwx	root/root	usr/sbin/pvresize -> lvm
+lrwxrwxrwx	root/root	usr/sbin/pvs -> lvm
+lrwxrwxrwx	root/root	usr/sbin/pvscan -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgcfgbackup -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgcfgrestore -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgchange -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgck -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgconvert -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgcreate -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgdisplay -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgexport -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgextend -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgimport -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgmerge -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgmknodes -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgreduce -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgremove -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgrename -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgs -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgscan -> lvm
+lrwxrwxrwx	root/root	usr/sbin/vgsplit -> lvm

@@ -6,7 +6,10 @@
 
 . /etc/pkgsync.conf
 
-version="1.1"; simulate=""; diff=""; sysup=""; locked=(`cat /var/lib/pkg/prt-get.locker 2>/dev/null`)
+version="1.2"; simulate="false"; diff="false"; sysup="false";
+
+packages=`prt-get listinst -v 2>/dev/null || pkginfo -i`
+locked=`cat /var/lib/pkg/prt-get.locker 2>/dev/null`
 
 #  Print a warning.
 warn(){
@@ -15,45 +18,36 @@ warn(){
 
 #  Print an error and exit.
 error(){
-	echo "=======> ERROR: $1" >&2 && exit 1
+	echo "=======> ERROR: $1" >&2
+	exit 1
 }
 
-#  Executes $1 if it exists and is executable.
+#  Executes $1 if it exists.
 execute_script(){
-	test -f $1 && echo "  Executing `basename $1`.." && sh $1 >/dev/null 2>&1
+	test -f $1 || return 1
+	echo "  Executing `basename $1`.."
+	sh $1 >/dev/null 2>&1
 }
 
 #  Ensure $1 is a directory and is readable or writeable, depending on the optional parameter $2.
 ensure_path(){
-	
 	test -d "$1" || error "$1 is not a directory."
-
-	if [ "$2" = "r" -a ! -r "$1" ]; then
-		error "$1 is not readable."
-	elif [ "$2" = "w" -a ! -w "$1" ]; then
-		error "$1 is not writeable."
-	fi
+	test "$2" = "r" -a ! -r $1 && error "$1 is not readable."
+	test "$2" = "w" -a ! -w $1 && error "$1 is not writeable."
 }
 
 #  Generate an httpup REPO file for the specified package $1 containing all of its dependencies and 
 #  their meta-data.  The file is written to $2 if it is provided, or stdout otherwise.
 generate_httpup_repofile(){
-		
-	test "$2" && rm -f $2 2>/dev/null  #begin with clean file before writing output
-
-	dependencies=" $1 `cat $repository/$1#*-deps 2>/dev/null`"  #resolve deps for httpup package
 	
-	for dep in $dependencies; do
-		
-		files=`ls $repository/$dep#* 2>/dev/null`  #resolve relevent files for dependency
-		
-		test "$files" || continue  #if package does not live in repository, quietly continue
-		
-		for f in $files; do  #append md5sum to REPO file or stdout
-			md5=`md5sum $f | sed 's/ .*$//'`; file=`basename $f`; line="f:$md5:$file"
-			test "$2" && echo $line >> $2 || echo $line
-		done
-		
+	test $2 && rm -f $2  #begin with clean file before writing output
+	deps="$1 `cat $repository/$1#*-deps 2>/dev/null`"  #resolve deps for httpup package
+	
+	for dep in $deps; do  #for each dependency		
+		for file in $repository/$dep#*; do  #append md5sum to REPO file or stdout
+			md5=`md5sum $file`; line="f:${md5%% *}:${file##*/}"
+			test $2 && echo $line >> $2 || echo $line
+		done		
 	done
 	
 	return 0
@@ -63,30 +57,28 @@ generate_httpup_repofile(){
 #  pre/post install scripts and dependency information are also committed to the repository.
 commit_package(){
 	
-	local name=`basename $1 | sed "s/#.*$//"`
+	pkg=${1##*/}; name=${pkg%%#*}
 	
-	mv -f $repository/$name#* $repository/old 2>/dev/null  #archive old version(s)
-	
+	mv -f $repository/$name#* $repository/old 2>/dev/null  #archive old version(s)	
 	install -m 644 $1 $repository  #copy package to repository	
 	
-	if [[ `which prt-get 2>/dev/null` ]]; then  #copy install scripts, build dependency list, update httpup repo files
+	if which prt-get >/dev/null 2>&1; then  #copy install scripts, store dependency list
 	
 		path=`prt-get path $name 2>/dev/null`  #resolve path for package
 		test -z "$path" && warn "No port for $name.  Could not resolve meta-data." && return 0
 		
-		install -m 755 $path/pre-install $repository/`basename $1`-pre-install >/dev/null 2>&1
-		install -m 755 $path/post-install $repository/`basename $1`-post-install >/dev/null 2>&1
+		install $path/pre-install $repository/$pkg-pre-install 2>/dev/null
+		install $path/post-install $repository/$pkg-post-install 2>/dev/null
 		
-		dependencies=`prt-get quickdep $name 2>/dev/null | sed "s/$name $//"`  #resolve dependencies
-		
-		test "$dependencies" && echo $dependencies > $repository/`basename $1`-deps  #dump dependencies
+		deps=`prt-get quickdep $name 2>/dev/null | sed "s/$name $//"`  #resolve dependencies		
+		test "$deps" && echo $deps > $repository/$pkg-deps  #and store them
 		
 	else
-		warn "prt-get not installed.  Could not resolve meta-data."
+		warn "No prt-get in $PATH.  Could not resolve meta-data."
 	fi
 	
 	for hp in ${httpup_packages[@]}; do  #update httpup REPO files if necessary
-		echo " $hp `cat $repository/$hp#*-deps 2>/dev/null`" | grep " $name " >/dev/null &&
+		echo " $hp `cat $repository/$hp#*-deps 2>/dev/null` " | grep " $name " >/dev/null &&
 			generate_httpup_repofile $hp $repository/$hp.REPO
 	done
 	
@@ -97,42 +89,41 @@ commit_package(){
 #  dependencies of $1.  The globals $simulate, $diff, and $sysup determine what action this function takes.
 install_package(){
 	
-	local pkg=$1; local name=`basename $pkg | sed "s/#.*$//"`
-	local version=`basename $pkg .pkg.tar.gz | sed "s/^.*#//"`
+	#local pkg=$1; local name=`basename $pkg | sed "s/#.*$//"`
+	#local version=`basename $pkg .pkg.tar.gz | sed "s/^.*#//"`
 	
-	echo " ${locked[@]} " | grep " $name " >/dev/null && return 0  #package locked by prt-get
+	local pkg=${1##*/}; local name=${pkg%%#*};
+	local version=${pkg##*#}; version=${version%.pkg.tar.gz}
 	
-	echo "$installed" | grep " $name " >/dev/null && return 0  #package was just installed
+	echo "$installed" | grep " $name " >/dev/null && return 0  #package was just now installed
+	echo "$locked" | grep "^$name$" >/dev/null && return 0  #package is locked	by prt-get
 	
-	packages=`prt-get listinst -v 2>/dev/null || pkginfo -i`	
-	local current=`echo "$packages" | grep "^$name " | sed "s/^$name //"`
+	local current=`echo "$packages" | grep "^$name "`  #resolve currently installed version
 	
-	test "$sysup" = "true" -a -z "$current" && return 0  #sysup and package not installed, return
+	test "$sysup" = "true" -a -z "$current" && return 0  #package not installed, return
+	test "$version" = "${current#* }" && return 0  #package is up to date, return
 	
-	test "$version" = "$current" && return 0  #package is up to date, return
-	
-	local dependencies=`cat $pkg-deps 2>/dev/null`  #read dependency information
-	
-	local dep; for dep in $dependencies; do  #resolve dependencies recurssively
+	local deps=`cat $repository/$pkg-deps 2>/dev/null`  #read dependency information
+	local dep; for dep in $deps; do  #resolve dependencies recurssively
 		
-		local deppkg=`ls $repository/$dep#* 2>/dev/null`  #resolve dependent package
+		local dpkg=$repository/$dep#*.pkg.tar.gz  #resolve dependent package
+		test -f $dpkg && install_package $dpkg && continue  #install dependent package from repo
 		
-		test "$deppkg" && install_package $deppkg && continue  #install dependent package from repo
-		
-		if [ `echo "$packages" | grep -c "^$dep "` -eq 0 ]; then  #or look for previously installed version
+		echo "$packages" | grep "^$dep " >/dev/null ||  #or look for installed version
 			error "$name: dependency $dep not found."
-		fi
 	done
 	
-	alert="Installing" && flag="" && test "$current" && alert="Upgrading" && flag="-u"  #initialize alerts and flags
+	alert="Installing" && flag=""; test "$current" && alert="Updating" && flag="-u"  #initialize alert, flag
 	
-	test "$diff" = "true" && printf "%- 20s%- 20s%- 20s\n" "$name" "$current" "$version" || echo $alert $name $version..
-		
-	installed="$installed $name "  #append name to installed
+	test "$diff" = "true" && printf "%- 20s%- 20s%- 20s\n" "$name" "$current" "$version" ||
+	echo $alert $name $version..  #print alert output
 	
-	test "$simulate" = "true" && return 0  #simulate only, do not run scripts or install package
+	installed="$installed $name "  #append name to installed	
+	test "$simulate" = "true" && return 0  #simulate, return
 	
-	execute_script $pkg-pre-install; pkgadd $flag $pkg; execute_script $pkg-post-install  #do it
+	execute_script $repository/$pkg-pre-install  #run pre/post scripts
+	pkgadd $flag $repository/$pkg  #and add package
+	execute_script $repository/$pkg-post-install
 	
 	return 0
 }
@@ -145,11 +136,13 @@ test "$1" = "-r" && repository=$2 && shift && shift  #override repository
 
 case "$1" in
 	"-v")  #print version and exit
-		echo "Pkgsync $version, Copyright Jay Dolan 2004"; exit 0
+		echo "Pkgsync $version, Copyright Jay Dolan 2004-2005"
+		exit 0
 		;;
 		
 	"commit")  #commit specified packages to repository
-		ensure_path $repository "r"; ensure_path $repository "w"; ensure_path $repository/old "w"
+		ensure_path "$repository" "r"; ensure_path "$repository" "w"
+		ensure_path "$repository/old" "w"
 		
 		shift && for i in $@; do
 			test -f $i && commit_package $i || error "$i does not exist."
@@ -157,76 +150,81 @@ case "$1" in
 		;;
 		
 	"mkhttpup")	#generate httpup REPO file for specified packages to stdout
-		ensure_path $repository "r"
+		ensure_path "$repository" "r"
 		
 		shift && for i in $@; do
-			package=`ls $repository/$i#*.pkg.tar.gz 2>/dev/null`
-			test "$package" && generate_httpup_repofile $i || error "Package $i not found."
-		done | sort -u  #filter out duplicates
+			pkg=$repository/$i#*.pkg.tar.gz
+			test -f $pkg && generate_httpup_repofile $i || error "Package $i not found."
+		done | sort -u  #filter duplicates
 		;;
 		
 	"testinst")  #simulate install/update of specified packages from repository
-		ensure_path $repository "r"; simulate="true"; shift
+		ensure_path "$repository" "r"; simulate="true"
 		
-		echo; echo "Testing installation of $@.."; echo
+		echo -e "Testing installation of $@ from $repository..\n"
 				
-		for i in $@; do
-			package=`ls $repository/$i#*.pkg.tar.gz 2>/dev/null`
-			test "$package" && install_package $package || error "package $i not found."
+		shift && for i in $@; do
+			pkg=$repository/$i#*.pkg.tar.gz
+			test -f $pkg && install_package $pkg || error "Package $i not found."
 		done
 		;;
 		
 	"install")  #install/update specified packages from repository
-		ensure_path $repository  "r"
+		ensure_path "$repository" "r"
+		
+		echo -e "Installing $@ from $repository..\n"
 		
 		shift && for i in $@; do
-			package=`ls $repository/$i#*.pkg.tar.gz 2>/dev/null`
-			test "$package" && install_package $package || error "package $i not found."
+			pkg=$repository/$i#*.pkg.tar.gz
+			test -f $pkg && install_package $pkg || error "Package $i not found."
 		done
 		;;
 		
 	"sysdiff")  #diff only installed packages in repository
-		ensure_path $repository "r"; simulate="true"; sysup="true"; diff="true";
+		ensure_path "$repository" "r"; simulate="true"; sysup="true"; diff="true"
 		
-		echo "Differences between installed packages and repository:"; echo
-		echo "Packages            Installed           Available in $repository"; echo
+		echo -e "Differences between installed packages and $repository:\n"
+		echo -e "Packages            Installed           Available in repository\n"
 		
 		for i in $repository/*.pkg.tar.gz; do
-			install_package $i
+			test -f $i && install_package $i
 		done
 		;;
 		
 	"sysup")  #update only installed packages in repository
-		ensure_path $repository "r"; sysup="true";
+		ensure_path "$repository" "r"; sysup="true";
 		
-		ensure_path $repository "r"; echo; echo "Performing sysup in $repository.."; echo
+		echo -e "Performing sysup in $repository..\n"
 		
 		for i in $repository/*.pkg.tar.gz; do
-			install_package $i
+			test -f $i && install_package $i
 		done
 		;;
 		
 	"diff")  #diff all packages in repository
-		ensure_path $repository "r"; simulate="true"; diff="true"
+		ensure_path "$repository" "r"; simulate="true"; diff="true"
 		
-		echo "Differences between installed packages and repository:"; echo
-		echo "Packages            Installed           Available in $repository"; echo
+		echo -e "Differences between installed packages and $repository:\n"
+		echo -e "Packages            Installed           Available in repository\n"
 		
 		for i in $repository/*.pkg.tar.gz; do
-			install_package $i
+			test -f $i && install_package $i
 		done
 		;;
 	
 	"sync")  #sync all packages in repository
-		ensure_path $repository "r"; echo; echo "Syncing all in $repository.."; echo
+		ensure_path "$repository" "r";
+		
+		echo -e "Syncing all in $repository..\n"
 		
 		for i in $repository/*.pkg.tar.gz; do
-			install_package $i
+			test -f $i && install_package $i
 		done
 		;;
 	
 	*)  #show usage and exit
-		echo "Usage: pkgsync [options] command <arguments>" >&2; exit 1
+		echo "Usage: pkgsync [options] command <arguments>" >&2
+		exit 1
 		;;
 esac
 

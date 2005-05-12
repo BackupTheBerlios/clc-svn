@@ -1,6 +1,6 @@
-diff -Nru exim-4.50.orig/src/EDITME exim-4.50/src/EDITME
---- exim-4.50.orig/src/EDITME	2005-02-18 19:24:31.778507493 +0100
-+++ exim-4.50/src/EDITME	2005-02-18 19:30:10.673435232 +0100
+diff -Nru exim-4.51.orig/src/EDITME exim-4.51/src/EDITME
+--- exim-4.51.orig/src/EDITME	2005-05-05 10:44:00.000000000 +0200
++++ exim-4.51/src/EDITME	2005-05-05 10:44:14.000000000 +0200
 @@ -74,7 +74,7 @@
  # this would be wanted.
  ###############################################################################
@@ -119,7 +119,7 @@ diff -Nru exim-4.50.orig/src/EDITME exim-4.50/src/EDITME
  
  
  #------------------------------------------------------------------------------
-@@ -770,9 +770,9 @@
+@@ -786,9 +786,9 @@
  # You may well also have to specify a local "include" file and an additional
  # library for TCP wrappers, so you probably need something like this:
  #
@@ -131,7 +131,7 @@ diff -Nru exim-4.50.orig/src/EDITME exim-4.50/src/EDITME
  #
  # but of course there may need to be other things in CFLAGS and EXTRALIBS_EXIM
  # as well.
-@@ -798,7 +798,7 @@
+@@ -814,7 +814,7 @@
  # aliases). The following setting can be changed to specify a different
  # location for the system alias file.
  
@@ -140,7 +140,7 @@ diff -Nru exim-4.50.orig/src/EDITME exim-4.50/src/EDITME
  
  
  #------------------------------------------------------------------------------
-@@ -844,10 +844,10 @@
+@@ -860,10 +860,10 @@
  # haven't got Perl, Exim will still build and run; you just won't be able to
  # use those utilities.
  
@@ -155,7 +155,7 @@ diff -Nru exim-4.50.orig/src/EDITME exim-4.50/src/EDITME
  # PERL_COMMAND=/usr/bin/perl
  
  
-@@ -1042,7 +1042,7 @@
+@@ -1058,7 +1058,7 @@
  # (process id) to a file so that it can easily be identified. The path of the
  # file can be specified here. Some installations may want something like this:
  

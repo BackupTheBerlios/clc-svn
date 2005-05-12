@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.6 2005/03/08 22:56:24 victord Exp $
+# Description: Small NetWM compatible Taskbar Panel
+# URL: http://fbpanel.sourceforge.net/
+# Maintainer: Victor <victord@v600.net>
+# Packager: Victor <victord@v600.net>
+# Depends on: gtk
+
+name=fbpanel
+version=4.1
+release=2
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tgz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr
+	make
+	make PREFIX=$PKG/usr install
+	mv $PKG/usr/share/man $PKG/usr
+}

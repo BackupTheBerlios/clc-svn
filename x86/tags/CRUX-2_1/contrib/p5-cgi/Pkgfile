@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.1 2005/05/06 11:11:56 jue Exp $
+# Description: Perl CGI module
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# URL:         http://search.cpan.org/dist/CGI.pm/
+
+name=p5-cgi
+version=3.09
+release=1
+source=(http://search.cpan.org/CPAN/authors/id/L/LD/LDS/CGI.pm-$version.tar.gz)
+
+build(){
+   cd CGI.pm-$version
+   perl Makefile.PL 
+   make
+   make DESTDIR=$PKG install
+   rm -r $PKG/usr/lib/perl5/5.8.6/linux
+   find $PKG \( -name perllocal.pod -or -name .packlist \) -exec rm {} \;
+}

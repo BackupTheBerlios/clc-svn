@@ -11,7 +11,7 @@
 resolve_repository(){	
 	
 	for rule in ${deploy_rules[@]}; do
-		echo $rule | grep "^$1:" >/dev/null && echo $rule | sed "s/.*://" && return 0
+		echo $rule | grep "^$1:" >/dev/null && echo ${rule#*:} && return 0
 	done
 	
 	echo $repository
@@ -26,7 +26,7 @@ resolve_repository(){
 eval pkg=\$$#
 
 name=`basename $pkg | sed "s/#.*//"`
-repo=`resolve_repository $name` 
+repo=`resolve_repository $name`
 
 pkgadd $@ && pkgsync -r $repo commit $pkg
 

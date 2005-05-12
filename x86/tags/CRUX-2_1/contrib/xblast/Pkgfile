@@ -1,0 +1,22 @@
+# $Id: Pkgfile,v 1.2 2004/11/18 22:41:15 sip Exp $
+# Description: xblast - multiplayer network ready Bomberman/Dynablaster type game
+# URL: http://www.ndh.net/home/m.vogel
+# Maintainer: Victor <victord@users.berlios.de>
+# Packager: Victor <victord@users.berlios.de>
+# Depends On: x11
+
+name=xblast
+version=2.6.1
+release=1
+source=(ftp://metalab.unc.edu/pub/linux/games/arcade/$name-$version.sound.tar.gz xblast.patch)
+
+build () {
+	cd XBlast-2.6-sound
+        patch -p0 < ../xblast.patch
+        xmkmf -a
+        touch xbsndsrv.man
+        make BINDIR=/usr/bin XAPPLOADDIR=/etc/X11/app-defaults XBLASTDIR=/usr/lib/xblast MANPATH=/usr/man
+        make BINDIR=/usr/bin XAPPLOADDIR=/etc/X11/app-defaults XBLASTDIR=/usr/lib/xblast MANPATH=/usr/man DESTDIR=$PKG install
+        make BINDIR=/usr/bin XAPPLOADDIR=/etc/X11/app-defaults XBLASTDIR=/usr/lib/xblast MANPATH=/usr/man DESTDIR=$PKG install.man
+        rm -rf $PKG/usr/X11R6 $PKG/etc
+}

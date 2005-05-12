@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.5 2005/05/10 14:27:16 jaeger Exp $
+# Description: Software codec for DV video, for most IEEE1394 camcorders
+# URL: http://libdv.sourceforge.net/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Packager: Martin Opel, mo at obbl-net dot de
+# Depends on: x11, gtk1, pkgconfig, libsdl, popt
+
+name=libdv
+version=0.104
+release=1
+source=(http://dl.sourceforge.net/sourceforge/libdv/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr --enable-sdl
+	make
+	make DESTDIR=$PKG install
+}

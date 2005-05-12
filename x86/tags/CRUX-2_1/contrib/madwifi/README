@@ -1,0 +1,17 @@
+PRE-INSTALL
+
+    Make sure kernel sources exist:
+
+        /usr/src/linux
+        OR
+        /usr/src/linux-version
+ 
+    Where linux is either source tree or link
+    to your /usr/src/linux-version folder
+
+POST-INSTALL
+
+    You need wpa_supplicant to do WPA
+    To compile wpa_supplicant, you need madwifi sources
+    I am still working on making this seamless...
+    WORK-IN-PROGRESS

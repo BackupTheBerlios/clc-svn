@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.2 2004/11/05 04:55:28 victord Exp $
+# Description: Webalizer is a fast, free web server log file analysis program. 
+# URL: http://www.mrunix.net/webalizer/ 
+# Maintainer: Victor <victord@users.berlios.de>
+# Packager: Victor <victord@users.berlios.de>
+# Depends on: libgd  
+
+name=webalizer
+version=2.01-10
+release=1
+source=(ftp://ftp.mrunix.net/pub/$name/$name-$version-src.tgz)
+
+build() {
+ 	cd $name-$version
+	./configure --prefix=/usr \
+		--with-etcdir=/usr/etc \
+		--with-db=/usr/include \
+		--with-dblib=/usr/lib \
+		--enable-dns
+	make
+	mkdir -p $PKG/usr/{etc,bin,man/man1}
+	make prefix=$PKG/usr ETCDIR=$PKG/usr/etc install
+	ln -sf webalizer $PKG/usr/bin/webazolver
+}

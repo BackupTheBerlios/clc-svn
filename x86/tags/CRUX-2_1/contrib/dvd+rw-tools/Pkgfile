@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.5 2005/05/08 08:00:01 sten Exp $
+# Description: Tools to write DVDs
+# URL: http://fy.chalmers.se/~appro/linux/DVD+RW/
+# Maintainer: sten, nick dot steeves at shaw dot ca
+# Packager: Martin Opel, mo at obbl-net dot de
+# Depends on: cdrtools
+
+name=dvd+rw-tools
+version=5.21.4.10.8
+release=1
+source=(http://fy.chalmers.se/~appro/linux/DVD+RW/tools/$name-$version.tar.gz)
+
+build() {
+  cd $name-$version
+  make
+  mkdir -p $PKG/usr/bin $PKG/usr/man/man1
+  for binary in dvd+rw-booktype dvd+rw-format dvd+rw-mediainfo growisofs; do
+    install -m 755 $binary $PKG/usr/bin/
+  done
+  install -m 644 growisofs.1 $PKG/usr/man/man1/
+}

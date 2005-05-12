@@ -1,0 +1,17 @@
+# $Id: Pkgfile,v 1.5 2005/05/10 13:07:08 jaeger Exp $
+# Description: DVD authoring tools
+# URL: http://dvdauthor.sourceforge.net/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: libxml2, libdvdread
+
+name=dvdauthor
+version=0.6.11
+release=1
+source=(http://dl.sourceforge.net/sourceforge/dvdauthor/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr
+	make
+	make prefix=$PKG/usr install
+}

@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.5 2005/05/09 15:27:40 jue Exp $
+# Description: Network sniffer with command line interface
+# URL:         http://www.tcpdump.org
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  libpcap
+
+name=tcpdump
+version=3.8.3
+release=3
+source=(http://www.tcpdump.org/release/$name-$version.tar.gz \
+        $name-$version.patch)
+
+build() {
+    cd $name-$version
+    export LDFLAGS=-O0
+    patch -p1 < $SRC/$name-$version.patch
+    ./configure --prefix=/usr \
+                --enable-ipv6 
+    make
+    make DESTDIR=$PKG install
+}

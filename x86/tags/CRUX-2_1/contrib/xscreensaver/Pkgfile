@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.6 2005/04/29 21:25:37 jdolan Exp $
+# $Id: Pkgfile,v 1.7 2005/05/06 16:03:48 jdolan Exp $
 # Maintainer: Jay Dolan, jasonthomasdolan at yahoo dot com
 # Description: A screen saver and locker daemon for X11
 # URL: http://www.jwz.org/xscreensaver
@@ -6,7 +6,7 @@
 
 name=xscreensaver
 version=4.21
-release=1
+release=2
 source=(http://www.jwz.org/$name/$name-$version.tar.gz)
 
 build(){
@@ -15,6 +15,7 @@ build(){
 	sed -i "$exp" configure
 
 	./configure --prefix=/usr \
+		--libexecdir=/usr/lib \
 		--enable-locking \
 		--without-motif \
 		--without-gnome \

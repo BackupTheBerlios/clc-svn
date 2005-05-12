@@ -1,0 +1,15 @@
+README for p5-cgi 3.0x
+
+REQUIREMENTS
+
+PRE-INSTALL
+
+POST-INSTALL
+
+PRECAUTION
+  
+  The p5-cgi port is an update for the CGI stuff of perl 5.8.6.
+  Because it updates some files of the perl port you have to add 
+  the -f or --force option to pkgadd.
+
+  See also the README of the mod_perl port.

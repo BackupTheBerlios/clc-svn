@@ -1,0 +1,102 @@
+#################################################################
+# Postfix Configuration Directives
+#################################################################
+# Following files must exist in [/etc/postfix/]:
+#    access.helo                 (must run postmap)
+#    access.recpnt               (must run postmap)
+#    access.client               (must run postmap)
+#    access.sender               (must run postmap)
+#    aliases                     (must run postalias)
+#    regex.body-checks           (plain text file)
+#    regex.mime-header-checks    (plain text file)
+#    regex.header-checks         (plain text file)
+#    relay-domains               (plain text file)
+#    relocated                   (must run postmap)
+#    transport                   (must run postmap)
+#    virtual                     (must run postmap)
+#################################################################
+
+command_directory = /usr/sbin
+daemon_directory = /usr/lib/postfix
+queue_directory = /var/spool/postfix
+mail_spool_directory = /var/spool/mail
+manpage_directory = /usr/man
+sample_directory = /etc/postfix/SAMPLE
+sendmail_path = /usr/sbin/sendmail
+newaliases_path = /usr/bin/newaliases
+mailq_path = /usr/bin/mailq
+
+maildrop_destination_recipient_limit = 1
+inet_interfaces = all
+default_transport = smtp
+#home_mailbox = Maildir/
+mailbox_command = /usr/bin/procmail -a "$EXTENSION"
+mailbox_size_limit = 512000000
+message_size_limit = 25000000
+mail_owner = mail
+setgid_group = postdrop
+default_privs = nobody
+biff = no
+
+mynetworks    = 192.168.1.0/24, 127.0.0.0/8
+myhostname    = host.domain.com
+mydomain      = domain.com
+myorigin      = $myhostname
+mydestination = $mydomain localhost.$mydomain $myhostname
+#masquerade_domains = $myhostname
+
+#################################################################
+# Setup Alias, Virtual, Relocated Maps, and Relay Domains
+#################################################################
+body_checks        = regexp:/etc/postfix/regex.body-checks
+mime_header_checks = regexp:/etc/postfix/regex.mime-header-checks
+header_checks      = regexp:/etc/postfix/regex.header-checks
+alias_database     = hash:/etc/postfix/aliases
+alias_maps         = hash:/etc/postfix/aliases
+virtual_maps       = hash:/etc/postfix/virtual
+transport_maps     = hash:/etc/postfix/transport
+relocated_maps     = hash:/etc/postfix/relocated
+relay_domains      = $mydestination, /etc/postfix/relay-domains
+
+###########################################################################
+# Set proper reject codes
+###########################################################################
+unknown_local_recipient_reject_code = 550
+#unknown_address_reject_code   = 554
+#unknown_hostname_reject_code  = 554
+#unknown_client_reject_code    = 554
+#unverified_sender_reject_code = 554
+
+###########################################################################
+# Control message delivery options (prevent loops and spam)
+###########################################################################
+smtpd_banner = $myhostname ESMTP $mail_name
+disable_vrfy_command = yes
+smtpd_helo_required = yes
+
+smtpd_client_restrictions =
+smtpd_helo_restrictions =
+smtpd_sender_restrictions =
+smtpd_recipient_restrictions = permit_mynetworks,
+                               reject_unauth_destination,
+                               warn_if_reject reject_invalid_hostname,
+                               warn_if_reject reject_non_fqdn_sender,
+                               warn_if_reject reject_non_fqdn_recipient,
+                               warn_if_reject reject_non_fqdn_hostname,
+                               warn_if_reject reject_unknown_recipient_domain,
+                               warn_if_reject reject_unknown_sender_domain
+                               warn_if_reject reject_unauth_pipelining,
+                               check_helo_access      hash:/etc/postfix/access.helo,
+                               check_recipient_access hash:/etc/postfix/access.recpnt,
+                               check_client_access    hash:/etc/postfix/access.client,
+                               check_sender_access    hash:/etc/postfix/access.sender,
+                               reject_rbl_client relays.ordb.org,
+                               reject_rbl_client list.dsbl.org,
+                               permit
+
+#################################################################
+# Tell the postmaster about mail problems
+# Debugging stuff just in case
+#################################################################
+notify_classes = resource, software, bounce, policy
+debug_peer_level = 2

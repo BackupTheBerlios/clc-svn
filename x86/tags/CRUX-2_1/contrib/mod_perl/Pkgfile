@@ -1,27 +1,31 @@
-# $Id: Pkgfile,v 1.9 2005/04/08 13:05:48 jue Exp $
+# $Id: Pkgfile,v 1.10 2005/05/06 11:35:17 jue Exp $
 # Description: Persistent Perl interpreter for the Apache HTTP server
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 # URL:         http://perl.apache.org
-# Depends on:  apache
+# Depends on:  apache, p5-cgi
 # Group:       apache
 
 name=mod_perl
-version=2.0.0-RC4
+version=2.0.0-RC6
 release=1
 source=(http://perl.apache.org/dist/$name-$version.tar.gz)
 
 build(){
-   cd $name-$version
-   perl Makefile.PL \
-        MP_INST_APACHE2 MP_USE_DSO=1 \
-        MP_APXS=/usr/sbin/apxs
+    cd $name-$version
+    perl Makefile.PL \
+         MP_USE_DSO=1 \
+         MP_APXS=/usr/sbin/apxs
    
-   make
-   make install \
-        DESTDIR=$PKG \
-        MODPERL_AP_LIBEXECDIR=$PKG/usr/lib/apache \
-        MODPERL_AP_INCLUDEDIR=$PKG/usr/include/apache
+    make
+    make DESTDIR=$PKG install
   
-   rm -r $PKG/usr/{bin,lib/perl5/5.8.?}
-   find $PKG \( -name perllocal.pod -or -name .packlist \) -exec rm {} \;
+    rm -r $PKG/usr/bin
+    rm -r $PKG/usr/lib/perl5/site_perl/5.8.6/linux/{Apache,Bundle}
+    rm $PKG/usr/man/man3/{Bundle::*,Apache::*}
+    find $PKG \
+        -name perllocal.pod -or \
+        -name .packlist -or \
+        -name '*.bs' -or \
+        -name autosplit.ix | xargs rm
+    find $PKG -depth -empty -exec rm -rf {} \;
 }

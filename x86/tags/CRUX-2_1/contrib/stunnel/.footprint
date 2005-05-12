@@ -1,0 +1,12 @@
+drwxr-xr-x	root/root	etc/
+drwxr-xr-x	root/root	etc/stunnel/
+-rw-r--r--	root/root	etc/stunnel/stunnel.conf
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/lib/
+-rw-r--r--	root/root	usr/lib/libstunnel.la
+-rwxr-xr-x	root/root	usr/lib/libstunnel.so
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man8/
+-rw-r--r--	root/root	usr/man/man8/stunnel.8.gz
+drwxr-xr-x	root/root	usr/sbin/
+-rwxr-xr-x	root/root	usr/sbin/stunnel

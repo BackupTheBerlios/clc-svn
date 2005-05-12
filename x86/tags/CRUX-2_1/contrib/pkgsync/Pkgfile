@@ -1,12 +1,12 @@
-# $Id: Pkgfile,v 1.8 2005/03/29 04:06:21 jdolan Exp $
+# $Id: Pkgfile,v 1.10 2005/05/11 21:35:37 jdolan Exp $
 # Description: Maintain and sync with a package repository
-# Maintainer: Jay Dolan jasonthomasdolan at yahoo dot com
+# Maintainer: Jay Dolan <jasonthomasdolan@yahoo.com>
 # Url: http://jaydolan.com/pkgsync.html
 # Depends on: 
 
 name=pkgsync
-version=1.1
-release=1
+version=1.2
+release=2
 source=(pkgsync pkgsync.conf pkgsync.8 pkgdeploy pkgdeploy.conf pkgdeploy.8)
 
 build(){

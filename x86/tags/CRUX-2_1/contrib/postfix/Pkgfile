@@ -1,0 +1,60 @@
+# $Id: Pkgfile,v 1.2 2004/10/28 17:37:53 victord Exp $
+# Description: Postfix Mail Transport Agent (MTA)
+# URL: http://www.postfix.org
+# Maintainer: Victor <victord@users.berlios.de>
+# Packager: Victor <victord@users.berlios.de>
+# Depends on:
+
+name=postfix
+version=2.1.5
+release=1
+source=(ftp://postfix.ulimit.org/postfix/official/$name-$version.tar.gz
+        aliases postfix.rc postfix.cf)
+
+build() {
+    cd $name-$version
+
+    make tidy
+    make DEBUG="" OPT="$CFLAGS"
+
+    sh ./postfix-install -non-interactive install_root=$PKG \
+		mail_owner=mail \
+		setgid_group=postdrop \
+		config_directory=/etc/postfix \
+		sample_directory=/etc/postfix/SAMPLE \
+		manpage_directory=/usr/man \
+		daemon_directory=/usr/lib/postfix \
+		command_directory=/usr/sbin \
+		queue_directory=/var/spool/postfix \
+		sendmail_path=/usr/sbin/sendmail \
+		newaliases_path=/usr/bin/newaliases \
+		mailq_path=/usr/bin/mailq
+
+    #
+    # Set proper permissions
+    #
+    ( cd $PKG/var/spool/postfix
+      chown mail *
+      chgrp postdrop public maildrop )
+
+    ( cd $PKG/usr/sbin
+      chgrp postdrop postqueue postdrop
+      chmod g+s postqueue postdrop )
+
+    #
+    # Fix the fact that manpages will have a .gz extension
+    #
+    ( cd $PKG/etc/postfix
+      cp postfix-files temp-files
+      cat temp-files | grep -v LICENSE | sed 's/\(\/man[0-9]\/[a-zA-Z0-9_-]\+\.[0-9]\):/\1\.gz:/' > postfix-files
+      rm -f temp-files LICENSE )
+
+    touch $PKG/etc/postfix/{aliases,access,canonical,relocated,transport,virtual}.db
+    install -D -m 00644 ../aliases    $PKG/etc/postfix/aliases
+    install -D -m 00755 ../postfix.rc $PKG/etc/rc.d/postfix
+    install -D -m 00644 ../postfix.cf $PKG/etc/postfix/main.cf.example
+    touch $PKG/etc/postfix/relay-domains
+    touch $PKG/etc/postfix/header-checks
+    touch $PKG/etc/postfix/body-checks
+    touch $PKG/etc/postfix/mime-header-checks
+}

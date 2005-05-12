@@ -1,0 +1,73 @@
+README for mrtg 2.9.25
+
+REQUIREMENTS
+
+   1. Perl
+   2. gd
+   3. libPNG
+   4. libz
+
+   Note: No need for any external SNMP library. MRTG has its own
+         one (written entirely in perl).
+
+PRE-INSTALL
+
+   1. Install Perl, LibPNG, GD, and LibZ
+   2. [Optional] Create mrtg user
+
+POST-INSTALL
+
+   Please read instructions at:
+   http://people.ee.ethz.ch/~oetiker/webtools/mrtg/unix-guide.html
+   http://people.ee.ethz.ch/~oetiker/webtools/mrtg/cfgmaker.html
+
+   All other config help can be found at:
+   http://people.ee.ethz.ch/~oetiker/webtools/mrtg/
+
+   Here is a small edited excerpt for the impatient:
+
+   Quick Exmaple on making a config file:
+
+      cfgmaker --global 'WorkDir: /home/httpd/mrtg'  \
+               --global 'Options[_]: bits,growright' \
+               --output /etc/mrtg/mrtg.cfg           \
+               community@router.abc.xyz
+
+   RUNNING MRTG
+
+   Once you have created a configuration file, try the following:
+
+      /usr/bin/mrtg /etc/mrtg/mrtg.cfg
+ 
+   This will query your router and also create your first mrtg trafic
+   graphs and webpages. When you run mrtg for the first time there
+   will be a lot of complaints about missing log files. Don't worry,
+   this is normal for the first 2 times you start mrtg. If it keeps
+   complaining after this time you might want to look into the problem.
+
+   Starting mrtg by hand is not ideal in the long run. So when you are
+   sattisfied with the results you must automate the process of running
+   mrtg in regular intervals (this means every 5 minutes by default).
+
+   You can either add mrtg to your crontab with a line like this:
+
+      crontab -e
+
+   Add:
+
+      */5 * * * *  /usr/bin/mrtg <path to mrtg-cfg>/mrtg.cfg \
+                       --user=root \
+                       --logging /var/log/mrtg.log
+
+   You can also run mrtg as a daemon process
+
+      /etc/rc.d/mrtg start
+  
+   Note that this will only work with "RunAsDaemon: Yes" in your mrtg.cfg file.
+
+
+PRECAUTION:
+
+   1. SNMP can be a security hazard, so make sure you are familiar with
+      both the protocol and the security guidelines for the devices you
+      are using.

@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.2 2004/11/18 22:42:28 sip Exp $
+# Description: Automatic X screensaver/xlock starter
+# URL: http://freshmeat.net/projects/xautolock/
+# Maintainer: Victor <victord@users.berlios.de>
+# Packager: Victor <victord@users.berlios.de>
+# Depends on: x11
+
+name=xautolock
+version=2.1
+release=1
+source=(http://www.ibiblio.org/pub/Linux/X11/screensavers/$name-$version.tgz)
+
+build() {
+        cd $name-$version
+        xmkmf
+        make
+        make DESTDIR=$PKG BINDIR=/usr/bin install
+        make DESTDIR=$PKG MANDIR=/usr/man/man1 install.man
+}

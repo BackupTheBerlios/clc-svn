@@ -1,0 +1,13 @@
+drwxr-xr-x	root/root	lib/
+drwxr-xr-x	root/root	lib/modules/
+drwxr-xr-x	root/root	lib/modules/<kernel-version>/
+drwxr-xr-x	root/root	lib/modules/<kernel-version>/net/
+-rw-r--r--	root/root	lib/modules/<kernel-version>/net/ath_hal.ko
+-rw-r--r--	root/root	lib/modules/<kernel-version>/net/ath_pci.ko
+-rw-r--r--	root/root	lib/modules/<kernel-version>/net/wlan.ko
+-rw-r--r--	root/root	lib/modules/<kernel-version>/net/wlan_acl.ko
+-rw-r--r--	root/root	lib/modules/<kernel-version>/net/wlan_auth.ko
+-rw-r--r--	root/root	lib/modules/<kernel-version>/net/wlan_ccmp.ko
+-rw-r--r--	root/root	lib/modules/<kernel-version>/net/wlan_radius.ko
+-rw-r--r--	root/root	lib/modules/<kernel-version>/net/wlan_tkip.ko
+-rw-r--r--	root/root	lib/modules/<kernel-version>/net/wlan_wep.ko

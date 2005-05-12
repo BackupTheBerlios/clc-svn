@@ -1,0 +1,13 @@
+REQUIREMENTS
+
+libpcre is required for mod_rewrite support.
+
+PRE-INSTALL
+
+POST-INSTALL
+
+PRECAUTION
+
+lighttpd is configured by default to chroot into /var/www. Log files are stored 
+in /var/www/logs. You may wish to modify /etc/pkgadd.conf in order to prevent 
+them from being overwritten during upgrades.

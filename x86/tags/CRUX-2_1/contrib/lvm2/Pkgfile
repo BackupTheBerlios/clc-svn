@@ -1,0 +1,32 @@
+# $Id: Pkgfile,v 1.3 2005/05/09 07:08:09 victord Exp $
+# Description: Logical Volume Manager Software tools
+# URL: ftp://sources.redhat.com/pub/lvm2/
+# Maintainer: Victor <victord@users.berlios.de>
+# Packager: Victor <victord@users.berlios.de>
+# Depends on: readline libdevmapper
+
+name=lvm2
+version=2.01.10
+release=1
+source=(ftp://sources.redhat.com/pub/lvm2/LVM2.$version.tgz)
+
+build() {
+    cd LVM2.$version
+    ./configure --prefix=/usr \
+                --disable-nls \
+                --disable-debug \
+                --enable-readline \
+                --enable-static_link \
+                --with-snapshots=internal \
+                --with-mirrors=internal \
+                --with-lvm1=none
+    make
+    make DESTDIR=$PKG install
+}
+
+##  --enable-jobs=NUM       Number of jobs to run simultaneously
+##  --enable-cmdlib         Build shared command library
+##  --enable-fsadm          Enable fsadm
+##  --with-pool=TYPE        GFS pool read-only support: internal/shared/none
+##  --with-cluster=TYPE     Cluster LVM locking support: internal/shared/none
+##  --with-clvmd            Build cluster LVM Daemon

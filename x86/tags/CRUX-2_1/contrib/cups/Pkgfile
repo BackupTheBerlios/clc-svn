@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.7 2005/03/09 18:59:59 jue Exp $
+# $Id: Pkgfile,v 1.8 2005/05/08 08:23:32 jue Exp $
 # Description: CUPS - Common UNIX Printing System
 # URL:         http://www.cups.org
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
@@ -6,7 +6,7 @@
 
 name=cups
 version=1.1.23
-release=1
+release=2
 source=(ftp://ftp3.easysw.com/pub/cups/$version/$name-$version-source.tar.bz2 \
 	cups)
 
@@ -27,6 +27,6 @@ build () {
     rm -r $PKG/etc/rc.d/*
     rm -r $PKG/usr/share/cups/{doc/*.pdf,{doc,templates}/{fr,de,es,be}}
     find $PKG/usr/share/locale/* -type d ! -name "C" ! -name "en" | xargs rm -r
-    chmod 0755 $PKG/var/spool   
+    chmod 0755 $PKG/{var/spool,etc}   
     install -m 755 ../cups $PKG/etc/rc.d
 }

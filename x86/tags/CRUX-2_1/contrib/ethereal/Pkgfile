@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.5 2005/05/08 10:25:27 tilman Exp $
+# Description: Network Sniffer with nice GTK+ UI
+# URL: http://www.ethereal.com
+# Maintainer: Tilman Sauerbeck, tilman at code-monkey de
+# Packager: Martin Opel, mo at obbl-net dot de
+# Depends on: glib gtk libpcap
+
+name=ethereal
+version=0.10.11
+release=1
+source=(ftp://ftp.ethereal.com/pub/ethereal/all-versions/$name-$version.tar.bz2)
+
+build () {
+	cd $name-$version
+	export LDFLAGS="-L$PKG/usr/lib $LDFLAGS"
+	./configure --prefix=/usr --disable-nls --enable-snmp --enable-gtk2
+	make
+	make DESTDIR=$PKG install
+	sed -i -e "s|$PKG||g" -e "s|-L$SRC/$name-$version/epan||" \
+	    $PKG/usr/lib/{,$name/plugins/$version}/*.la
+} 

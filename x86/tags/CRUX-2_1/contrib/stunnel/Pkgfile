@@ -1,0 +1,29 @@
+# $Id: Pkgfile,v 1.1.1.1 2004/08/17 20:01:43 crux Exp $
+# Description: Stunnel wraps normal socket connections with SSL/TLS
+# URL: http://www.stunnel.org
+# Packager: Jeremy Jones <jeremy@samnjack.com>
+# Maintainer: Victor <victord@users.berlios.de>
+# Depends on: openssl
+
+# Note: Use openssl later than 0.9.6j or 0.9.7a
+
+name=stunnel
+version=4.05
+release=1
+source=(http://www.stunnel.org/download/stunnel/src/$name-$version.tar.gz)
+
+build () {
+	cd $name-$version
+	./configure --prefix=/usr \
+                    --sysconfdir=/etc \
+                    --localstatedir=/var \
+                    --with-ssl=/usr \
+                    --with-tcp-wrappers \
+                    --disable-nls
+	(cd src; make)
+	mkdir -p $PKG/{etc/stunnel,usr/{lib,man/man8,sbin}}
+	cp src/stunnel $PKG/usr/sbin/
+	cp src/.libs/{*.so,*.la} $PKG/usr/lib/
+	cp doc/stunnel.8 $PKG/usr/man/man8/
+	cp tools/stunnel.conf-sample $PKG/etc/stunnel/stunnel.conf
+}

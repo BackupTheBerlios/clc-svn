@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.3 2005/03/09 21:09:54 till Exp $
+# $Id: Pkgfile,v 1.4 2005/05/09 17:00:04 till Exp $
 # Packager: Huynh Ngoc Chau Tran,  tran dot huynh at laposte dot net
 # Maintainer: Till Biedermann, tillbiedermann at yahoo dot de
 # Description: GTK-based frontend for Xine
@@ -6,7 +6,7 @@
 # Depends on: xine-lib, gtk
 
 name=gxine
-version=0.4.1
+version=0.4.4
 release=1
 source=(http://dl.sourceforge.net/sourceforge/xine/$name-$version.tar.gz)
 

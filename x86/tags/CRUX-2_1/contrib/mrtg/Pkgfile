@@ -1,0 +1,25 @@
+# $Id: Pkgfile,v 1.2 2005/01/31 14:51:53 victord Exp $
+# Description: MRTG - Multi Router Traffic Grapher
+# URL:         http://www.mrtg.org
+# Maintainer:  Victor <victord@users.berlios.de>
+# Packager:    Victor <victord@users.berlios.de>
+# Depends on:  libpng libgd
+
+name=mrtg
+version=2.11.1
+release=1
+source=(http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/$name-$version.tar.gz mrtg.rc)
+
+build () {
+    cd $name-$version
+    ./configure --prefix=/usr
+    make
+    mkdir -p $PKG/etc/mrtg $PKG/etc/rc.d $PKG/usr
+    make prefix=$PKG/usr install
+    cp ../mrtg.rc $PKG/etc/rc.d/mrtg
+    chmod 755 $PKG/etc/rc.d/mrtg
+    (cd $PKG/usr/man/man1; rm -f contrib.1 faq.1 forum.1 logfile.1 mibhelp.1 \
+                                 mrtg-rrd.1 mrtglib.1 nt-guide.1 reference.1 \
+                                 squid.1 unix-guide.1 webserver.1)
+    rm -rf $PKG/usr/{doc,share}
+}

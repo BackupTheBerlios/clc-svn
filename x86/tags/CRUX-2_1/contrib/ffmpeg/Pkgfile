@@ -1,0 +1,34 @@
+# $Id: Pkgfile,v 1.7 2005/05/11 16:52:10 sten Exp $
+# Description: Complete solution to record, convert and stream audio and video
+# URL: http://ffmpeg.sf.net/
+# Maintainer: sten, nick dot steeves at shaw dot ca
+# Packager: 
+# Depends on: imlib2, lame, libsdl, libvorbis, libogg, libxvid
+
+name=ffmpeg
+version=20050511
+release=1
+source=(http://mplayerhq.hu/MPlayer/cvs/FFMpeg-$version.tar.bz2)
+
+build() {
+	cd FFMpeg-$version
+	./configure \
+		--prefix=/usr \
+		--enable-mp3lame \
+		--enable-libogg \
+		--enable-ogg \
+		--enable-vorbis \
+		--enable-a52 \
+		--enable-xvid \
+		--enable-gpl \
+		--enable-shared \
+		--enable-pp \
+		--enable-shared-pp
+	make
+	( cd doc; make ffmpeg.1 ffserver.1 ffplay.1 )
+	make  install \
+		prefix=$PKG/usr \
+		bindir=$PKG/usr/bin \
+		mandir=$PKG/usr/man \
+		libdir=$PKG/usr/lib
+}

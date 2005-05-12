@@ -32,6 +32,7 @@ drwxr-xr-x	root/root	usr/include/allegro/
 -rw-r--r--	root/root	usr/include/allegro/fixed.h
 -rw-r--r--	root/root	usr/include/allegro/fli.h
 -rw-r--r--	root/root	usr/include/allegro/fmaths.h
+-rw-r--r--	root/root	usr/include/allegro/font.h
 -rw-r--r--	root/root	usr/include/allegro/gfx.h
 -rw-r--r--	root/root	usr/include/allegro/graphics.h
 -rw-r--r--	root/root	usr/include/allegro/gui.h
@@ -110,17 +111,24 @@ drwxr-xr-x	root/root	usr/lib/allegro/4.1/
 -rw-r--r--	root/root	usr/lib/allegro/4.1/alleg-fbcon.so
 -rw-r--r--	root/root	usr/lib/allegro/4.1/alleg-vga.so
 -rw-r--r--	root/root	usr/lib/allegro/4.1/modules.lst
--rw-r--r--	root/root	usr/lib/liballeg-4.1.16.so
-lrwxrwxrwx	root/root	usr/lib/liballeg.so.4.1 -> liballeg-4.1.16.so
+-rw-r--r--	root/root	usr/lib/liballeg-4.1.18.so
+lrwxrwxrwx	root/root	usr/lib/liballeg.so.4.1 -> liballeg-4.1.18.so
 -rw-r--r--	root/root	usr/lib/liballeg_unsharable.a
 drwxr-xr-x	root/root	usr/man/
 drwxr-xr-x	root/root	usr/man/man3/
+-rw-r--r--	root/root	usr/man/man3/ALLEGRO_DATE.3.gz
+-rw-r--r--	root/root	usr/man/man3/ALLEGRO_DATE_STR.3.gz
+-rw-r--r--	root/root	usr/man/man3/ALLEGRO_SUB_VERSION.3.gz
+-rw-r--r--	root/root	usr/man/man3/ALLEGRO_VERSION.3.gz
+-rw-r--r--	root/root	usr/man/man3/ALLEGRO_VERSION_STR.3.gz
+-rw-r--r--	root/root	usr/man/man3/ALLEGRO_WIP_VERSION.3.gz
 -rw-r--r--	root/root	usr/man/man3/ASSERT.3.gz
 -rw-r--r--	root/root	usr/man/man3/AUDIOSTREAM.3.gz
 -rw-r--r--	root/root	usr/man/man3/BITMAP.3.gz
 -rw-r--r--	root/root	usr/man/man3/COLOR_MAP.3.gz
 -rw-r--r--	root/root	usr/man/man3/COMPILED_SPRITE.3.gz
 -rw-r--r--	root/root	usr/man/man3/DATAFILE.3.gz
+-rw-r--r--	root/root	usr/man/man3/DAT_ID.3.gz
 -rw-r--r--	root/root	usr/man/man3/DIALOG.3.gz
 -rw-r--r--	root/root	usr/man/man3/DIALOG_PLAYER.3.gz
 -rw-r--r--	root/root	usr/man/man3/END_OF_FUNCTION.3.gz
@@ -348,6 +356,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/exstream.3.gz
 -rw-r--r--	root/root	usr/man/man3/exswitch.3.gz
 -rw-r--r--	root/root	usr/man/man3/extimer.3.gz
+-rw-r--r--	root/root	usr/man/man3/extract_font_range.3.gz
 -rw-r--r--	root/root	usr/man/man3/extrans.3.gz
 -rw-r--r--	root/root	usr/man/man3/extruec.3.gz
 -rw-r--r--	root/root	usr/man/man3/exunicod.3.gz
@@ -432,6 +441,9 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/get_executable_name.3.gz
 -rw-r--r--	root/root	usr/man/man3/get_extension.3.gz
 -rw-r--r--	root/root	usr/man/man3/get_filename.3.gz
+-rw-r--r--	root/root	usr/man/man3/get_font_range_begin.3.gz
+-rw-r--r--	root/root	usr/man/man3/get_font_range_end.3.gz
+-rw-r--r--	root/root	usr/man/man3/get_font_ranges.3.gz
 -rw-r--r--	root/root	usr/man/man3/get_gfx_mode_list.3.gz
 -rw-r--r--	root/root	usr/man/man3/get_mixer_bits.3.gz
 -rw-r--r--	root/root	usr/man/man3/get_mixer_buffer_length.3.gz
@@ -505,6 +517,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/gui_edit_proc.3.gz
 -rw-r--r--	root/root	usr/man/man3/gui_fg_color.3.gz
 -rw-r--r--	root/root	usr/man/man3/gui_font_baseline.3.gz
+-rw-r--r--	root/root	usr/man/man3/gui_get_screen.3.gz
 -rw-r--r--	root/root	usr/man/man3/gui_list_proc.3.gz
 -rw-r--r--	root/root	usr/man/man3/gui_menu_draw_menu.3.gz
 -rw-r--r--	root/root	usr/man/man3/gui_menu_draw_menu_item.3.gz
@@ -514,6 +527,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/gui_mouse_x.3.gz
 -rw-r--r--	root/root	usr/man/man3/gui_mouse_y.3.gz
 -rw-r--r--	root/root	usr/man/man3/gui_mouse_z.3.gz
+-rw-r--r--	root/root	usr/man/man3/gui_set_screen.3.gz
 -rw-r--r--	root/root	usr/man/man3/gui_shadow_box_proc.3.gz
 -rw-r--r--	root/root	usr/man/man3/gui_strlen.3.gz
 -rw-r--r--	root/root	usr/man/man3/gui_text_list_proc.3.gz
@@ -539,9 +553,12 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/install_sound.3.gz
 -rw-r--r--	root/root	usr/man/man3/install_sound_input.3.gz
 -rw-r--r--	root/root	usr/man/man3/install_timer.3.gz
+-rw-r--r--	root/root	usr/man/man3/is_color_font.3.gz
+-rw-r--r--	root/root	usr/man/man3/is_compatible_font.3.gz
 -rw-r--r--	root/root	usr/man/man3/is_inside_bitmap.3.gz
 -rw-r--r--	root/root	usr/man/man3/is_linear_bitmap.3.gz
 -rw-r--r--	root/root	usr/man/man3/is_memory_bitmap.3.gz
+-rw-r--r--	root/root	usr/man/man3/is_mono_font.3.gz
 -rw-r--r--	root/root	usr/man/man3/is_planar_bitmap.3.gz
 -rw-r--r--	root/root	usr/man/man3/is_relative_filename.3.gz
 -rw-r--r--	root/root	usr/man/man3/is_same_bitmap.3.gz
@@ -549,6 +566,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/is_sub_bitmap.3.gz
 -rw-r--r--	root/root	usr/man/man3/is_system_bitmap.3.gz
 -rw-r--r--	root/root	usr/man/man3/is_video_bitmap.3.gz
+-rw-r--r--	root/root	usr/man/man3/is_windowed_mode.3.gz
 -rw-r--r--	root/root	usr/man/man3/itofix.3.gz
 -rw-r--r--	root/root	usr/man/man3/joy.3.gz
 -rw-r--r--	root/root	usr/man/man3/key.3.gz
@@ -560,11 +578,17 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/keyboard_ucallback.3.gz
 -rw-r--r--	root/root	usr/man/man3/keypressed.3.gz
 -rw-r--r--	root/root	usr/man/man3/line.3.gz
+-rw-r--r--	root/root	usr/man/man3/load_bios_font.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_bitmap.3.gz
+-rw-r--r--	root/root	usr/man/man3/load_bitmap_font.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_bmp.3.gz
+-rw-r--r--	root/root	usr/man/man3/load_dat_font.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_datafile.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_datafile_callback.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_datafile_object.3.gz
+-rw-r--r--	root/root	usr/man/man3/load_font.3.gz
+-rw-r--r--	root/root	usr/man/man3/load_grx_font.3.gz
+-rw-r--r--	root/root	usr/man/man3/load_grx_or_bios_font.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_ibk.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_joystick_data.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_lbm.3.gz
@@ -573,6 +597,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/load_pcx.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_sample.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_tga.3.gz
+-rw-r--r--	root/root	usr/man/man3/load_txt_font.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_voc.3.gz
 -rw-r--r--	root/root	usr/man/man3/load_wav.3.gz
 -rw-r--r--	root/root	usr/man/man3/lock_bitmap.3.gz
@@ -597,6 +622,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/matrix_mul.3.gz
 -rw-r--r--	root/root	usr/man/man3/matrix_mul_f.3.gz
 -rw-r--r--	root/root	usr/man/man3/matrix_to_quat.3.gz
+-rw-r--r--	root/root	usr/man/man3/merge_fonts.3.gz
 -rw-r--r--	root/root	usr/man/man3/midi_loop_end.3.gz
 -rw-r--r--	root/root	usr/man/man3/midi_loop_start.3.gz
 -rw-r--r--	root/root	usr/man/man3/midi_meta_callback.3.gz
@@ -705,6 +731,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/register_assert_handler.3.gz
 -rw-r--r--	root/root	usr/man/man3/register_bitmap_file_type.3.gz
 -rw-r--r--	root/root	usr/man/man3/register_datafile_object.3.gz
+-rw-r--r--	root/root	usr/man/man3/register_font_file_type.3.gz
 -rw-r--r--	root/root	usr/man/man3/register_sample_file_type.3.gz
 -rw-r--r--	root/root	usr/man/man3/register_trace_handler.3.gz
 -rw-r--r--	root/root	usr/man/man3/register_uformat.3.gz
@@ -745,6 +772,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/save_sample.3.gz
 -rw-r--r--	root/root	usr/man/man3/save_tga.3.gz
 -rw-r--r--	root/root	usr/man/man3/scancode_to_ascii.3.gz
+-rw-r--r--	root/root	usr/man/man3/scancode_to_name.3.gz
 -rw-r--r--	root/root	usr/man/man3/scare_mouse.3.gz
 -rw-r--r--	root/root	usr/man/man3/scare_mouse_area.3.gz
 -rw-r--r--	root/root	usr/man/man3/scene_gap.3.gz
@@ -752,6 +780,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/scene_polygon3d_f.3.gz
 -rw-r--r--	root/root	usr/man/man3/screen.3.gz
 -rw-r--r--	root/root	usr/man/man3/scroll_screen.3.gz
+-rw-r--r--	root/root	usr/man/man3/select_mouse_cursor.3.gz
 -rw-r--r--	root/root	usr/man/man3/select_palette.3.gz
 -rw-r--r--	root/root	usr/man/man3/set_add_blender.3.gz
 -rw-r--r--	root/root	usr/man/man3/set_allegro_resource_path.3.gz
@@ -787,6 +816,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -rw-r--r--	root/root	usr/man/man3/set_leds.3.gz
 -rw-r--r--	root/root	usr/man/man3/set_luminance_blender.3.gz
 -rw-r--r--	root/root	usr/man/man3/set_mixer_quality.3.gz
+-rw-r--r--	root/root	usr/man/man3/set_mouse_cursor_bitmap.3.gz
 -rw-r--r--	root/root	usr/man/man3/set_mouse_range.3.gz
 -rw-r--r--	root/root	usr/man/man3/set_mouse_speed.3.gz
 -rw-r--r--	root/root	usr/man/man3/set_mouse_sprite.3.gz

@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.2 2004/11/18 22:43:03 sip Exp $
+# Description: Xsoldier is a galaga type space shooter game
+# Maintainer: Victor <victord@users.berlios.de>
+# Packager: Victor <victord@users.berlios.de>
+# URL: http://www.interq.or.jp/libra/oohara/xsoldier/
+# Depends on: x11
+
+name=xsoldier
+version=1.3
+release=1
+source=(http://www.interq.or.jp/libra/oohara/$name/$name-$version.tar.gz)
+
+build() {
+        cd $name-$version
+        ./configure --prefix=/usr
+        make
+        make DESTDIR=$PKG install
+}

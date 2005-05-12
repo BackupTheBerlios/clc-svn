@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.6 2005/03/13 17:22:12 jw Exp $
+# $Id: Pkgfile,v 1.7 2005/05/06 08:08:57 jw Exp $
 # Packager: Daniel Mueller, daniel at danm dot de
 # Maintainer: Johannes Winkelmann, jw at tks6 dot net
 # URL: http://www.xemacs.org
@@ -10,7 +10,7 @@
 # I know.. it's not lightweight - but who said (x)emacs is ? ;-)
 
 name=xemacs-sumo
-version=2005-03-07
+version=2005-05-05
 release=1
 source=(ftp://ftp.ch.xemacs.org/mirror/xemacs/packages/$name-$version.tar.bz2)
 build(){

@@ -1,4 +1,4 @@
-drwx--x--x	root/root	etc/
+drwxr-xr-x	root/root	etc/
 drwxr-xr-x	root/root	etc/cups/
 drwx--x--x	root/root	etc/cups/certs/
 -rw-r--r--	root/root	etc/cups/classes.conf

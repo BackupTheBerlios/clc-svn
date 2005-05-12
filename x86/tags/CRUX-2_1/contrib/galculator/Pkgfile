@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.3 2005/03/09 21:09:54 till Exp $
+# $Id: Pkgfile,v 1.4 2005/05/10 17:21:43 till Exp $
 # Maintainer: Till Biedermann, tillbiedermann at yahoo dot de
 # Packager:
 # Description: A GTK2 based scientific calculator
@@ -6,7 +6,7 @@
 # Depends on: gtk, libglade, p5-xml-parser
 
 name=galculator
-version=1.2.4
+version=1.2.5
 release=1
 source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.bz2)
 

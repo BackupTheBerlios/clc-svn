@@ -1,0 +1,11 @@
+--- defaults.h	1999-05-14 17:01:38.000000000 -0400
++++ defaults.h.new	2002-09-19 23:50:33.000000000 -0400
+@@ -46,7 +46,7 @@
+  * file for setups and defaults
+  */
+ #ifndef APPLOADDIR
+-static char *file_appl_def   ="/usr/lib/X11/app-defaults/XBlast";
++static char *file_appl_def   ="/etc/X11/app-defaults/XBlast";
+ #else
+ static char *file_appl_def   =APPLOADDIR "/XBlast";
+ #endif

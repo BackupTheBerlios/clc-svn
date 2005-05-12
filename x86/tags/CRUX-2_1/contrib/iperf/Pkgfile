@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.1 2005/05/11 10:25:01 vector Exp $
+# Description: TCP/UDP bandwidth measurement tool
+# URL: http://dast.nlanr.net/Projects/Iperf/
+# Maintainer: Jukka Heino, jukka at karsikkopuu dot net
+# Packager: Jukka Heino, jukka at karsikkopuu dot net
+# Depends on: 
+
+name=iperf
+version=2.0.2
+release=1
+source=(http://dast.nlanr.net/Projects/Iperf2.0/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr --disable-dependency-tracking
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,23 @@
+README for mod_perl 2.0.0-RC6
+
+REQUIREMENTS
+
+  As of version 2.0.0-RC5 the mod_perl API has changed in a
+  incompatible way. Read the changelog for more informations.
+  Because of these changes mod_perl doesn't work together with 
+  perl 5.8.6 that comes with CRUX 2.1. 
+  To fix this issue install the p5-cgi port, which updates the
+  CGI stuff of perl. 
+  
+    cd /usr/ports/contrib/p5-cgi
+    pkgmk -d -i -f 
+
+
+PRE-INSTALL
+
+  Remove mod_perl 2.0.0-RC4
+
+POST-INSTALL
+
+
+PRECAUTION

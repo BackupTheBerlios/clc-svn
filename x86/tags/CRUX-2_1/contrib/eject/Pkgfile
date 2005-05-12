@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.4 2005/05/08 08:07:02 sten Exp $
+# Description: ejects CDs and operates CD-Changers
+# URL: http://ca.geocities.com/jefftranter%40rogers.com/eject.html
+# Maintainer: sten, nick dot steeves at shaw dot ca
+# Packager: Matt Lewellyn, mlewellyn at greenviolet dot net
+
+name=eject
+version=2.0.13
+release=5
+source=(http://www.ibiblio.org/pub/Linux/utils/disk-management/$name-$version.tar.gz)
+build () {
+    cd $name-$version
+    # don't look for kernel headers
+    sed -i -e "s|-I/usr/src/linux/include||g" -e "s|-I/usr/src/linux/include||g" Makefile.*
+    ./configure --prefix=/usr --enable-default-device=/dev/cdroms/cdrom0 --disable-nls
+    make
+    make DESTDIR=$PKG install
+    rm -rf $PKG/usr/share
+}

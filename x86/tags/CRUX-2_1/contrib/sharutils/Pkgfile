@@ -1,0 +1,18 @@
+# $Id: Pkgfile,v 1.1.1.1 2004/08/17 20:01:43 crux Exp $
+# URL: http://www.gnu.org/software/sharutils/sharutils.html
+# Description: GNU shar encoding/decoding utilities
+# Packager: Victor <victord@users.berlios.de>
+# Maintainer: Victor <victord@users.berlios.de>
+
+name=sharutils
+version=4.2.1
+release=1
+source=(http://ftp.gnu.org/pub/gnu/$name/$name-$version.tar.gz)
+
+build(){
+    cd $name-$version
+    ./configure --prefix=/usr --disable-nls
+    make
+    make prefix=$PKG/usr install install-man
+    rm -rf $PKG/usr/info
+}

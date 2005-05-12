@@ -1,0 +1,18 @@
+$Id: README,v 1.1.1.1 2004/08/17 20:01:43 crux Exp $
+
+REQUIREMENTS
+
+   This software is compiled with tcp_wrappers support
+   Make sure to open desired ports in hosts.allow for 
+   proper network operation
+
+PRE-INSTALL
+
+POST-INSTALL
+
+   customize log rotation scripts to rotate proper log files
+
+PRECAUTION
+
+   neither syslogd nor klogd should be running while
+   you run syslog-ng

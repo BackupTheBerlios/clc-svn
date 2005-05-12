@@ -1,0 +1,12 @@
+diff -Nru elinks-0.10.5.orig/src/viewer/text/view.c elinks-0.10.5/src/viewer/text/view.c
+--- elinks-0.10.5.orig/src/viewer/text/view.c	2005-05-06 10:31:26.000000000 +0200
++++ elinks-0.10.5/src/viewer/text/view.c	2005-05-06 10:31:33.000000000 +0200
+@@ -692,7 +692,7 @@
+ 	struct document_options *doc_opts = &document->options;
+ 	int digit = get_kbd_key(ev) - '0';
+ 
+-	if (!isdigit(get_kbd_key(ev)))
++	if (digit < 0 || digit > 9)
+ 		return FRAME_EVENT_IGNORED;
+ 
+ 	if (get_kbd_modifier(ev)
