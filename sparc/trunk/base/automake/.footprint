@@ -58,6 +58,8 @@ drwxr-xr-x	root/root	usr/share/automake-1.9/Automake/
 -rw-r--r--	root/root	usr/share/automake-1.9/Automake/Version.pm
 -rw-r--r--	root/root	usr/share/automake-1.9/Automake/Wrap.pm
 -rw-r--r--	root/root	usr/share/automake-1.9/Automake/XFile.pm
+-rw-r--r--	root/root	usr/share/automake-1.9/COPYING
+-rw-r--r--	root/root	usr/share/automake-1.9/INSTALL
 -rwxr-xr-x	root/root	usr/share/automake-1.9/acinstall
 drwxr-xr-x	root/root	usr/share/automake-1.9/am/
 -rw-r--r--	root/root	usr/share/automake-1.9/am/ansi2knr.am
