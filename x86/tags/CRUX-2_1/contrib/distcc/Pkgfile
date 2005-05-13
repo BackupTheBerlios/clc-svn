@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.8 2005/03/12 15:25:49 jw Exp $
+# $Id: Pkgfile,v 1.9 2005/05/12 14:46:35 jw Exp $
 # Packager: 
 # Maintainer: Johannes Winkelmann, jw at tks6 dot net
 # Description: A tool to distribute compilations
@@ -6,8 +6,9 @@
 
 name=distcc
 version=2.18.3
-release=1
-source=(http://${name}.samba.org/ftp/${name}/${name}-${version}.tar.bz2) 
+release=2
+source=(http://${name}.samba.org/ftp/${name}/${name}-${version}.tar.bz2 \
+	distccd) 
 
 build() {
     cd $name-$version
@@ -19,6 +20,9 @@ build() {
     for c in cc c++ gcc g++; do
         cd $PKG/usr/lib/$name && ln -s ../../bin/distcc $c
     done
+
+    mkdir -p $PKG/etc/rc.d
+    install -m 755 $SRC/distccd $PKG/etc/rc.d/distccd
     
     rm -rf $PKG/usr/share/doc
     rm -rf $PKG/usr/info/

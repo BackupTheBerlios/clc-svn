@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.11 2005/05/06 11:26:33 sip Exp $
+# $Id: Pkgfile,v 1.12 2005/05/12 21:17:02 sip Exp $
 # Description: CD Burning program
 # URL: http://www.nongnu.org/graveman/
 # Maintainer: Simone Rota, sip at varlock dot com
@@ -8,7 +8,7 @@
 name=graveman
 version=0.3.11
 release=1
-source=(http://graveman.tuxfamily.org/$name-$version.tar.gz)
+source=(http://graveman.tuxfamily.org/sources/$name-$version.tar.gz)
 
 build() {
 	cd $name-$version

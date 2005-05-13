@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.9 2005/04/05 16:05:07 danm Exp $
+# $Id: Pkgfile,v 1.10 2005/05/12 17:20:10 danm Exp $
 # Maintainer: Daniel Mueller, daniel at danm dot de
 # URL: http://www.openldap.org/
 # Description: Lightweight Directory Access Protocol (LDAP) Toolkit
 # Depends on: perl, openssl, cyrus-sasl
 
 name=openldap
-version=2.2.24
+version=2.2.26
 release=1
 source=(http://www.PlanetMirror.com/pub/openldap/openldap-release/$name-$version.tgz \
 	$name-$version.patch \

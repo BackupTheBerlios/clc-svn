@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.16 2005/04/04 13:16:49 jaeger Exp $
+# $Id: Pkgfile,v 1.17 2005/05/12 03:35:45 jaeger Exp $
 # Description: A multi-protocol instant messaging client with encryption
 # Maintainer: Matt Housh, jaeger at morpheus dot net
 # URL: http://gaim.sourceforge.net/
@@ -8,7 +8,7 @@
 # Note: mozilla will work in place of nss for building gaim
 
 name=gaim
-version=1.2.1
+version=1.3.0
 release=1
 source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
 

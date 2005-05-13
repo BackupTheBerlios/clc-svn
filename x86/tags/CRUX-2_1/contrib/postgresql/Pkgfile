@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.7 2005/04/19 15:39:21 sip Exp $
+# $Id: Pkgfile,v 1.9 2005/05/12 17:12:04 sip Exp $
 # Description: A sophisticated Object-Relational DBMS
 # URL: http://www.postgresql.org
 # Packager: Markus Heinz, su1690 at studserver.uni-dortmund dot de
@@ -6,9 +6,9 @@
 # Depends on:
 
 name=postgresql
-version=8.0.2
-release=1
-source=(ftp://ftp.de.postgresql.org/mirror/postgresql/v$version/postgresql-$version.tar.bz2 postgresql)
+version=8.0.3
+release=2
+source=(ftp://ftp.de.postgresql.org/mirror/postgresql/source/v$version/postgresql-$version.tar.bz2 postgresql)
 
 build() {
 	cd $name-$version
