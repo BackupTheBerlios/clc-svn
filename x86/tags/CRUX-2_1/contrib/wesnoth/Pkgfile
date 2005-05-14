@@ -1,8 +1,8 @@
-# $Id: Pkgfile,v 1.4 2005/04/27 08:57:25 danielw Exp $
+# $Id: Pkgfile,v 1.5 2005/05/13 02:45:21 danielw Exp $
 # Description: A turn-based strategy game with a fantasy theme.
 # URL: http://www.wesnoth.org/
 # Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
-# Depends on: libsdl-ttf, sdl_image, sdl_mixer, sdl_net
+# Depends on: sdl_image, sdl_mixer, sdl_net, sdl_ttf
 
 name=wesnoth
 version=0.9.1

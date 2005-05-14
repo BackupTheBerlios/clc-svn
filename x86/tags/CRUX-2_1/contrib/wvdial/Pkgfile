@@ -1,0 +1,24 @@
+# $Id: Pkgfile,v 1.3 2005/05/13 09:18:56 jue Exp $
+# Description: Weave Dial - PPP dialer
+# URL:         http://open.nit.ca/wiki/?page=WvDial
+# Maintainer:  Jürgen Daubert <juergen.daubert@t-online.de>
+# Depends on:  ppp, openssl
+
+name=wvdial
+version=1.54.0
+release=2
+source=(http://open.nit.ca/download/$name-$version.tar.gz \
+        http://www.csclub.uwaterloo.ca/~ja2morri/wvstreams-4.0.2.tar.gz \
+        $name-$version.patch)
+
+build() {
+    cd wvstreams-4.0.2
+    ./configure --prefix=/usr --enable-verbose 
+    make
+    ln -s ../xplc/include/xplc include/xplc
+
+    cd $SRC/$name-$version
+    patch -p1 < $SRC/$name-$version.patch
+    make CXXOPTS="$CXXFLAGS" WVS=$SRC/wvstreams-4.0.2
+    make DESTDIR=$PKG install
+}

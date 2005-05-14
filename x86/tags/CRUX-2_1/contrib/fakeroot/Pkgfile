@@ -1,10 +1,10 @@
-# $Id: Pkgfile,v 1.11 2005/04/27 16:27:21 jue Exp $
+# $Id: Pkgfile,v 1.12 2005/05/13 09:21:08 jue Exp $
 # Description: Run commands in an environment faking root privileges
 # URL: 	       http://packages.debian.org/unstable/utils/fakeroot
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 
 name=fakeroot
-version=1.2.10
+version=1.2.13
 release=1
 source=(http://ftp.debian.org/debian/pool/main/f/$name/${name}_$version.tar.gz)
 

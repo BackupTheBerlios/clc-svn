@@ -1,8 +1,8 @@
-# $Id: Pkgfile,v 1.12 2005/04/17 22:32:17 per Exp $
+# $Id: Pkgfile,v 1.13 2005/05/13 18:08:08 per Exp $
 # Maintainer: Per Lidén <per@fukt.bth.se>
 
 name=firefox
-version=1.0.3
+version=1.0.4
 release=1
 source=(http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$version/source/$name-$version-source.tar.bz2 \
 	http://www.fukt.bth.se/~per/crux/files/firefox/$name-$version-init.tar.bz2 \
@@ -26,5 +26,5 @@ build() {
     MOZILLA_FIVE_HOME=$PWD LD_LIBRARY_PATH=$PWD ./regxpcom
     MOZILLA_FIVE_HOME=$PWD LD_LIBRARY_PATH=$PWD ./regchrome
     touch chrome/user-skins.rdf chrome/user-locales.rdf
-    cp -rf $SRC/{components.ini,defaults.ini,extensions,plugins} $PKG/usr/lib/firefox
+    cp -rf $SRC/{components.ini,defaults.ini,extensions} $PKG/usr/lib/firefox
 }

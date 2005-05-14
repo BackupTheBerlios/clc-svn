@@ -1,0 +1,426 @@
+diff -Nru xfprint-4.2.1.orig/xfprint/Makefile.in xfprint-4.2.1/xfprint/Makefile.in
+--- xfprint-4.2.1.orig/xfprint/Makefile.in	2005-04-17 11:33:16.000000000 +0200
++++ xfprint-4.2.1/xfprint/Makefile.in	2005-04-17 12:33:43.000000000 +0200
+@@ -147,7 +147,7 @@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ INSTOBJEXT = @INSTOBJEXT@
+ INTLLIBS = @INTLLIBS@
+-LDFLAGS = @LDFLAGS@
++LDFLAGS = @LDFLAGS@ -Wl,-E
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LIBTOOL = @LIBTOOL@
+diff -Nru xfprint-4.2.1.orig/xfprint-manager/Makefile.in xfprint-4.2.1/xfprint-manager/Makefile.in
+--- xfprint-4.2.1.orig/xfprint-manager/Makefile.in	2005-04-17 11:33:16.000000000 +0200
++++ xfprint-4.2.1/xfprint-manager/Makefile.in	2005-04-17 12:34:10.000000000 +0200
+@@ -146,7 +146,7 @@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ INSTOBJEXT = @INSTOBJEXT@
+ INTLLIBS = @INTLLIBS@
+-LDFLAGS = @LDFLAGS@
++LDFLAGS = @LDFLAGS@ -Wl,-E
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LIBTOOL = @LIBTOOL@
+diff -Nru xfprint-4.2.1.orig/common/printing-system.c xfprint-4.2.1/common/printing-system.c
+--- xfprint-4.2.1.orig/common/printing-system.c	2005-01-11 01:43:48.000000000 +0100
++++ xfprint-4.2.1/common/printing-system.c	2005-05-13 17:21:39.000000000 +0200
+@@ -55,6 +55,9 @@
+ /*************/
+ void printing_system_info_free (PrintingSystemInfo *psinfo)
+ {
++  if (!psinfo)
++    return;
++
+   g_free (psinfo->name);
+   g_free (psinfo->description);
+   g_free (psinfo->version);
+@@ -66,12 +69,18 @@
+ 
+ void printer_free (Printer *printer, gpointer user_data)
+ {
++  if (!printer)
++    return;
++
+   g_free (printer->name);
+   g_free (printer->alias);
+ }
+ 
+ void job_free (Job *job, gpointer user_data)
+ {
++  if (!job)
++    return;
++
+   g_free (job->name);
+   g_free (job->user);
+   g_free (job->state);
+diff -Nru xfprint-4.2.1.orig/mcs-plugin/xfprint_plugin.c xfprint-4.2.1/mcs-plugin/xfprint_plugin.c
+--- xfprint-4.2.1.orig/mcs-plugin/xfprint_plugin.c	2005-01-05 16:48:21.000000000 +0100
++++ xfprint-4.2.1/mcs-plugin/xfprint_plugin.c	2005-05-13 17:21:43.000000000 +0200
+@@ -115,7 +115,7 @@
+       printing_system = g_strdup (setting->data.v_string);
+   }
+   else {
+-    printing_system = g_strdup ("file_plugin.so");
++    printing_system = g_strdup ("none");
+     mcs_manager_set_string (plugin->manager, "XfPrint/system", CHANNEL, printing_system);
+   }
+ 
+@@ -190,35 +190,40 @@
+ 
+     gtk_tree_model_get (model, &iter, COLUMN_CLASS, &psinfo, COLUMN_PATH, &path, -1);
+ 
+-    gtk_label_set_text (GTK_LABEL (description), psinfo->description);
+-    gtk_label_set_text (GTK_LABEL (version), psinfo->version);
+-    gtk_label_set_text (GTK_LABEL (author), psinfo->author);
+-    gtk_label_set_text (GTK_LABEL (homepage), psinfo->homepage);
+-
+-    if (strcmp (psinfo->description, _("None")) == 0)
+-      gtk_widget_set_sensitive (description, FALSE);
+-    else
+-      gtk_widget_set_sensitive (description, TRUE);
+-    if (strcmp (psinfo->version, _("None")) == 0)
+-      gtk_widget_set_sensitive (version, FALSE);
+-    else
+-      gtk_widget_set_sensitive (version, TRUE);
+-    if (strcmp (psinfo->author, _("None")) == 0)
+-      gtk_widget_set_sensitive (author, FALSE);
+-    else
+-      gtk_widget_set_sensitive (author, TRUE);
+-    if (strcmp (psinfo->homepage, _("None")) == 0)
+-      gtk_widget_set_sensitive (homepage, FALSE);
+-    else
+-      gtk_widget_set_sensitive (homepage, TRUE);
+-
+-    g_free (printing_system);
+-    printing_system = g_strdup (path);
++    if (psinfo) {
++      gtk_label_set_text (GTK_LABEL (description), psinfo->description);
++      gtk_label_set_text (GTK_LABEL (version), psinfo->version);
++      gtk_label_set_text (GTK_LABEL (author), psinfo->author);
++      gtk_label_set_text (GTK_LABEL (homepage), psinfo->homepage);
++      
++      if (strcmp (psinfo->description, _("None")) == 0)
++	gtk_widget_set_sensitive (description, FALSE);
++      else
++	gtk_widget_set_sensitive (description, TRUE);
++      if (strcmp (psinfo->version, _("None")) == 0)
++	gtk_widget_set_sensitive (version, FALSE);
++      else
++	gtk_widget_set_sensitive (version, TRUE);
++      if (strcmp (psinfo->author, _("None")) == 0)
++	gtk_widget_set_sensitive (author, FALSE);
++      else
++	gtk_widget_set_sensitive (author, TRUE);
++      if (strcmp (psinfo->homepage, _("None")) == 0)
++	gtk_widget_set_sensitive (homepage, FALSE);
++      else
++	gtk_widget_set_sensitive (homepage, TRUE);
++      
++      g_free (printing_system);
++      printing_system = g_strdup (path);
++    } else {
++      g_free (printing_system);
++      printing_system = g_strdup ("none");
++    }
+ 
+     mcs_manager_set_string (plugin->manager, "XfPrint/system", CHANNEL, printing_system);
+     mcs_manager_notify (plugin->manager, CHANNEL);
+     save_settings (plugin);
+-
++    
+     g_free (path);
+   }
+ }
+@@ -240,6 +245,8 @@
+ 
+   GtkTreeModel *model;
+   GtkTreeIter iter;
++  PrintingSystemInfo *psinfo;
++
+   GDir *gdir;
+   const char *file;
+   GtkTreeSelection *selection;
+@@ -350,6 +357,18 @@
+   /* Initialize printing system list */
+   model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview));
+ 
++  /* Add the 'None' entry */
++  psinfo = g_new0 (PrintingSystemInfo, 1);
++  psinfo->name = g_strdup ("none");
++  psinfo->description = g_strdup (_("Use this backend if you just want to print to file."));
++  psinfo->version = g_strdup (VERSION);
++  psinfo->author = g_strdup ("Jean-François Wauthy");
++  psinfo->homepage = g_strdup ("http://www.xfce.org");
++
++  gtk_list_store_append (GTK_LIST_STORE (model), &iter);
++  gtk_list_store_set (GTK_LIST_STORE (model), &iter,
++		      COLUMN_NAME, _("None"), COLUMN_PATH, "none", COLUMN_CLASS, psinfo, -1);
++  
+   gdir = g_dir_open (PLUGIN_DIR, 0, NULL);
+   if (gdir) {
+     while ((file = g_dir_read_name (gdir))) {
+@@ -361,7 +380,6 @@
+         char *path;
+         GModule *gm;
+         gpointer symbol;
+-        PrintingSystemInfo *psinfo;
+ 
+         path = g_build_filename (PLUGIN_DIR, file, NULL);
+ 
+diff -Nru xfprint-4.2.1.orig/printing-systems/bsd-lpr/bsdlpr.c xfprint-4.2.1/printing-systems/bsd-lpr/bsdlpr.c
+--- xfprint-4.2.1.orig/printing-systems/bsd-lpr/bsdlpr.c	2005-03-04 16:50:23.000000000 +0100
++++ xfprint-4.2.1/printing-systems/bsd-lpr/bsdlpr.c	2005-05-13 17:21:40.000000000 +0200
+@@ -73,18 +73,49 @@
+     if (buf[0] == '#')
+       continue;
+        
+-    for (i = 0; i < strlen (buf) && buf[i] != '|' && buf[i] != ':'; i++);
++    for (i = 0; i < strlen (buf) && buf[i] != '|' && buf[i] != ':' && buf[i] != '\n' && buf[i] != '\r'; i++);
+     printer_name = g_strndup (buf, i);
+     g_strstrip (printer_name);
++
+     if (strlen (printer_name) != 0) {
+       Printer *printer;
++      int begin_alias;
++
+       printer = g_new0 (Printer, 1);
+       
+       printer->name = g_strdup (printer_name);
+-      printer->alias = g_strdup (printer_name);     //TODO extract alias
++      printer->alias = g_strdup (printer_name);
+       
+       if (g_list_find_custom (list, printer, (GCompareFunc) compare_printer_name) == NULL)
+ 	list = g_list_append (list, printer);
++      else
++	printer_free (printer, NULL);
++
++      begin_alias = i + 1;
++
++      while (i < strlen (buf)) {
++	gchar *alias_printer_name = NULL;
++	
++	for (i = begin_alias; i < strlen (buf) && buf[i] != '|' && buf[i] != ':' && buf[i] != '\n' && buf[i] != '\r'; i++);
++
++	printer = g_new0 (Printer, 1);
++
++	alias_printer_name = g_strndup (buf + begin_alias, i - begin_alias);  
++	g_strstrip (printer_name);
++
++	if (strlen (printer_name) != 0) {
++	  printer->name = g_strdup (alias_printer_name);
++	  printer->alias = g_strdup (alias_printer_name);
++
++	  if (g_list_find_custom (list, printer, (GCompareFunc) compare_printer_name) == NULL)
++	    list = g_list_append (list, printer);
++	  else
++	    printer_free (printer, NULL);
++	}
++
++	begin_alias = ++i;
++	g_free (alias_printer_name);
++      }
+     }
+ 
+     g_free (printer_name);
+diff -Nru xfprint-4.2.1.orig/xfprint/main.c xfprint-4.2.1/xfprint/main.c
+--- xfprint-4.2.1.orig/xfprint/main.c	2004-11-13 12:08:33.000000000 +0100
++++ xfprint-4.2.1/xfprint/main.c	2005-05-13 17:21:40.000000000 +0200
+@@ -87,23 +87,11 @@
+     mcs_client_add_channel (client, CHANNEL);
+ 
+     if (mcs_client_get_setting (client, "XfPrint/system", CHANNEL, &setting) == MCS_SUCCESS) {
+-      if (!load_printing_system (setting->data.v_string))
+-        g_error ("Unable to load printing system module %s", setting->data.v_string);
++      if (g_ascii_strcasecmp (setting->data.v_string, "none") != 0  &&
++	  !load_printing_system (setting->data.v_string))
++        g_warning ("Unable to load printing system module %s", setting->data.v_string);
+       mcs_setting_free (setting);
+     }
+-    else {
+-      gchar *default_system = NULL;
+-
+-      g_warning ("No mcs-setting found for XfPrint/system in channel %s, using default printing-system", CHANNEL);
+-
+-      default_system = g_build_filename (PLUGIN_DIR, "file_plugin.so", NULL);
+-
+-      if (!load_printing_system (default_system)) {
+-        g_error ("Unable to load default printing system module %s", default_system);
+-      }
+-
+-      g_free (default_system);
+-    }
+ 
+     mcs_client_destroy (client);
+   }
+diff -Nru xfprint-4.2.1.orig/xfprint/printdlg.c xfprint-4.2.1/xfprint/printdlg.c
+--- xfprint-4.2.1.orig/xfprint/printdlg.c	2005-02-28 18:18:39.000000000 +0100
++++ xfprint-4.2.1/xfprint/printdlg.c	2005-05-13 17:21:39.000000000 +0200
+@@ -90,6 +90,12 @@
+ 
+   dlg = (PrintDlg *) data;
+ 
++  if (!GTK_IS_WIDGET (dlg->customization)) {
++    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dlg->checkbutton_printto_file), TRUE);
++    gtk_widget_set_sensitive (dlg->entry_file, TRUE);
++    return;
++  }
++
+   if (gtk_toggle_button_get_active (button)){
+     gtk_widget_set_sensitive (GTK_WIDGET (dlg->customization), FALSE);
+     gtk_widget_set_sensitive (dlg->entry_file, TRUE);
+@@ -209,7 +215,10 @@
+ 
+   gtk_widget_show_all (dlg->dialog);
+ 
+-  printing_system_print_dialog_customize (dlg);
++  if (printing_system_print_dialog_customize)
++    printing_system_print_dialog_customize (dlg);
++  else
++    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dlg->checkbutton_printto_file), TRUE);
+ 
+   /* load the settings */
+   settings = xfprintsettings_load ();
+diff -Nru xfprint-4.2.1.orig/xfprint/xfprint.desktop xfprint-4.2.1/xfprint/xfprint.desktop
+--- xfprint-4.2.1.orig/xfprint/xfprint.desktop	2005-01-01 17:10:05.000000000 +0100
++++ xfprint-4.2.1/xfprint/xfprint.desktop	2005-05-13 17:21:39.000000000 +0200
+@@ -1,7 +1,9 @@
+ [Desktop Entry]
+ Encoding=UTF-8
+ Name=Xfce 4 Print Dialog
++Name[ro]=Xfce 4 dialog tipărire
+ Comment=Print Dialog
++Comment[ro]=Dialog tipărire
+ Exec=xfprint4
+ Icon=xfprint
+ Terminal=false
+@@ -9,3 +11,4 @@
+ Categories=X-XFCE;Utility;
+ OnlyShowIn=XFCE;
+ GenericName=Print Dialog
++GenericName[ro]=Dialog tipărire
+diff -Nru xfprint-4.2.1.orig/xfprint-manager/main.c xfprint-4.2.1/xfprint-manager/main.c
+--- xfprint-4.2.1.orig/xfprint-manager/main.c	2004-11-04 14:45:06.000000000 +0100
++++ xfprint-4.2.1/xfprint-manager/main.c	2005-05-13 17:21:40.000000000 +0200
+@@ -101,23 +101,11 @@
+     mcs_client_add_channel (client, CHANNEL);
+ 
+     if (mcs_client_get_setting (client, "XfPrint/system", CHANNEL, &setting) == MCS_SUCCESS) {
+-      if (!load_printing_system (setting->data.v_string))
+-        g_error ("Unable to load printing system module %s", setting->data.v_string);
++      if (g_ascii_strcasecmp (setting->data.v_string, "none") != 0  &&
++	  !load_printing_system (setting->data.v_string))
++        g_warning ("Unable to load printing system module %s", setting->data.v_string);
+       mcs_setting_free (setting);
+     }
+-    else {
+-      gchar *default_system = NULL;
+-
+-      g_warning ("No mcs-setting found for XfPrint/system in channel %s, using default printing-system", CHANNEL);
+-
+-      default_system = g_build_filename (PLUGIN_DIR, "file_plugin.so", NULL);
+-
+-      if (!load_printing_system (default_system)) {
+-        g_error ("Unable to load default printing system module %s", default_system);
+-      }
+-
+-      g_free (default_system);
+-    }
+ 
+     mcs_client_destroy (client);
+   }
+@@ -141,7 +129,8 @@
+ 
+ 
+   /* Initialize printers list */
+-  printers_list = printing_system_get_printers_list ();
++  if (printing_system_get_printers_list)
++    printers_list = printing_system_get_printers_list ();
+ 
+   mainwin_setup ();
+ 
+diff -Nru xfprint-4.2.1.orig/xfprint-manager/mainwin.c xfprint-4.2.1/xfprint-manager/mainwin.c
+--- xfprint-4.2.1.orig/xfprint-manager/mainwin.c	2005-01-03 21:27:05.000000000 +0100
++++ xfprint-4.2.1/xfprint-manager/mainwin.c	2005-05-13 17:21:40.000000000 +0200
+@@ -70,7 +70,7 @@
+   gchar *default_printer;
+ 
+   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (dlg->treeview));
+-  printer = printing_system_get_default_printer (printers_list);
++  printer = printing_system_get_default_printer ? printing_system_get_default_printer (printers_list) : NULL;
+   if (printer)
+     default_printer = g_strdup (printer->name);
+   else
+@@ -182,7 +182,8 @@
+   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_about), menu_about);
+ 
+   menuitem_aboutplugin = gtk_menu_item_new_with_mnemonic (_("About printing _system ..."));
+-  g_signal_connect (G_OBJECT (menuitem_aboutplugin), "activate", G_CALLBACK (printing_system_about_dialog_run), dlg);
++  if (printing_system_about_dialog_run)
++    g_signal_connect (G_OBJECT (menuitem_aboutplugin), "activate", G_CALLBACK (printing_system_about_dialog_run), dlg);
+   gtk_container_add (GTK_CONTAINER (menu_about), menuitem_aboutplugin);
+ 
+   menuitem_aboutmanager = gtk_menu_item_new_with_mnemonic (_("_About xfprint-manager ..."));
+@@ -236,7 +237,14 @@
+ 
+   gtk_widget_show_all (dlg->window);
+ 
+-  printing_system_main_window_customize (dlg);
++  if (printing_system_main_window_customize)
++    printing_system_main_window_customize (dlg);
++  else {
++    gtk_widget_set_sensitive (dlg->treeview, FALSE);
++    gtk_widget_set_sensitive (dlg->menuitem_properties, FALSE);
++    gtk_widget_set_sensitive (dlg->menuitem_setdefault, FALSE);
++    gtk_widget_set_sensitive (menuitem_aboutplugin, FALSE);
++  }
+ }
+ 
+ /**********************/
+@@ -350,7 +358,8 @@
+ 
+   gtk_tree_model_get (model, &iter, PRINTERS_NAME_COLUMN, &printer, -1);
+ 
+-  if (!printing_system_set_default_printer (printer))
++  if (printing_system_set_default_printer && 
++      !printing_system_set_default_printer (printer))
+     xfce_err (_("Unable to set it as default printer !"));
+ 
+   g_free (printer);
+@@ -374,7 +383,8 @@
+ 
+   gtk_tree_model_get (model, &iter, PRINTERS_NAME_COLUMN, &printer, -1);
+ 
+-  printing_system_properties_dialog_run (dlg->window, printer);
++  if (printing_system_properties_dialog_run)
++    printing_system_properties_dialog_run (dlg->window, printer);
+ 
+   g_free (printer);
+ }
+diff -Nru xfprint-4.2.1.orig/NEWS xfprint-4.2.1/NEWS
+--- xfprint-4.2.1.orig/NEWS	2005-03-11 12:47:42.000000000 +0100
++++ xfprint-4.2.1/NEWS	2005-05-13 17:21:45.000000000 +0200
+@@ -1,13 +1,21 @@
+ NEWS for xfprint
+ ================
+ 
++4.2.2
++=====
++- FILE plugin removal from 4.2.1 doesn't make xfprint crash anymore
++- French docs added
++- Add 'None' as a choice in the printing system selection dialog (fix #879)
++- Add support for printcap aliases in BSD-LPR backend (fix #821)
++- Fix LDFLAGS to avoid problem when loading backend plugin (fix #871)
++
+ 4.2.1
+ =====
+ - Remove FILE backend and add a print-to-file entry in the printing dialog
+ - Multiple fixes in the BSD-LPR backend (thanks to Jason Keltz for pointing them out)
+ 
+-4.2
+-===
++4.2.0
++=====
+ - Fix problem with locating printing-system modules when installing in a different prefix (Jasper)
+ 
+ 4.1.99.3 (4.2 RC3)
