@@ -1,0 +1,19 @@
+# $Id: Pkgfile,v 1.6 2005/05/14 16:49:31 till Exp $
+# Maintainer: Till Biedermann, tillbiedermann at yahoo dot de
+# Packager: Tilman Sauerbeck, tilman at code-monkey dot de
+# Description: Message bus system
+# URL: http://www.freedesktop.org/Software/dbus
+
+name=dbus
+version=0.33
+release=1
+source=(http://freedesktop.org/software/$name/releases/$name-$version.tar.gz)
+
+build () {
+	cd $name-$version
+	./configure --prefix=/usr \
+	            --localstatedir=/var \
+	            --disable-python
+	make
+	make DESTDIR=$PKG install
+}
