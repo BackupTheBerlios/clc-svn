@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.8 2005/03/13 14:45:48 riemer Exp $
+# $Id: Pkgfile,v 1.9 2005/05/15 16:40:41 riemer Exp $
 # Description: Graphical interface for the cvs client commandline tool
 # URL:         http://www.lincvs.org
 # Maintainer:  Tilo Riemer, riemer at lincvs dot org
@@ -6,7 +6,7 @@
 # Depends on:  cvs, qt3
 
 name=lincvs
-version=1.4.0
+version=1.4.1
 release=0
 source=(http://lincvs.com/download/$name-$version-$release-generic-src.tgz)
 

@@ -1,84 +1,120 @@
---- /etc/rc.d/autofs	2004-04-17 21:00:10.000000000 +0200
-+++ /etc/rc.d/autofs.new	2004-04-17 21:28:52.371060319 +0200
-@@ -41,6 +41,8 @@
-     system=debian
+diff -Nru autofs-4.1.4-old/samples/rc.autofs.in autofs-4.1.4/samples/rc.autofs.in
+--- autofs-4.1.4-old/samples/rc.autofs.in	2005-05-15 13:30:40.000000000 +0200
++++ autofs-4.1.4/samples/rc.autofs.in	2005-05-15 13:51:07.000000000 +0200
+@@ -43,6 +43,8 @@
+ 	system=debian
  elif [ -f /etc/redhat-release ]; then
-     system=redhat
+ 	system=redhat
 +elif [ -f /usr/bin/crux ]; then
-+    system=crux
++	system=crux
  else
-     echo "$0: Unknown system, please port and contact autofs@linux.kernel.org" 1>&2
-     exit 1
-@@ -308,20 +310,20 @@
- {
- 	RETVAL=0
- 	if [ -z "`signal_submounts`" ]; then
--		pids="`/sbin/pidof $DAEMON`"
-+		pids="`/bin/pidof $DAEMON`"
- 		for one_pid in $pids ; do
- 			kill -USR2 $one_pid 2 > /dev/null
- 			count=0
- 			while ps ax|grep -v grep|grep $one_pid >/dev/null; do
--				usleep 200000 
-+				sleep .3 
- 				count=$(expr $count + 1)
--				if [ $count -gt 20 ]; then
-+				if [ $count -gt 5 ]; then
- 					break;
- 				fi
- 			done
+ 	echo "$0: Unknown system, please port and contact autofs@linux.kernel.org" 1>&2
+ 	exit 1
+@@ -104,6 +106,25 @@
+ 	[ -f /etc/default/autofs ] && . /etc/default/autofs
+ 
+ 	daemonoptions="$daemonoptions --timeout=$TIMEOUT"
++elif [ "$system" = "crux" ]; then
++        LOCALOPTIONS=""
++        DAEMONOPTIONS=""
++        UNDERSCORETODOT=1
++        DISABLE_DIRECT=1
++        DAEMON_EXIT_WAIT=20
++	TIMEOUT=300
++
++	[ -f /etc/autofs/config ] && . /etc/autofs/config
++
++	# Over-ride localoptions if set
++	if [ -n "$LOCALOPTIONS" ]; then
++		localoptions=$LOCALOPTIONS
++	fi
++
++	# Over-ride daemonoptions if set
++	if [ -n "$DAEMONOPTIONS" ]; then
++		daemonoptions=$DAEMONOPTIONS
++	fi
+ fi
+ 
+ #
+@@ -433,7 +454,7 @@
  		done
- 	fi
+ 	done
+ 
 -	if [ -n "`/sbin/pidof $DAEMON`" ] ; then
 +	if [ -n "`/bin/pidof $DAEMON`" ] ; then
  		RETVAL=1
  	fi
- 	return $RETVAL
-@@ -485,11 +487,56 @@
+ 
+@@ -530,15 +551,15 @@
+ 		RETVAL=$?
+ 	fi
+ 	count=0
+-	while [ -n "`/sbin/pidof $DAEMON`" -a $count -lt 10 ] ; do
++	while [ -n "`/bin/pidof $DAEMON`" -a $count -lt 10 ] ; do
+ 	   killproc $DAEMON -USR2 >& /dev/null
+ 	   RETVAL=$?
+-	   [ $RETVAL = 0 -a -z "`/sbin/pidof $DAEMON`" ] || sleep 3
++	   [ $RETVAL = 0 -a -z "`/bin/pidof $DAEMON`" ] || sleep 3
+ 	   count=`expr $count + 1`
+ 	done
+ 	umount -a -f -t autofs
+ 	rm -f /var/lock/subsys/autofs
+-	if [ -n "`/sbin/pidof $DAEMON`" ] ; then
++	if [ -n "`/bin/pidof $DAEMON`" ] ; then
+ 	    failure "$prog shutdown"
+ 	else
+ 	    success "$prog shutdown"
+@@ -766,11 +787,62 @@
  esac
  }
  
-+
-+
-+
-+# crux start/stop function.
-+#
 +function crux()
 +{
-+
 +case "$1" in
-+  start)
-+        # Make sure the autofs filesystem type is available.
-+        (grep -q autofs /proc/filesystems || /sbin/modprobe -k autofs4 || /sbin/modprobe -k autofs) 2> /dev/null
-+        TMP=`mktemp /tmp/autofs.XXXXXX` || { echo $"could not make temp file" >& 2; exit 1; }
-+        getmounts | tee $TMP | sh
++
++start)
++	# Make sure the autofs filesystem type is available.
++	(grep -q autofs /proc/filesystems || /sbin/modprobe -k autofs4 || /sbin/modprobe -k autofs) 2> /dev/null
++	TMP=`mktemp /tmp/autofs.XXXXXX` || { echo $"could not make temp file" >& 2; exit 1; }
++	getmounts | tee $TMP | sh
 +	RETVAL=$?
 +	if [ ! -s $TMP ] ; then
-+	    echo "No Mountpoints Defined" >& 2
++		echo "No Mountpoints Defined" >& 2
 +	fi
 +	rm -f $TMP
 +	;;
-+  stop)
++
++stop)
 +	signal_automounts
 +	RETVAL=$?
 +	count=0
 +	while [ -n "`/bin/pidof $DAEMON`" -a $count -lt 5 ] ; do
-+	   killall -USR2 $DAEMON >& /dev/null
-+	   RETVAL=$?
-+	   [ $RETVAL = 0 -a -z "`/bin/pidof $DAEMON`" ] || sleep .3 
-+	   count=`expr $count + 1`
++		killall -USR2 $DAEMON >& /dev/null
++		RETVAL=$?
++		[ $RETVAL = 0 -a -z "`/bin/pidof $DAEMON`" ] || sleep .3 
++		count=`expr $count + 1`
 +	done
 +	umount -a -f -t autofs 2> /dev/null 
 +	RETVAL=$?
 +	;;
-+  restart)
++getmounts)
++        getmounts
++        ;;
++status)
++	status
++	;;
++restart)
 +	crux stop
 +	crux start
 +	;;
-+  *)
-+	echo $"Usage: $0 {start|stop|restart}"
++active)
++	alive
++	;;
++*)
++	echo $"Usage: $0 {start|stop|restart|status|getmounts|active}"
 +	RETVAL=0
 +esac
++
 +}
 +
  RETVAL=0
