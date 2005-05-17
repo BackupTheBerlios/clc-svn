@@ -2,6 +2,7 @@ drwxr-xr-x	root/root	etc/
 drwxr-xr-x	root/root	etc/rc.d/
 -rwxr-xr-x	root/root	etc/rc.d/saslauthd
 drwxr-xr-x	root/root	etc/sasl/
+lrwxrwxrwx	root/root	etc/sasl/apps -> /usr/lib/sasl2
 drwxr-xr-x	root/root	usr/
 drwxr-xr-x	root/root	usr/include/
 drwxr-xr-x	root/root	usr/include/sasl/
@@ -17,7 +18,6 @@ drwxr-xr-x	root/root	usr/lib/
 lrwxrwxrwx	root/root	usr/lib/libsasl2.so -> libsasl2.so.2.0.20
 lrwxrwxrwx	root/root	usr/lib/libsasl2.so.2 -> libsasl2.so.2.0.20
 -rwxr-xr-x	root/root	usr/lib/libsasl2.so.2.0.20
-drwxr-xr-x	root/root	usr/lib/sasl/
 drwxr-xr-x	root/root	usr/lib/sasl2/
 -rwxr-xr-x	root/root	usr/lib/sasl2/libanonymous.la
 lrwxrwxrwx	root/root	usr/lib/sasl2/libanonymous.so -> libanonymous.so.2.0.20
@@ -102,4 +102,3 @@ drwxr-xr-x	root/root	usr/sbin/
 drwxr-xr-x	root/root	var/
 drwxr-xr-x	root/root	var/sasl/
 drwxr-xr-x	root/root	var/sasl/saslauthd/
-drwxr-xr-x	root/root	var/sasl/sasldb/

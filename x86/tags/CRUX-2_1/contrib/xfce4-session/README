@@ -1,0 +1,19 @@
+README for xfce4-session 4.2.x
+
+REQUIREMENTS
+
+PRE-INSTALL
+
+POST-INSTALL
+
+To enable the restart/shutdown functionality of the xfce4 session 
+manager you have to install sudo:
+
+  1. install /usr/ports/contrib/sudo
+  2. edit /etc/sudoers with visudo as root and add a line like:
+  
+     %users ALL = NOPASSWD: /usr/lib/xfce4/xfsm-shutdown-helper
+
+PRECAUTION
+
+

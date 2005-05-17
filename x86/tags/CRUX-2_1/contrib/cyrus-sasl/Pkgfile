@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.2 2005/04/05 16:14:16 danm Exp $
+# $Id: Pkgfile,v 1.3 2005/05/16 16:30:32 danm Exp $
 # Description: Simple Authentication and Security Layer
 # Maintainer: Daniel Mueller, daniel at danm dot de
 # URL: http://asg.web.cmu.edu/sasl/sasl-library.html
@@ -6,7 +6,7 @@
 
 name=cyrus-sasl
 version=2.1.20
-release=2
+release=3
 source=(http://ftp.andrew.cmu.edu/pub/cyrus-mail/$name-$version.tar.gz \
 	$name-$version.patch \
         saslauthd)
@@ -17,11 +17,13 @@ build(){
 	# OpenPKG patch (http://www.openpkg.org)
 	patch -p0 < $SRC/$name-$version.patch
 
+	sed -i -e 's;@l_sysconfdir@;/etc/sasl/apps;g' lib/server.c
+
 	./configure --prefix=/usr \
 		    --sysconfdir=/etc/sasl \
-		    --with-plugindir=/usr/lib/sasl \
+		    --with-plugindir=/usr/lib/sasl2 \
 		    --with-saslauthd=/var/sasl/saslauthd \
-		    --with-dbpath=/var/sasl/sasldb \
+		    --with-dbpath=/etc/sasl/sasldb2 \
 		    --with-dblib=berkeley \
 		    --with-bdb-incdir=/usr/include \
 		    --with-bdb-libdir=/usr/lib \
@@ -31,8 +33,9 @@ build(){
 	            --enable-digest \
 		    --enable-shared 
 
-	mkdir -p $PKG/usr/lib/sasl $PKG/var/sasl/{sasldb,saslauthd} \
-		$PKG/etc/{sasl,rc.d} $PKG/usr/man/man8
+	mkdir -p $PKG/usr/lib/sasl2 $PKG/var/sasl/saslauthd \
+		$PKG/etc/{sasl,rc.d} $PKG/usr/man/man8 
+	(cd $PKG/etc/sasl; ln -s /usr/lib/sasl2 apps)
 
 	make
 	make DESTDIR=$PKG install

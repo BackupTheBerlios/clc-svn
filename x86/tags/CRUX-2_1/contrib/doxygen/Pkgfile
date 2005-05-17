@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.7 2005/05/16 15:57:23 tilman Exp $
+# Maintainer: Tilman Sauerbeck, tilman at code-monkey dot de
+# Description: Documentation generation tool 
+# URL: http://www.doxygen.org
+
+name=doxygen
+version=1.4.3
+release=1
+source=(ftp://ftp.stack.nl/pub/users/dimitri/$name-$version.src.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix /usr
+	make
+	make INSTALL=$PKG/usr install
+}

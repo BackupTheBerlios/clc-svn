@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.2 2005/05/14 17:03:54 vector Exp $
+# $Id: Pkgfile,v 1.3 2005/05/16 05:13:00 vector Exp $
 # Description: Sound file editor
 # URL: http://www.mtek.chalmers.se/~hjormagn/mhwaveedit.html
 # Maintainer: Jukka Heino, jukka at karsikkopuu dot net
@@ -7,13 +7,12 @@
 
 name=mhwaveedit
 version=1.4.0
-release=1
+release=2
 source=(http://www.mtek.chalmers.se/~hjormagn/$name-$version.tar.bz2)
 
 build() {
     cd $name-$version
-    ./configure --prefix=/usr
+    ./configure --prefix=/usr --disable-nls
     make
     make DESTDIR=$PKG install
-    rm -rf $PKG/usr/share
 }

@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.11 2005/04/17 17:41:15 jue Exp $
+# $Id: Pkgfile,v 1.12 2005/05/16 09:58:45 jue Exp $
 # Description: PHP tool to handle the administration of MySQL over the WWW
 # URL:         http://www.phpmyadmin.net/
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 # Depends on:  apache, mod_php
 
 name=phpmyadmin
-version=2.6.2
+version=2.6.2-pl1
 release=1
 source=(http://dl.sourceforge.net/sourceforge/$name/phpMyAdmin-$version.tar.bz2)
 

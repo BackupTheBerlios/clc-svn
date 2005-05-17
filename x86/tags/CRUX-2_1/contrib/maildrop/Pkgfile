@@ -1,10 +1,10 @@
-# $Id: Pkgfile,v 1.3 2005/03/09 19:00:00 jue Exp $
+# $Id: Pkgfile,v 1.4 2005/05/16 09:33:55 jue Exp $
 # Description: Mail Delivery Agent with filtering abilities
 # URL:         http://www.courier-mta.org/maildrop/
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 
 name=maildrop
-version=1.8.0
+version=1.8.1
 release=1
 source=(http://dl.sourceforge.net/sourceforge/courier/$name-$version.tar.bz2)
 

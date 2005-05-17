@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.11 2005/05/11 05:32:13 vector Exp $
+# $Id: Pkgfile,v 1.12 2005/05/16 05:09:53 vector Exp $
 # Description: Bayesian spam filter
 # URL: http://bogofilter.sourceforge.net/
 # Maintainer: Jukka Heino, jukka at karsikkopuu dot net
 # Packager: Simone Rota, sip at varlock dot com
 
 name=bogofilter
-version=0.94.11
+version=0.94.12
 release=1
 source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
 
