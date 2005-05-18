@@ -1,0 +1,16 @@
+# $Id: Pkgfile,v 1.2 2005/05/17 18:19:00 jw Exp $
+# Maintainer:  Johannes Winkelmann, jw at tks6 dot net
+# Description: Themepack for SLiM
+# URL:         http://slim.berlios.de
+# Depends on:  slim
+
+name=slim-themepack1
+version=1.2.1
+release=1
+source=(http://download.berlios.de/slim/slim-${version}-themepack1.tar.gz)
+
+build() {
+    mkdir -p $PKG/usr/share/slim/themes
+    mv * $PKG/usr/share/slim/themes
+    chown -R root:root $PKG/usr/share/slim/themes/*
+}

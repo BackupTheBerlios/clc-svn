@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.4 2005/04/29 21:05:37 jdolan Exp $
+# $Id: Pkgfile,v 1.5 2005/05/17 12:09:01 jdolan Exp $
 # Maintainer: Jay Dolan, jasonthomasdolan at yahoo dot com
 # Description: Java plugin for Mozilla Firefox
 # URL: http://java.sun.com
@@ -6,12 +6,12 @@
 
 name=firefox-java-plugin
 version=1.5.0
-release=02
+release=03
 source=()
 
 build(){
 	plugins=(
-	  /usr/lib/java/plugin/i386/ns7/javaplugin_oji.so
+	  /usr/lib/java/plugin/i386/ns7/libjavaplugin_oji.so
 	  /usr/lib/java/jre/plugin/i386/ns7/libjavaplugin_oji.so
 	)
 

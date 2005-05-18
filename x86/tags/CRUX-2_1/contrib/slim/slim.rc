@@ -5,7 +5,7 @@
 
 case $1 in
 start)
-	/usr/bin/slim
+	/usr/bin/slim -d
 	;;
 stop)
 	killall /usr/bin/slim
