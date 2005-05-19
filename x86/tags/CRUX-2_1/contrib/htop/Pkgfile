@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.3 2005/04/11 05:31:57 jw Exp $
+# $Id: Pkgfile,v 1.4 2005/05/18 20:25:52 jw Exp $
 # Packager:     Johannes Winkelmann, jw at tks6 dot net
 # Maintainer:   Johannes Winkelmann, jw at tks6 dot net
 # Description:  an interactive process viewer
@@ -6,7 +6,7 @@
 # Depends:      ncurses
 
 name=htop
-version=0.5.1
+version=0.5.2
 release=1
 source=(http://dl.sourceforge.net/sourceforge/${name}/${name}-${version}.tar.gz)
 
