@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.1 2005/04/17 11:46:31 jue Exp $
+# $Id: Pkgfile,v 1.2 2005/05/19 06:17:52 jue Exp $
 # Description: Plugin for the XFce4 panel, acting as a launcher with two states
 # URL:         http://www.xfce.org
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
@@ -6,7 +6,7 @@
 # Group:       xfce4
 
 name=xfce4-trigger-launcher
-version=4.2.1
+version=4.2.2
 release=1
 source=(http://www.us.xfce.org/archive/xfce-$version/src/$name-$version.tar.gz)
 

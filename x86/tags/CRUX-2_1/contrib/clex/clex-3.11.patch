@@ -1,0 +1,12 @@
+diff -Nru clex-3.11.orig/src/inout.c clex-3.11/src/inout.c
+--- clex-3.11.orig/src/inout.c	2005-05-17 18:14:57.000000000 +0200
++++ clex-3.11/src/inout.c	2005-05-17 18:15:15.000000000 +0200
+@@ -286,7 +286,7 @@
+ 		if (key == KEY_SUSPEND)
+ 			key = CH_CTRL('Z');
+ #endif
+-		if (key == KEY_BACKSPACE)
++		if (key == KEY_BACKSPACE || key == 127)
+ 			key = CH_CTRL('H');
+ 		return key;
+ 	}

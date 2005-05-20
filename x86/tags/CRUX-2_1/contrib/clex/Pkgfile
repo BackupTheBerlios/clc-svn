@@ -1,10 +1,10 @@
-# $Id: Pkgfile,v 1.3 2005/03/09 18:59:59 jue Exp $
+# $Id: Pkgfile,v 1.4 2005/05/19 06:09:47 jue Exp $
 # Description: File manager with full-screen user interface
 # URL:         http://www.clex.sk
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 
 name=clex
-version=3.10
+version=3.11
 release=1
 source=(http://www.clex.sk/download/$name-$version.tar.gz \
         $name-$version.patch)

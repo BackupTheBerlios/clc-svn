@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.1 2005/04/17 11:46:31 jue Exp $
+# $Id: Pkgfile,v 1.2 2005/05/19 06:17:52 jue Exp $
 # Description: Desktop manager for XFce4 
 # URL:         http://www.xfce.org
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
@@ -6,19 +6,18 @@
 # Group:       xfce4
 
 name=xfdesktop
-version=4.2.1
+version=4.2.2
 release=1
-source=(http://www.us.xfce.org/archive/xfce-$version/src/$name-$version.tar.gz \
-        $name-$version.patch)
+source=(http://www.us.xfce.org/archive/xfce-$version/src/$name-$version.tar.gz)
 
 build () {
     cd $name-$version
-    patch -p1 < $SRC/$name-$version.patch
     ./configure --prefix=/usr \
                 --disable-static \
                 --disable-debug 
     make
     make DESTDIR=$PKG install
     rm -rf $PKG/usr/share/locale
+    rm -r $PKG/usr/share/xfce4/doc/fr
     rm $PKG/usr/etc/xdg/xfce4/desktop/*.xml.*
 }

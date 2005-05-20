@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.1 2005/04/17 11:46:31 jue Exp $
+# $Id: Pkgfile,v 1.2 2005/05/19 06:17:51 jue Exp $
 # Description: Theme engine for XFce4 
 # URL:         http://www.xfce.org
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
@@ -6,9 +6,9 @@
 # Group:       xfce4
 
 name=gtk-xfce-engine
-version=2.2.6
+version=2.2.7
 release=1
-source=(http://www.us.xfce.org/archive/xfce-4.2.1/src/$name-$version.tar.gz)
+source=(http://www.us.xfce.org/archive/xfce-4.2.2/src/$name-$version.tar.gz)
 
 build () {
     cd $name-$version

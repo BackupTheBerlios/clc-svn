@@ -66,9 +66,9 @@ lrwxrwxrwx	root/root	usr/lib/xfce4/xffm/libxffm_fstab.so -> libxffm_fstab.so.1.0
 lrwxrwxrwx	root/root	usr/lib/xfce4/xffm/libxffm_fstab.so.1 -> libxffm_fstab.so.1.0.0
 -rwxr-xr-x	root/root	usr/lib/xfce4/xffm/libxffm_fstab.so.1.0.0
 -rwxr-xr-x	root/root	usr/lib/xfce4/xffm/libxffm_prop.la
-lrwxrwxrwx	root/root	usr/lib/xfce4/xffm/libxffm_prop.so -> libxffm_prop.so.0.0.0
-lrwxrwxrwx	root/root	usr/lib/xfce4/xffm/libxffm_prop.so.0 -> libxffm_prop.so.0.0.0
--rwxr-xr-x	root/root	usr/lib/xfce4/xffm/libxffm_prop.so.0.0.0
+lrwxrwxrwx	root/root	usr/lib/xfce4/xffm/libxffm_prop.so -> libxffm_prop.so.1.0.0
+lrwxrwxrwx	root/root	usr/lib/xfce4/xffm/libxffm_prop.so.1 -> libxffm_prop.so.1.0.0
+-rwxr-xr-x	root/root	usr/lib/xfce4/xffm/libxffm_prop.so.1.0.0
 -rwxr-xr-x	root/root	usr/lib/xfce4/xffm/libxffm_recent.la
 lrwxrwxrwx	root/root	usr/lib/xfce4/xffm/libxffm_recent.so -> libxffm_recent.so.1.0.0
 lrwxrwxrwx	root/root	usr/lib/xfce4/xffm/libxffm_recent.so.1 -> libxffm_recent.so.1.0.0

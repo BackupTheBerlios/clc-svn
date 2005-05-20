@@ -2,6 +2,7 @@ drwxr-xr-x	root/root	etc/
 drwxr-xr-x	root/root	etc/rc.d/
 -rwxr-xr-x	root/root	etc/rc.d/squid
 drwxr-xr-x	root/root	etc/squid/
+-rw-r--r--	root/root	etc/squid/cachemgr.conf
 -rw-r--r--	root/root	etc/squid/mime.conf
 -rw-r--r--	root/root	etc/squid/squid.conf
 -rw-r--r--	root/root	etc/squid/squid.conf.default
@@ -12,6 +13,7 @@ drwxr-xr-x	root/root	usr/bin/
 -rwxr-xr-x	root/root	usr/bin/squidclient
 drwxr-xr-x	root/root	usr/man/
 drwxr-xr-x	root/root	usr/man/man8/
+-rw-r--r--	root/root	usr/man/man8/cachemgr.cgi.8.gz
 -rw-r--r--	root/root	usr/man/man8/squid.8.gz
 drwxr-xr-x	root/root	usr/sbin/
 -rwxr-xr-x	root/root	usr/sbin/cachemgr.cgi

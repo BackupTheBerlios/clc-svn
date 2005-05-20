@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.3 2005/05/13 16:27:00 jue Exp $
+# $Id: Pkgfile,v 1.4 2005/05/19 06:17:52 jue Exp $
 # Description: Print dialog and printer manager for XFce4 
 # URL:         http://www.xfce.org
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
@@ -7,18 +7,16 @@
 
 name=xfprint
 version=4.2.2
-release=1
-source=(http://www.us.xfce.org/archive/xfce-$version/src/$name-4.2.1.tar.gz \
-        $name-$version.patch)
+release=2
+source=(http://www.us.xfce.org/archive/xfce-$version/src/$name-$version.tar.gz)
 
 build () {
-    cd $name-4.2.1
-    patch -p1 < $SRC/$name-$version.patch
-    sed -i 's/4.2.1/4.2.2/' configure
+    cd $name-$version
     ./configure --prefix=/usr \
                 --disable-static \
                 --disable-debug 
     make
     make DESTDIR=$PKG install
     rm -rf $PKG/usr/share/locale
+    rm -r $PKG/usr/share/xfce4/doc/fr
 }
