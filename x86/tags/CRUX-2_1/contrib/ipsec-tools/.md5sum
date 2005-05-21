@@ -1,6 +1,5 @@
 74dde4bbeb98d96cffe05ded77a8a57d  Makefile
-34ec46ac6b4377c542f428c4ba46f941  ipsec-tools-0.5.1.patch
-62477669b3bbaaff7682f077aafca856  ipsec-tools-0.5.1.tar.bz2
+fc61f0387f25b3cbbd4fdbe548f4ba80  ipsec-tools-0.5.2.tar.bz2
 b42aa56e1545ae1965f0715e8e2de189  racoon
 a26ff1f6651fc1e8f33ea1150a064ef3  setkey
 67ed6d04f52d28c8ebb014389b33936a  setkey.conf

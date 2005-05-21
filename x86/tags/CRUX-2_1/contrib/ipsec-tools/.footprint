@@ -39,3 +39,6 @@ drwxr-xr-x	root/root	usr/sbin/
 -rwxr-xr-x	root/root	usr/sbin/racoon
 -rwxr-xr-x	root/root	usr/sbin/racoonctl
 -rwxr-xr-x	root/root	usr/sbin/setkey
+drwxr-xr-x	root/root	var/
+drwxr-xr-x	root/root	var/lib/
+drwxr-xr-x	root/root	var/lib/racoon/

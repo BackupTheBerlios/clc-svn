@@ -1,25 +1,19 @@
-# $Id: Pkgfile,v 1.8 2005/03/29 19:27:13 danm Exp $
+# $Id: Pkgfile,v 1.9 2005/05/20 21:23:40 danm Exp $
 # Description: KAME's IPsec utilities to the Linux-2.6 IPsec implementation
 # URL: http://ipsec-tools.sourceforge.net/
 # Maintainer: Daniel Mueller, daniel at danm dot de
 # Depends on: iputils
 
 name=ipsec-tools
-version=0.5.1
+version=0.5.2
 release=1
 
 source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.bz2 \
-	$name-$version.patch racoon setkey setkey.conf Makefile)
+	racoon setkey setkey.conf Makefile)
 
 build() {
 	cd $name-$version
-	patch -p1 < ../$name-$version.patch
 
-	# FIX adminsockdir
-	sed -i 	-e 's|^adminsockdir =.*|adminsockdir = \$\{localstatedir\}/racoon/|g' \
-		-e 's|install-exec-local ||g' \
-		src/racoon/Makefile.in
-	
 	./configure --prefix=/usr \
 		    --bindir=/usr/sbin \
 		    --localstatedir=/var/lib \

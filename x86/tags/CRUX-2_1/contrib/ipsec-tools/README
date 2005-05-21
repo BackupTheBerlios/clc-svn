@@ -1,4 +1,4 @@
-$Id: README,v 1.1 2004/12/29 00:26:14 danm Exp $
+$Id: README,v 1.2 2005/05/20 21:23:40 danm Exp $
 
 REQUIREMENTS
 
@@ -14,5 +14,3 @@ PRE-INSTALL
 POST-INSTALL
 
 PRECAUTION
-
-	Backup your configuration files! (racoon.conf, pks.txt, ..)

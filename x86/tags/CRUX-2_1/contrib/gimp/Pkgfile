@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.9 2005/04/18 15:18:39 jaeger Exp $
+# $Id: Pkgfile,v 1.10 2005/05/20 05:33:15 jaeger Exp $
 # Description: The GIMP
 # URL: http://www.gimp.org/
 # Maintainer: Matt Housh, jaeger at morpheus dot net
 # Depends on: freetype, x11, gtk, gimp-print, libart_lgpl, p5-xml-parser
 
 name=gimp
-version=2.2.6
+version=2.2.7
 release=1
 source=(ftp://ftp.gimp.org/pub/gimp/v2.2/gimp-$version.tar.bz2)
 

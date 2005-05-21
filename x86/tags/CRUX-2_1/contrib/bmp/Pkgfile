@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.5 2005/04/04 14:56:01 jaeger Exp $
+# $Id: Pkgfile,v 1.6 2005/05/20 21:56:26 jaeger Exp $
 # Description: gtk2 xmms-alike
 # URL: http://beepmp.sourceforge.net/
 # Maintainer: Matt Housh, jaeger at morpheus dot net
@@ -6,8 +6,9 @@
 
 name=bmp
 version=0.9.7
-release=1
-source=(http://dl.sourceforge.net/sourceforge/beepmp/$name-$version.tar.gz)
+release=2
+source=(http://dl.sourceforge.net/sourceforge/beepmp/$name-$version.tar.gz \
+	beep-config)
 
 build() {
 	cd $name-$version
@@ -15,4 +16,6 @@ build() {
 	make
 	make DESTDIR=$PKG install
 	ln -s beep-media-player $PKG/usr/bin/beep
+	install -m 0755 $SRC/beep-config $PKG/usr/bin
+	install -D -m 0644 beep/beep_logo.xpm $PKG/usr/share/pixmaps/beep.xpm
 }

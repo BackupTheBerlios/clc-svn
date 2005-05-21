@@ -1,6 +1,7 @@
 drwxr-xr-x	root/root	usr/
 drwxr-xr-x	root/root	usr/bin/
 lrwxrwxrwx	root/root	usr/bin/beep -> beep-media-player
+-rwxr-xr-x	root/root	usr/bin/beep-config
 -rwxr-xr-x	root/root	usr/bin/beep-media-player
 drwxr-xr-x	root/root	usr/include/
 drwxr-xr-x	root/root	usr/include/bmp/
@@ -82,3 +83,5 @@ drwxr-xr-x	root/root	usr/share/bmp/images/
 -rw-r--r--	root/root	usr/share/bmp/images/plugins.png
 drwxr-xr-x	root/root	usr/share/icons/
 -rw-r--r--	root/root	usr/share/icons/bmp.svg
+drwxr-xr-x	root/root	usr/share/pixmaps/
+-rw-r--r--	root/root	usr/share/pixmaps/beep.xpm

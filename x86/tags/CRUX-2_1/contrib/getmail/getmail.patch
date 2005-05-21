@@ -1,7 +1,30 @@
-Binary files getmail-4.3.6.orig/getmailcore/__init__.pyc and getmail-4.3.6/getmailcore/__init__.pyc differ
-diff -Nru getmail-4.3.6.orig/setup.py getmail-4.3.6/setup.py
---- getmail-4.3.6.orig/setup.py	2005-03-14 21:17:17.000000000 +0200
-+++ getmail-4.3.6/setup.py	2005-04-12 18:31:35.000000000 +0300
+diff -Nru getmail-4.3.10.orig/getmailcore/_retrieverbases.py getmail-4.3.10/getmailcore/_retrieverbases.py
+--- getmail-4.3.10.orig/getmailcore/_retrieverbases.py	2005-05-18 19:31:20.000000000 +0300
++++ getmail-4.3.10/getmailcore/_retrieverbases.py	2005-05-20 15:39:45.000000000 +0300
+@@ -445,7 +445,7 @@
+         self.log.trace()
+         msgnum = self._getmsgnumbyid(msgid)
+         response, headerlist, octets = self.conn.top(msgnum, 0)
+-        parser = email.Parser.HeaderParser(strict=False)
++        parser = email.Parser.HeaderParser()
+         return parser.parsestr(os.linesep.join(headerlist))
+ 
+     def initialize(self):
+diff -Nru getmail-4.3.10.orig/getmailcore/message.py getmail-4.3.10/getmailcore/message.py
+--- getmail-4.3.10.orig/getmailcore/message.py	2005-05-19 17:44:54.000000000 +0300
++++ getmail-4.3.10/getmailcore/message.py	2005-05-20 15:39:35.000000000 +0300
+@@ -80,7 +80,7 @@
+         self.received_from = None
+         self.received_with = None
+         self.__raw = None
+-        parser = email.Parser.HeaderParser(strict=False)
++        parser = email.Parser.HeaderParser()
+         
+         # Message is instantiated with fromlines for POP3, fromstring for
+         # IMAP (both of which can be badly-corrupted or invalid, i.e. spam,
+diff -Nru getmail-4.3.10.orig/setup.py getmail-4.3.10/setup.py
+--- getmail-4.3.10.orig/setup.py	2005-03-14 21:17:17.000000000 +0200
++++ getmail-4.3.10/setup.py	2005-05-20 15:39:52.000000000 +0300
 @@ -44,7 +44,6 @@
  
  GETMAILMANDIR = os.path.join(

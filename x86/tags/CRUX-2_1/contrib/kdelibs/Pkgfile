@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.14 2005/04/22 08:00:10 sten Exp $
+# $Id: Pkgfile,v 1.15 2005/05/20 23:16:52 sten Exp $
 # Description: Base set of libraries needed by KDE programs
 # URL: http://www.kde.org
 # Maintainer: sten, nick dot steeves at shaw dot ca
@@ -7,16 +7,15 @@
 
 name=kdelibs
 version=3.4.0
-release=3
+release=4
 source=(http://download.kde.org/stable/3.4/src/$name-$version.tar.bz2 \
-	ftp://ftp.kde.org/pub/kde/security_patches/post-3.4.0-kdelibs-kimgio.diff \
-	http://www.kde-look.org/content/files/10888-bt.tar.gz)
+	ftp://ftp.kde.org/pub/kde/security_patches/post-3.4.0-kdelibs-kimgio-fixed.diff http://www.kde-look.org/content/files/10888-bt.tar.gz)
 
 build () {
 	cd $name-$version
     (
         cd kimgio
-        patch -p0 < ../../post-3.4.0-kdelibs-kimgio.diff
+        patch -p0 < ../../post-3.4.0-kdelibs-kimgio-fixed.diff
     )
     ./configure --prefix=/usr \
                 --with-ssl \
