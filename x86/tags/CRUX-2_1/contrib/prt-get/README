@@ -1,7 +1,7 @@
 NOTE:
 
 Some people have reported problems when using optimizations larger than
--02; typical symptoms are "prt-get install X" saying that a package is
+-O2; typical symptoms are "prt-get install X" saying that a package is
 installed while "prt-get update X" saying it's not, or "prt-get listinst"
 printing just nothing.
 

@@ -137,10 +137,12 @@ drwxr-xr-x	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/
 -r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/MethodLookup.pm
 -r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/ParseSource.pm
 -r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/PerlRun.pm
+-r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/PerlRunPrefork.pm
 -r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/Registry.pm
 -r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/RegistryBB.pm
 -r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/RegistryCooker.pm
 -r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/RegistryLoader.pm
+-r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/RegistryPrefork.pm
 -r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/StructureMap.pm
 -r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/TestReport.pm
 -r--r--r--	root/root	usr/lib/perl5/site_perl/5.8.6/linux/ModPerl/TestRun.pm
@@ -286,6 +288,7 @@ drwxr-xr-x	root/root	usr/man/man3/
 -r--r--r--	root/root	usr/man/man3/Apache2::FilterRec.3pm.gz
 -r--r--r--	root/root	usr/man/man3/Apache2::HookRun.3pm.gz
 -r--r--r--	root/root	usr/man/man3/Apache2::Log.3pm.gz
+-r--r--r--	root/root	usr/man/man3/Apache2::MPM.3pm.gz
 -r--r--r--	root/root	usr/man/man3/Apache2::Module.3pm.gz
 -r--r--r--	root/root	usr/man/man3/Apache2::PerlSections.3pm.gz
 -r--r--r--	root/root	usr/man/man3/Apache2::Process.3pm.gz
@@ -314,9 +317,11 @@ drwxr-xr-x	root/root	usr/man/man3/
 -r--r--r--	root/root	usr/man/man3/ModPerl::MM.3pm.gz
 -r--r--r--	root/root	usr/man/man3/ModPerl::MethodLookup.3pm.gz
 -r--r--r--	root/root	usr/man/man3/ModPerl::PerlRun.3pm.gz
+-r--r--r--	root/root	usr/man/man3/ModPerl::PerlRunPrefork.3pm.gz
 -r--r--r--	root/root	usr/man/man3/ModPerl::Registry.3pm.gz
 -r--r--r--	root/root	usr/man/man3/ModPerl::RegistryBB.3pm.gz
 -r--r--r--	root/root	usr/man/man3/ModPerl::RegistryCooker.3pm.gz
 -r--r--r--	root/root	usr/man/man3/ModPerl::RegistryLoader.3pm.gz
+-r--r--r--	root/root	usr/man/man3/ModPerl::RegistryPrefork.3pm.gz
 -r--r--r--	root/root	usr/man/man3/ModPerl::Util.3pm.gz
 -r--r--r--	root/root	usr/man/man3/mod_perl2.3pm.gz

@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.10 2005/05/06 11:35:17 jue Exp $
+# $Id: Pkgfile,v 1.11 2005/05/22 08:41:40 jue Exp $
 # Description: Persistent Perl interpreter for the Apache HTTP server
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 # URL:         http://perl.apache.org
@@ -6,7 +6,7 @@
 # Group:       apache
 
 name=mod_perl
-version=2.0.0-RC6
+version=2.0.0
 release=1
 source=(http://perl.apache.org/dist/$name-$version.tar.gz)
 

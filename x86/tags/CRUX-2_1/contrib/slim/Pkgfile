@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.5 2005/05/17 18:10:47 sip Exp $
+# $Id: Pkgfile,v 1.6 2005/05/22 20:15:13 sip Exp $
 # Packager: Simone Rota, sip at varlock dot com
 # Maintainer: Simone Rota, sip at varlock dot com
 # Description: a graphical login utility
@@ -6,7 +6,7 @@
 # Depends on: x11
 
 name=slim
-version=1.2.1
+version=1.2.2
 release=1
 source=(http://download.berlios.de/$name/$name-$version.tar.gz
         $name.rc)

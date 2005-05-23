@@ -1,8 +1,8 @@
-# $Id: Pkgfile,v 1.5 2005/04/02 18:47:27 danm Exp $
+# $Id: Pkgfile,v 1.6 2005/05/22 20:33:16 sten Exp $
 # Maintainer: Daniel Mueller, daniel at danm dot de
 # Description: A callback framework for C++
 # URL: http://libsigc.sourceforge.net
-# Depends on: pkg-config
+# Depends on: pkgconfig
 
 name=libsigc++
 version=2.0.11
