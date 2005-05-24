@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# /etc/rc.d/hotplug-perl: start/stop hotplug-perl
+#
+
+case $1 in
+start)
+	/etc/hotplug-perl/start-hotplug
+	echo /sbin/hotplug-perl > /proc/sys/kernel/hotplug
+	;;
+stop)
+	;;
+restart)
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file

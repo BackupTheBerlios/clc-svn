@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.9 2005/04/05 07:04:25 jw Exp $
+# $Id: Pkgfile,v 1.10 2005/05/23 20:15:30 jw Exp $
 # Packager:    Johannes Winkelmann, jw at tks6 dot net
 # Maintainer:  Johannes Winkelmann, jw at tks6 dot net
 # Description: A version control system (CVS replacement)
@@ -6,12 +6,11 @@
 # Depends on:  apr, neon, expat
 
 name=subversion
-version=1.1.4
+version=1.2.0
 release=1
 source=(http://subversion.tigris.org/tarballs/subversion-$version.tar.bz2)
 
 build() {
-
     if [ "`pkginfo -i|grep '^apache'`" ]; then
         ln -sf .footprint-apache $PKGMK_ROOT/.footprint
     else

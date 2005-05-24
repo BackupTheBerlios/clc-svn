@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.7 2005/03/29 04:06:21 jdolan Exp $
-# Maintainer: Jay Dolan jasonthomasdolan at yahoo dot com
+# $Id: Pkgfile,v 1.8 2005/05/23 11:59:26 jdolan Exp $
+# Maintainer: Jay Dolan, jasonthomasdolan at yahoo dot com
 # Description:  A simple media player written in Python.
 # Url: http://jaydolan.com/pymp.html
-# Depends on: pygtk mplayer
+# Depends on: pygtk,mplayer
 
 name=pymp
-version=0.8
+version=0.9
 release=1
 source=(http://jdolan.dyndns.org/jaydolan/files/$name-$version.tar.bz2)
 
