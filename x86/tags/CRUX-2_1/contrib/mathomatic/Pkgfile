@@ -1,10 +1,10 @@
-# $Id: Pkgfile,v 1.10 2005/05/14 15:23:03 danm Exp $
+# $Id: Pkgfile,v 1.11 2005/05/24 15:37:47 danm Exp $
 # Maintainer: Daniel Mueller, daniel at danm dot de 
 # URL: http://mathomatic.orgserve.de/math/
 # Description: Computer Algebra System
 
 name=mathomatic
-version=12.3.2
+version=12.3.3
 release=1
 source=(http://www.panix.com/~gesslein/$name-$version.tgz)
 
