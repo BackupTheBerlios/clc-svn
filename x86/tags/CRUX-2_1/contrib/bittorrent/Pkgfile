@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.5 2005/04/12 08:43:40 vector Exp $
+# $Id: Pkgfile,v 1.6 2005/05/25 09:19:45 vector Exp $
 # Description: Swarming peer-to-peer download tool
 # URL: http://www.bittorrent.com/
 # Maintainer: Jukka Heino, jukka at karsikkopuu dot net
@@ -7,7 +7,7 @@
 # Nice to have: pygtk
 
 name=bittorrent
-version=4.0.1
+version=4.0.2
 release=1
 source=(http://www.$name.com/dl/BitTorrent-$version.tar.gz)
 

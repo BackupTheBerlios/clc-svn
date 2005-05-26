@@ -1,13 +1,13 @@
-# $Id: Pkgfile,v 1.4 2005/03/28 13:27:06 danm Exp $
+# $Id: Pkgfile,v 1.5 2005/05/25 19:33:04 danm Exp $
 # Description: GTK+ system monitor and more
 # URL: http://www.gkrellm.net
 # Maintainer: Daniel Mueller, daniel at danm dot de
 # Depends on: gtk
 
 name=gkrellm
-version=2.2.5
+version=2.2.7
 release=1
-source=(ftp://ftp.freebsd.org/pub/FreeBSD/ports/local-distfiles/ume/$name-$version.tar.bz2)
+source=(http://members.dslextreme.com/users/billw/$name/$name-$version.tar.bz2)
 
 build () {
     cd gkrellm-$version

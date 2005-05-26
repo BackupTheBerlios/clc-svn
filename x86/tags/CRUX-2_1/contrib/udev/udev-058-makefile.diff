@@ -1,0 +1,13 @@
+--- Makefile.orig	2005-05-25 10:57:49.097902896 -0500
++++ Makefile	2005-05-25 11:01:33.887729648 -0500
+@@ -250,8 +250,8 @@
+ 	@echo \#define UDEV_CONFIG_DIR		\"$(configdir)\" >> $@
+ 	@echo \#define UDEV_CONFIG_FILE		\"$(configdir)/udev.conf\" >> $@
+ 	@echo \#define UDEV_RULES_FILE		\"$(configdir)/rules.d\" >> $@
+-	@echo \#define UDEV_BIN			\"$(DESTDIR)$(sbindir)/udev\" >> $@
+-	@echo \#define UDEVD_BIN		\"$(DESTDIR)$(sbindir)/udevd\" >> $@
++	@echo \#define UDEV_BIN			\"$(sbindir)/udev\" >> $@
++	@echo \#define UDEVD_BIN		\"$(sbindir)/udevd\" >> $@
+ 
+ # Rules on how to create the generated config files
+ $(LOCAL_CFG_DIR)/udev.conf:

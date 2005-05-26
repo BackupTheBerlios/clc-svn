@@ -22,34 +22,27 @@ BUS="scsi", KERNEL="scd[a-z]", PROGRAM="/etc/udev/scripts/cdsymlinks.sh %k", SYM
 
 # devfs-names for ide-devices (uncomment only one)
 #  /dev/ide/.../{disc,cd} and /dev/{cdroms,discs}/* type names
-BUS="ide", KERNEL="hd*", PROGRAM="/etc/udev/scripts/ide-devfs.sh %k %b %n", NAME="%k", SYMLINK="%c{1} %c{2}", GROUP="disk"
+BUS="ide", KERNEL="hd*", PROGRAM="/etc/udev/scripts/ide-devfs.sh %k %b %n", NAME="%k", SYMLINK="%c{1} %c{2}", GROUP="%c{3}"
 
 # disk devices
 KERNEL="sd*",		NAME="%k", GROUP="disk"
 KERNEL="dasd*",		NAME="%k", GROUP="disk"
 KERNEL="ataraid*",	NAME="%k", GROUP="disk"
 
+# compaq smart array
+KERNEL="cciss*",	PROGRAM="/etc/udev/scripts/raid-devfs.sh %k", NAME="%c{1}", SYMLINK="%k"
+KERNEL="ida*",		PROGRAM="/etc/udev/scripts/raid-devfs.sh %k", NAME="%c{1}", SYMLINK="%k"
+
+# mylex
+KERNEL="rd*",		PROGRAM="/etc/udev/scripts/raid-devfs.sh %k", NAME="%c{1}", SYMLINK="%k"
+
 # dri devices
 KERNEL="card*",		NAME="dri/card%n", GROUP="video"
 KERNEL="nvidia*",	NAME="%k", GROUP="video"
 KERNEL="3dfx*",		NAME="%k", GROUP="video"
 
-# all sound devices go in the audio group
-SUBSYSTEM="sound", GROUP="audio"
-
-# sound devices
-KERNEL="adsp",			NAME="sound/%k", SYMLINK="%k"
-KERNEL="adsp[0-9]*",		NAME="sound/%k", SYMLINK="%k"
-KERNEL="audio",			NAME="sound/%k", SYMLINK="%k"
-KERNEL="audio[0-9]*",		NAME="sound/%k", SYMLINK="%k"
-KERNEL="dsp",			NAME="sound/%k", SYMLINK="%k"
-KERNEL="dsp[0-9]*",		NAME="sound/%k", SYMLINK="%k"
-KERNEL="mixer",			NAME="sound/%k", SYMLINK="%k"
-KERNEL="mixer[0-9]*",		NAME="sound/%k", SYMLINK="%k"
-KERNEL="sequencer",		NAME="sound/%k", SYMLINK="%k"
-KERNEL="sequencer[0-9]*",	NAME="sound/%k", SYMLINK="%k"
-
 # alsa devices
+SUBSYSTEM="sound", GROUP="audio"
 KERNEL="controlC[0-9]*",	NAME="snd/%k"
 KERNEL="hw[CD0-9]*",		NAME="snd/%k"
 KERNEL="pcm[CD0-9cp]*",		NAME="snd/%k"
@@ -130,6 +123,18 @@ KERNEL="ram[0-9]*",	NAME="rd/%n", SYMLINK="%k"
 # raw devices
 KERNEL="raw[0-9]*",	NAME="raw/%k", GROUP="disk"
 KERNEL="ram*",		NAME="%k", GROUP="disk"
+
+# sound devices
+KERNEL="adsp",			NAME="sound/%k", SYMLINK="%k", GROUP="audio"
+KERNEL="adsp[0-9]*",		NAME="sound/%k", SYMLINK="%k", GROUP="audio"
+KERNEL="audio",			NAME="sound/%k", SYMLINK="%k", GROUP="audio"
+KERNEL="audio[0-9]*",		NAME="sound/%k", SYMLINK="%k", GROUP="audio"
+KERNEL="dsp",			NAME="sound/%k", SYMLINK="%k", GROUP="audio"
+KERNEL="dsp[0-9]*",		NAME="sound/%k", SYMLINK="%k", GROUP="audio"
+KERNEL="mixer",			NAME="sound/%k", SYMLINK="%k", GROUP="audio"
+KERNEL="mixer[0-9]*",		NAME="sound/%k", SYMLINK="%k", GROUP="audio"
+KERNEL="sequencer",		NAME="sound/%k", SYMLINK="%k", GROUP="audio"
+KERNEL="sequencer[0-9]*",	NAME="sound/%k", SYMLINK="%k", GROUP="audio"
 
 # tty devices
 KERNEL="console",	NAME="%k", GROUP="tty", MODE="0600"

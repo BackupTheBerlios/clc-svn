@@ -1,13 +1,13 @@
-# $Id: Pkgfile,v 1.3 2005/03/08 22:06:39 danm Exp $
+# $Id: Pkgfile,v 1.4 2005/05/25 20:25:34 danm Exp $
 # Maintainer: Daniel Mueller, daniel at danm dot de
 # URL: http://www.tux.org/~bagleyd/xlockmore.html 
 # Description: X Window System Lock Screen
 # Depends on: x11, esound, freetype, gtk, fortune
 
 name=xlockmore
-version=5.14.1
+version=5.17
 release=1
-source=(ftp://anonymous:crux@ftp.tux.org/pub/tux/bagleyd/$name/$name-$version.tar.bz2)
+source=(ftp://anonymous:crux%40crux.nu@ftp.tux.org/pub/tux/bagleyd/$name/$name-$version.tar.bz2)
 
 build(){
 	cd $name-$version
