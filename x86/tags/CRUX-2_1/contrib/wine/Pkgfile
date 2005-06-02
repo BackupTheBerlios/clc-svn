@@ -1,10 +1,10 @@
-# $Id: Pkgfile,v 1.11 2005/04/20 13:30:58 danielw Exp $
+# $Id: Pkgfile,v 1.12 2005/05/26 02:59:22 danielw Exp $
 # Description: WINE - Implementation of Windows DLL's and core.
 # URL: http://www.winehq.com/
 # Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
 
 name=wine
-version=20050419
+version=20050524
 release=1
 source=(http://dl.sourceforge.net/sourceforge/$name/Wine-$version.tar.gz \
 	wine.inst)

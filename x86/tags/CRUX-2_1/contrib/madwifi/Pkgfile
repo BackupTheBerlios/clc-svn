@@ -1,9 +1,9 @@
-# $Id: Pkgfile,v 1.2 2005/01/24 21:11:14 victord Exp $
+# $Id: Pkgfile,v 1.3 2005/05/27 13:46:15 victord Exp $
 # URL: http://sourceforge.net/projects/madwifi/
 # Description: Multiband Atheros Driver for WiFi (MADWIFI): Linux driver for 802.11a/b/g
 # Packager: Victor <victord@users.berlios.de>
 # Maintainer: Victor <victord@users.berlios.de>
-# Dependencies: linux sharutils cvs
+# Dependencies: sharutils cvs
 
 name=madwifi
 version=0.1.1beta

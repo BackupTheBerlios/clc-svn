@@ -1,4 +1,4 @@
-$Id: README,v 1.1.1.1 2004/08/17 20:01:42 crux Exp $
+$Id: README,v 1.2 2005/05/26 17:40:17 victord Exp $
 
 REQUIREMENTS
 
@@ -26,9 +26,17 @@ PRE-INSTALL
    pkgrm sendmail
    groupadd postdrop
 
-   NOTICE: If upgrading from 1.x.x series STOP postfix before
+   NOTICE: If upgrading from 1.x.x / 2.0 / 2.1 series: STOP postfix before
            update. Read notes on postfix.org website for info and
            release notes.
+
+           AFTER upgrading from an older release DO NOT copy the old
+           master.cf/main.cf files over the new files. Instead, you MUST let
+           the Postfix installation procedure update the existing configuration
+           files with new service entries.
+
+           Please consult postfix release notes on Postfix website
+           for further update details
 
 POST-INSTALL
 

@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.7 2005/04/15 16:30:11 sip Exp $
+# $Id: Pkgfile,v 1.8 2005/05/27 16:40:02 sip Exp $
 # Description: zile is lossy emacs
 # URL: http://zile.sourceforge.net
 # Maintainer: Simone Rota, sip at varlock dot com
@@ -7,7 +7,7 @@
 # Nice to have: texinfo
 
 name=zile
-version=2.0.4
+version=2.0.6
 release=1
 source=(
     http://dl.sourceforge.net/$name/zile-$version.tar.gz

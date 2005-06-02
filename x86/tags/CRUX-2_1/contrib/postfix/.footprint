@@ -1,5 +1,6 @@
 drwxr-xr-x	root/root	etc/
 drwxr-xr-x	root/root	etc/postfix/
+-rw-r--r--	root/root	etc/postfix/TLS_LICENSE
 -rw-r--r--	root/root	etc/postfix/access
 -rw-r--r--	root/root	etc/postfix/access.db (EMPTY)
 -rw-r--r--	root/root	etc/postfix/aliases
@@ -7,6 +8,7 @@ drwxr-xr-x	root/root	etc/postfix/
 -rw-r--r--	root/root	etc/postfix/body-checks (EMPTY)
 -rw-r--r--	root/root	etc/postfix/canonical
 -rw-r--r--	root/root	etc/postfix/canonical.db (EMPTY)
+-rw-r--r--	root/root	etc/postfix/generic
 -rw-r--r--	root/root	etc/postfix/header-checks (EMPTY)
 -rw-r--r--	root/root	etc/postfix/header_checks
 -rw-r--r--	root/root	etc/postfix/main.cf
@@ -33,8 +35,10 @@ lrwxrwxrwx	root/root	usr/bin/mailq -> ../../usr/sbin/sendmail
 lrwxrwxrwx	root/root	usr/bin/newaliases -> ../../usr/sbin/sendmail
 drwxr-xr-x	root/root	usr/lib/
 drwxr-xr-x	root/root	usr/lib/postfix/
+-rwxr-xr-x	root/root	usr/lib/postfix/anvil
 -rwxr-xr-x	root/root	usr/lib/postfix/bounce
 -rwxr-xr-x	root/root	usr/lib/postfix/cleanup
+-rwxr-xr-x	root/root	usr/lib/postfix/discard
 -rwxr-xr-x	root/root	usr/lib/postfix/error
 -rwxr-xr-x	root/root	usr/lib/postfix/flush
 -rwxr-xr-x	root/root	usr/lib/postfix/lmtp
@@ -47,10 +51,12 @@ drwxr-xr-x	root/root	usr/lib/postfix/
 -rwxr-xr-x	root/root	usr/lib/postfix/proxymap
 -rwxr-xr-x	root/root	usr/lib/postfix/qmgr
 -rwxr-xr-x	root/root	usr/lib/postfix/qmqpd
+-rwxr-xr-x	root/root	usr/lib/postfix/scache
 -rwxr-xr-x	root/root	usr/lib/postfix/showq
 -rwxr-xr-x	root/root	usr/lib/postfix/smtp
 -rwxr-xr-x	root/root	usr/lib/postfix/smtpd
 -rwxr-xr-x	root/root	usr/lib/postfix/spawn
+-rwxr-xr-x	root/root	usr/lib/postfix/tlsmgr
 -rwxr-xr-x	root/root	usr/lib/postfix/trivial-rewrite
 -rwxr-xr-x	root/root	usr/lib/postfix/verify
 -rwxr-xr-x	root/root	usr/lib/postfix/virtual
@@ -76,9 +82,12 @@ drwxr-xr-x	root/root	usr/man/man5/
 -rw-r--r--	root/root	usr/man/man5/body_checks.5.gz
 -rw-r--r--	root/root	usr/man/man5/canonical.5.gz
 -rw-r--r--	root/root	usr/man/man5/cidr_table.5.gz
+-rw-r--r--	root/root	usr/man/man5/generic.5.gz
 -rw-r--r--	root/root	usr/man/man5/header_checks.5.gz
 -rw-r--r--	root/root	usr/man/man5/ldap_table.5.gz
+-rw-r--r--	root/root	usr/man/man5/master.5.gz
 -rw-r--r--	root/root	usr/man/man5/mysql_table.5.gz
+-rw-r--r--	root/root	usr/man/man5/nisplus_table.5.gz
 -rw-r--r--	root/root	usr/man/man5/pcre_table.5.gz
 -rw-r--r--	root/root	usr/man/man5/pgsql_table.5.gz
 -rw-r--r--	root/root	usr/man/man5/postconf.5.gz
@@ -87,9 +96,11 @@ drwxr-xr-x	root/root	usr/man/man5/
 -rw-r--r--	root/root	usr/man/man5/transport.5.gz
 -rw-r--r--	root/root	usr/man/man5/virtual.5.gz
 drwxr-xr-x	root/root	usr/man/man8/
+-rw-r--r--	root/root	usr/man/man8/anvil.8.gz
 -rw-r--r--	root/root	usr/man/man8/bounce.8.gz
 -rw-r--r--	root/root	usr/man/man8/cleanup.8.gz
 -rw-r--r--	root/root	usr/man/man8/defer.8.gz
+-rw-r--r--	root/root	usr/man/man8/discard.8.gz
 -rw-r--r--	root/root	usr/man/man8/error.8.gz
 -rw-r--r--	root/root	usr/man/man8/flush.8.gz
 -rw-r--r--	root/root	usr/man/man8/lmtp.8.gz
@@ -101,10 +112,12 @@ drwxr-xr-x	root/root	usr/man/man8/
 -rw-r--r--	root/root	usr/man/man8/proxymap.8.gz
 -rw-r--r--	root/root	usr/man/man8/qmgr.8.gz
 -rw-r--r--	root/root	usr/man/man8/qmqpd.8.gz
+-rw-r--r--	root/root	usr/man/man8/scache.8.gz
 -rw-r--r--	root/root	usr/man/man8/showq.8.gz
 -rw-r--r--	root/root	usr/man/man8/smtp.8.gz
 -rw-r--r--	root/root	usr/man/man8/smtpd.8.gz
 -rw-r--r--	root/root	usr/man/man8/spawn.8.gz
+-rw-r--r--	root/root	usr/man/man8/tlsmgr.8.gz
 -rw-r--r--	root/root	usr/man/man8/trace.8.gz
 -rw-r--r--	root/root	usr/man/man8/trivial-rewrite.8.gz
 -rw-r--r--	root/root	usr/man/man8/verify.8.gz

@@ -1,10 +1,10 @@
-# $Id: Pkgfile,v 1.12 2005/05/08 22:10:35 danm Exp $
+# $Id: Pkgfile,v 1.13 2005/05/26 18:26:47 danm Exp $
 # Description: provides support for IETF Internationalized Domain Names (IDN)
 # URL: http://www.gnu.org/software/libidn/
 # Maintainer: Daniel Mueller, daniel at danm dot de
 
 name=libidn
-version=0.5.16
+version=0.5.17
 release=1
 source=(ftp://alpha.gnu.org/pub/gnu/libidn/libidn-$version.tar.gz)
 
