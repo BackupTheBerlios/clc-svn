@@ -1,10 +1,10 @@
-# $Id: Pkgfile,v 1.6 2005/05/22 20:29:56 jw Exp $
+# $Id: Pkgfile,v 1.7 2005/06/02 12:30:40 jw Exp $
 # Description: A utility to simplify ports searching/installing
 # URL:         http://jw.tks6.net/files/crux/prt-get_quickstart.html
 # Maintainer:  Johannes Winkelmann, jw at tks6 dot net
 
 name=prt-get
-version=0.5.10
+version=0.5.11
 release=1
 source=(http://jw.tks6.net/files/crux/prt-get-$version.tar.gz)
 
@@ -13,6 +13,4 @@ build() {
     ./configure --prefix=/usr
     make
     make DESTDIR=$PKG install
-    mkdir -p $PKG/etc
-    cp src/prt-get.conf $PKG/etc
 }

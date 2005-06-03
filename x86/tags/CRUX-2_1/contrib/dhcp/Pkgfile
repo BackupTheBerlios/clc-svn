@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.5 2005/05/04 22:47:04 danm Exp $
+# $Id: Pkgfile,v 1.6 2005/06/02 19:02:52 danm Exp $
 # Description: The ISC DHCP Server
 # Maintainer: Daniel Mueller, daniel at danm dot de
 # URL: http://www.isc.org/products/DHCP/
 # Depends on:
 
 name=dhcp
-version=3.0.3b2
+version=3.0.3b3
 release=1
 source=(ftp://ftp.isc.org/isc/dhcp/$name-$version.tar.gz \
         dhcpd \
