@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.5 2005/03/31 14:46:52 jue Exp $
+# $Id: Pkgfile,v 1.6 2005/06/03 06:16:29 jue Exp $
 # Description: Utility for incremental file transfers over networks
 # URL:         http://rsync.samba.org
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 # Depends on:  openssh
 
 name=rsync
-version=2.6.4
+version=2.6.5
 release=1
 source=(http://samba.org/ftp/$name/$name-$version.tar.gz \
         rsyncd.conf rsyncd)

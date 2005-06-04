@@ -1,0 +1,70 @@
+diff -Nru evilwm-0.99.18.orig/Makefile evilwm-0.99.18/Makefile
+--- evilwm-0.99.18.orig/Makefile	2005-06-03 07:58:40.000000000 +0200
++++ evilwm-0.99.18/Makefile	2005-06-03 07:59:42.000000000 +0200
+@@ -25,7 +25,7 @@
+ 
+ # Use Motif hints to find if a window should be borderless.
+ # To use this option, you need to have the Motif development files installed.
+-DEFINES += -DMWM_HINTS
++#DEFINES += -DMWM_HINTS
+ 
+ # To support virtual desktops, uncomment the following line.
+ DEFINES += -DVWM
+@@ -56,7 +56,7 @@
+ #DEFINES += -DKEY_KILL=XK_q
+ 
+ # Print whatever debugging messages I've left in this release.
+-DEFINES += -DDEBUG	# miscellaneous debugging
++#DEFINES += -DDEBUG	# miscellaneous debugging
+ 
+ # ----- You shouldn't need to change anything under this line ------ #
+ 
+@@ -64,10 +64,10 @@
+ 
+ distname = evilwm-$(version)
+ 
+-DEFINES += -DXDEBUG	# show some X calls
++#DEFINES += -DXDEBUG	# show some X calls
+ 
+ DEFINES += -DVERSION=\"$(version)\" $(DEBIAN)
+-CFLAGS  += $(INCLUDES) $(DEFINES) -Os -Wall
++CFLAGS  += $(INCLUDES) $(DEFINES) -Wall
+ #CFLAGS  += $(INCLUDES) $(DEFINES) -g -Wall
+ CFLAGS  += -W -Wstrict-prototypes -Wpointer-arith -Wcast-align -Wcast-qual -Wshadow -Waggregate-return -Wnested-externs -Winline -Wwrite-strings -Wundef -Wsign-compare -Wmissing-prototypes -Wredundant-decls
+ LDFLAGS += $(LDPATH) $(LIBS)
+@@ -91,9 +91,9 @@
+ 
+ doinstall:
+ 	if [ -f evilwm.exe ]; then mv evilwm.exe evilwm; fi
+-	mkdir -p $(prefix)/bin $(prefix)/share/man/man1
++	mkdir -p $(prefix)/bin $(prefix)/man/man1
+ 	install -s evilwm $(prefix)/bin
+-	install evilwm.1 $(prefix)/share/man/man1
++	install evilwm.1 $(prefix)/man/man1
+ 	#gzip -9 $(prefix)/share/man/man1/evilwm.1
+ 
+ install: doinstall
+diff -Nru evilwm-0.99.18.orig/evilwm.1 evilwm-0.99.18/evilwm.1
+--- evilwm-0.99.18.orig/evilwm.1	2005-06-03 07:58:40.000000000 +0200
++++ evilwm-0.99.18/evilwm.1	2005-06-03 07:59:01.000000000 +0200
+@@ -62,7 +62,7 @@
+ bottom-right of screen.
+ .IP I
+ Show information about current window.
+-.IP Equals
++.IP V
+ Maximise current window vertically (toggle).
+ .IP X
+ Maximise current window (toggle).
+diff -Nru evilwm-0.99.18.orig/keymap.h evilwm-0.99.18/keymap.h
+--- evilwm-0.99.18.orig/keymap.h	2005-06-03 07:58:40.000000000 +0200
++++ evilwm-0.99.18/keymap.h	2005-06-03 07:59:01.000000000 +0200
+@@ -14,7 +14,7 @@
+ #define KEY_LOWER	XK_Insert
+ #define KEY_ALTLOWER	XK_KP_Insert
+ #define KEY_INFO	XK_i
+-#define KEY_MAXVERT	XK_equal
++#define KEY_MAXVERT	XK_v
+ #define KEY_MAX		XK_x
+ #define KEY_FIX		XK_f
+ #define KEY_PREVDESK	XK_Left
