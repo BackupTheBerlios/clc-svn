@@ -1,12 +1,12 @@
-# $Id: Pkgfile,v 1.3 2005/05/16 16:30:32 danm Exp $
+# $Id: Pkgfile,v 1.4 2005/06/05 14:35:20 danm Exp $
 # Description: Simple Authentication and Security Layer
 # Maintainer: Daniel Mueller, daniel at danm dot de
 # URL: http://asg.web.cmu.edu/sasl/sasl-library.html
 # Depends on: db, openssl
 
 name=cyrus-sasl
-version=2.1.20
-release=3
+version=2.1.21
+release=1
 source=(http://ftp.andrew.cmu.edu/pub/cyrus-mail/$name-$version.tar.gz \
 	$name-$version.patch \
         saslauthd)

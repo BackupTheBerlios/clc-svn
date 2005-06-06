@@ -1,0 +1,29 @@
+# $Id: Pkgfile,v 1.2 2005/06/05 15:12:20 jw Exp $
+# Description: Mesa 3D Graphics Library
+# URL:         http://www.mesa3d.org/
+# Maintainer:  Johannes Winkelmann, jw at tks6 dot net
+# Depends on:  x11,libglut
+
+name=mesa3d
+version=6.2.1
+release=1
+source=(http://dl.sourceforge.net/$name/MesaLib-$version.tar.gz \
+	http://dl.sourceforge.net/$name/MesaDemos-$version.tar.gz \
+	installmesa-nointeract.diff \
+	libGL.la)
+
+build() {
+    cd Mesa-$version
+    patch -p1 < $SRC/installmesa-nointeract.diff
+
+    rm -r src/glut
+
+    make linux-x86
+    INCLUDE_DIR=$PKG/usr/include LIB_DIR=$PKG/usr/lib bin/installmesa
+ 
+    # provided by x11 / libglut
+    for f in gl.h glext.h glu.h glx.h glxext.h osmesa.h glut*.h; do
+        rm $PKG/usr/include/GL/$f
+    done
+    cp $SRC/libGL.la $PKG/usr/lib
+}

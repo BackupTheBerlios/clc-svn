@@ -6,11 +6,11 @@ drwxr-xr-x	root/root	usr/bin/
 -rwxr-xr-x	root/root	usr/bin/opera
 drwxr-xr-x	root/root	usr/lib/
 drwxr-xr-x	root/root	usr/lib/opera/
-drwxr-xr-x	root/root	usr/lib/opera/8.0-20050415.6/
--rwxr-xr-x	root/root	usr/lib/opera/8.0-20050415.6/missingsyms.so
--rwxr-xr-x	root/root	usr/lib/opera/8.0-20050415.6/opera
--rwxr-xr-x	root/root	usr/lib/opera/8.0-20050415.6/spellcheck.so
--rwxr-xr-x	root/root	usr/lib/opera/8.0-20050415.6/works
+drwxr-xr-x	root/root	usr/lib/opera/8.01-20050602.5/
+-rwxr-xr-x	root/root	usr/lib/opera/8.01-20050602.5/missingsyms.so
+-rwxr-xr-x	root/root	usr/lib/opera/8.01-20050602.5/opera
+-rwxr-xr-x	root/root	usr/lib/opera/8.01-20050602.5/spellcheck.so
+-rwxr-xr-x	root/root	usr/lib/opera/8.01-20050602.5/works
 drwxr-xr-x	root/root	usr/lib/opera/plugins/
 -rwxr-xr-x	root/root	usr/lib/opera/plugins/libnpp.so
 -rwxr-xr-x	root/root	usr/lib/opera/plugins/operamotifwrapper-1
@@ -23,7 +23,6 @@ drwxr-xr-x	root/root	usr/share/opera/
 drwxr-xr-x	root/root	usr/share/opera/config/
 -rw-r--r--	root/root	usr/share/opera/config/opera6rc
 -rw-r--r--	root/root	usr/share/opera/config/opera6rc.fixed
--rw-r--r--	root/root	usr/share/opera/hhd.ssr
 -rw-r--r--	root/root	usr/share/opera/html40_entities.dtd
 drwxr-xr-x	root/root	usr/share/opera/images/
 -rw-r--r--	root/root	usr/share/opera/images/blank.gif
