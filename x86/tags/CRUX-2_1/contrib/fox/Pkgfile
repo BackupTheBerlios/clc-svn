@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.8 2005/04/19 12:34:21 sip Exp $
+# $Id: Pkgfile,v 1.9 2005/06/07 15:40:53 sip Exp $
 # Description: FOX Toolkit, a nice GUI C++ toolkit
 # URL: http://www.fox-toolkit.org
 # Maintainer: Simone Rota, sip at varlock dot com
@@ -6,7 +6,7 @@
 # Depends on: x11, libtiff
 
 name=fox
-version=1.4.12
+version=1.4.15
 release=1
 source=(http://www.fox-toolkit.org/ftp/$name-$version.tar.gz)
 
