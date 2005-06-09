@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.6 2005/05/01 12:03:48 sten Exp $
+# $Id: Pkgfile,v 1.7 2005/06/08 22:17:16 victord Exp $
 # Description: A lightweight window manager
 # URL: http://fluxbox.sourceforge.net/
 # Maintainer: Victor, victor at v600 dot net
@@ -6,7 +6,7 @@
 # Depends on:
 
 name=fluxbox
-version=0.9.12
+version=0.9.13
 release=1
 source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.bz2)
 

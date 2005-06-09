@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.2 2005/06/07 14:03:49 vector Exp $
+# $Id: Pkgfile,v 1.3 2005/06/08 04:35:11 vector Exp $
 # Description: Small and fast music player using the ncurses library
 # URL: http://onion.dynserv.net/~timo/index.php?page=Projects/cmus
 # Maintainer: Jukka Heino, jukka at karsikkopuu dot net
@@ -7,7 +7,7 @@
 # Nice to have: alsa-lib, flac, libid3tag, libmad, libmodplug, libvorbis
 
 name=cmus
-version=1.4.3
+version=1.4.4
 release=1
 source=(http://onion.dynserv.net/~timo/files/$name-$version.tar.bz2)
 
