@@ -1,5 +1,6 @@
 drwxr-xr-x	root/root	usr/
 drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/atlantikdesigner
 -rwxr-xr-x	root/root	usr/bin/exif.py
 -rwxr-xr-x	root/root	usr/bin/fsview
 -rwxr-xr-x	root/root	usr/bin/jpegorient
@@ -154,6 +155,7 @@ lrwxrwxrwx	root/root	usr/lib/libxvim.so.0 -> libxvim.so.0.0.0
 drwxr-xr-x	root/root	usr/share/
 drwxr-xr-x	root/root	usr/share/applications/
 drwxr-xr-x	root/root	usr/share/applications/kde/
+-rw-r--r--	root/root	usr/share/applications/kde/atlantikdesigner.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/kcmvim.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/ksig.desktop
 drwxr-xr-x	root/root	usr/share/applnk/
@@ -169,6 +171,8 @@ drwxr-xr-x	root/root	usr/share/apps/
 drwxr-xr-x	root/root	usr/share/apps/akregator/
 drwxr-xr-x	root/root	usr/share/apps/akregator/pics/
 -rw-r--r--	root/root	usr/share/apps/akregator/pics/rss.png
+drwxr-xr-x	root/root	usr/share/apps/atlantikdesigner/
+-rw-r--r--	root/root	usr/share/apps/atlantikdesigner/atlantikdesignerui.rc
 drwxr-xr-x	root/root	usr/share/apps/domtreeviewer/
 -rw-r--r--	root/root	usr/share/apps/domtreeviewer/domtreeviewerui.rc
 drwxr-xr-x	root/root	usr/share/apps/fsview/
@@ -368,6 +372,7 @@ drwxr-xr-x	root/root	usr/share/icons/crystalsvg/16x16/actions/
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/actions/validators.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/actions/webarchiver.png
 drwxr-xr-x	root/root	usr/share/icons/crystalsvg/16x16/apps/
+-rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/apps/atlantikdesigner.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/apps/konqsidebar_mediaplayer.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/apps/konqsidebar_news.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/apps/ktimemon.png
@@ -385,6 +390,7 @@ drwxr-xr-x	root/root	usr/share/icons/crystalsvg/22x22/apps/
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/22x22/apps/konqsidebar_mediaplayer.png
 drwxr-xr-x	root/root	usr/share/icons/crystalsvg/32x32/
 drwxr-xr-x	root/root	usr/share/icons/crystalsvg/32x32/apps/
+-rw-r--r--	root/root	usr/share/icons/crystalsvg/32x32/apps/atlantikdesigner.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/32x32/apps/konqsidebar_mediaplayer.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/32x32/apps/ktimemon.png
 drwxr-xr-x	root/root	usr/share/icons/crystalsvg/48x48/

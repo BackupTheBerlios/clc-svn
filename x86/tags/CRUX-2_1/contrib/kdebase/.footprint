@@ -54,6 +54,7 @@ lrwxrwxrwx	root/root	usr/bin/kinfocenter -> kcontrol
 -rwxr-xr-x	root/root	usr/bin/klocaldomainurifilterhelper
 -rwxr-xr-x	root/root	usr/bin/kmenuedit
 -rwxr-xr-x	root/root	usr/bin/knetattach
+-rwxr-xr-x	root/root	usr/bin/kompmgr
 -rwxr-xr-x	root/root	usr/bin/konqueror
 -rwxr-xr-x	root/root	usr/bin/konsole
 -rwxr-xr-x	root/root	usr/bin/kpager
@@ -239,6 +240,8 @@ drwxr-xr-x	root/root	usr/lib/kde3/
 -rwxr-xr-x	root/root	usr/lib/kde3/kcm_kded.so
 -rwxr-xr-x	root/root	usr/lib/kde3/kcm_kdm.la
 -rwxr-xr-x	root/root	usr/lib/kde3/kcm_kdm.so
+-rwxr-xr-x	root/root	usr/lib/kde3/kcm_kdnssd.la
+-rwxr-xr-x	root/root	usr/lib/kde3/kcm_kdnssd.so
 -rwxr-xr-x	root/root	usr/lib/kde3/kcm_keyboard.la
 -rwxr-xr-x	root/root	usr/lib/kde3/kcm_keyboard.so
 -rwxr-xr-x	root/root	usr/lib/kde3/kcm_keys.la
@@ -681,6 +684,7 @@ drwxr-xr-x	root/root	usr/share/applications/kde/
 -rw-r--r--	root/root	usr/share/applications/kde/joystick.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/kappfinder.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/kate.desktop
+-rw-r--r--	root/root	usr/share/applications/kde/kcm_kdnssd.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/kcm_useraccount.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/kcmaccess.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/kcmcgi.desktop
@@ -711,6 +715,7 @@ drwxr-xr-x	root/root	usr/share/applications/kde/
 -rw-r--r--	root/root	usr/share/applications/kde/khtml_fonts.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/khtml_java_js.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/khtml_plugins.desktop
+-rw-r--r--	root/root	usr/share/applications/kde/kinfocenter.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/kjobviewer.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/klipper.desktop
 -rw-r--r--	root/root	usr/share/applications/kde/kmenuedit.desktop
@@ -787,7 +792,6 @@ drwxr-xr-x	root/root	usr/share/applnk/.hidden/
 -rw-r--r--	root/root	usr/share/applnk/.hidden/xinerama.desktop
 drwxr-xr-x	root/root	usr/share/applnk/Internet/
 -rw-r--r--	root/root	usr/share/applnk/Internet/keditbookmarks.desktop
--rw-r--r--	root/root	usr/share/applnk/KControl.desktop
 drwxr-xr-x	root/root	usr/share/applnk/Settings/
 drwxr-xr-x	root/root	usr/share/applnk/Settings/Information/
 drwxr-xr-x	root/root	usr/share/applnk/Settings/LookNFeel/
@@ -807,7 +811,6 @@ drwxr-xr-x	root/root	usr/share/applnk/System/ScreenSavers/
 -rw-r--r--	root/root	usr/share/applnk/System/ScreenSavers/KBlankscreen.desktop
 -rw-r--r--	root/root	usr/share/applnk/System/ScreenSavers/KRandom.desktop
 -rw-r--r--	root/root	usr/share/applnk/System/kappfinder.desktop
--rw-r--r--	root/root	usr/share/applnk/System/kinfocenter.desktop
 -rw-r--r--	root/root	usr/share/applnk/System/kmenuedit.desktop
 -rw-r--r--	root/root	usr/share/applnk/System/kpersonalizer.desktop
 drwxr-xr-x	root/root	usr/share/applnk/Toys/
@@ -1442,6 +1445,7 @@ drwxr-xr-x	root/root	usr/share/apps/kfontview/
 drwxr-xr-x	root/root	usr/share/apps/khelpcenter/
 -rw-r--r--	root/root	usr/share/apps/khelpcenter/glossary.html.in
 -rw-r--r--	root/root	usr/share/apps/khelpcenter/glossary.xslt
+-rw-r--r--	root/root	usr/share/apps/khelpcenter/index.html.in
 -rw-r--r--	root/root	usr/share/apps/khelpcenter/intro.html.in
 -rw-r--r--	root/root	usr/share/apps/khelpcenter/khelpcenterui.rc
 drwxr-xr-x	root/root	usr/share/apps/khelpcenter/plugins/
@@ -1846,8 +1850,10 @@ drwxr-xr-x	root/root	usr/share/apps/konsole/icons/
 drwxr-xr-x	root/root	usr/share/apps/konsole/icons/crystalsvg/
 drwxr-xr-x	root/root	usr/share/apps/konsole/icons/crystalsvg/16x16/
 drwxr-xr-x	root/root	usr/share/apps/konsole/icons/crystalsvg/16x16/actions/
+-rw-r--r--	root/root	usr/share/apps/konsole/icons/crystalsvg/16x16/actions/activity.png
 -rw-r--r--	root/root	usr/share/apps/konsole/icons/crystalsvg/16x16/actions/opentermblue.png
 -rw-r--r--	root/root	usr/share/apps/konsole/icons/crystalsvg/16x16/actions/opentermred.png
+-rw-r--r--	root/root	usr/share/apps/konsole/icons/crystalsvg/16x16/actions/silence.png
 drwxr-xr-x	root/root	usr/share/apps/konsole/icons/crystalsvg/22x22/
 drwxr-xr-x	root/root	usr/share/apps/konsole/icons/crystalsvg/22x22/actions/
 -rw-r--r--	root/root	usr/share/apps/konsole/icons/crystalsvg/22x22/actions/opentermblue.png

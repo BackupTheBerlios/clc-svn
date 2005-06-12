@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.7 2005/05/20 23:43:31 sten Exp $
+# $Id: Pkgfile,v 1.8 2005/06/11 12:58:28 sten Exp $
 # Description: Web development apps for the KDE integrated X11 desktop 
 # URL: http://www.kde.org
 # Maintainer: sten, nick dot steeves at shaw dot ca
@@ -6,19 +6,17 @@
 # Depends on: kdelibs, kdebase
 
 name=kdewebdev
-version=3.4.0
-release=3
-source=(http://download.kde.org/stable/3.4/src/$name-$version.tar.bz2 \
-ftp://ftp.kde.org/pub/kde/security_patches/post-3.4.0-kdewebdev-kommander-fixed.diff)
+version=3.4.1
+release=1
+source=(http://download.kde.org/stable/3.4.1/src/$name-$version.tar.bz2)
 
 build () {
-    cd $name-$version
-    patch -p0 < ../post-3.4.0-kdewebdev-kommander-fixed.diff        
-    ./configure --prefix=/usr \
+	cd $name-$version
+	./configure	--prefix=/usr \
 				--disable-debug \
 				--disable-dependency-tracking \
 				--enable-final
-    make
-    make DESTDIR=$PKG install
-    rm -rf $PKG/usr/share/doc
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/doc
 }

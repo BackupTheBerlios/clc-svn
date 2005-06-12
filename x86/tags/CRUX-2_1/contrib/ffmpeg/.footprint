@@ -17,11 +17,18 @@ drwxr-xr-x	root/root	usr/include/postproc/
 -rw-r--r--	root/root	usr/include/postproc/postprocess.h
 drwxr-xr-x	root/root	usr/lib/
 -rwxr-xr-x	root/root	usr/lib/libavcodec-0.4.9-pre1.so
+-rw-r--r--	root/root	usr/lib/libavcodec.a
 lrwxrwxrwx	root/root	usr/lib/libavcodec.so -> libavcodec-0.4.9-pre1.so
 -rwxr-xr-x	root/root	usr/lib/libavformat-0.4.9-pre1.so
+-rw-r--r--	root/root	usr/lib/libavformat.a
 lrwxrwxrwx	root/root	usr/lib/libavformat.so -> libavformat-0.4.9-pre1.so
 lrwxrwxrwx	root/root	usr/lib/libpostproc.so -> libpostproc.so.0.0.1
+lrwxrwxrwx	root/root	usr/lib/libpostproc.so.0 -> libpostproc.so.0.0.1
 -rwxr-xr-x	root/root	usr/lib/libpostproc.so.0.0.1
+drwxr-xr-x	root/root	usr/lib/pkgconfig/
+-rw-r--r--	root/root	usr/lib/pkgconfig/libavcodec.pc
+-rw-r--r--	root/root	usr/lib/pkgconfig/libavformat.pc
+-rw-r--r--	root/root	usr/lib/pkgconfig/libpostproc.pc
 drwxr-xr-x	root/root	usr/lib/vhook/
 -rwxr-xr-x	root/root	usr/lib/vhook/drawtext.so
 -rwxr-xr-x	root/root	usr/lib/vhook/fish.so

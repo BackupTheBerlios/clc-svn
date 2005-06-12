@@ -1,4 +1,4 @@
-# $Id: README,v 1.11 2005/05/08 13:10:37 sten Exp $
+# $Id: README,v 1.12 2005/06/11 12:58:29 sten Exp $
 
 Since KDE has way too many compilation requirements, I would like to
 inform you about the PKGMK_IGNORE_FOOTPRINT variable in /etc/pkgmk.conf.
@@ -172,12 +172,11 @@ KDE development stuff:
 	kdevelop 
 	kdewebdev
 
-I recommend you to run 'ldconfig' after the installation of new libraries.
 
 Announcement
-[1] http://www.kde.org/announcements/announce-3.4.php
+[1] http://www.kde.org/announcements/announce-3.4.1.php
 
-KDE 3.4 Requirements, Recommendations and Options
+KDE 3.4.1 Requirements, Recommendations and Options
 [2] http://www.kde.org/info/requirements/3.4.php
 
 

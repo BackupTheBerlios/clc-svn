@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.15 2005/05/20 23:16:52 sten Exp $
+# $Id: Pkgfile,v 1.16 2005/06/11 12:58:29 sten Exp $
 # Description: Base set of libraries needed by KDE programs
 # URL: http://www.kde.org
 # Maintainer: sten, nick dot steeves at shaw dot ca
@@ -6,31 +6,27 @@
 # Depends on: perl, db, libidn, imlib, libglut, libart_lgpl, qt3, audiofile, libxml2, libxslt, libpcre, openssl, aspell, gnupg, gpgme, fam, cups, openldap, arts
 
 name=kdelibs
-version=3.4.0
-release=4
-source=(http://download.kde.org/stable/3.4/src/$name-$version.tar.bz2 \
-	ftp://ftp.kde.org/pub/kde/security_patches/post-3.4.0-kdelibs-kimgio-fixed.diff http://www.kde-look.org/content/files/10888-bt.tar.gz)
+version=3.4.1
+release=1
+source=(http://download.kde.org/stable/3.4.1/src/$name-$version.tar.bz2 \
+		http://www.kde-look.org/content/files/10888-bt.tar.gz)
 
 build () {
 	cd $name-$version
-    (
-        cd kimgio
-        patch -p0 < ../../post-3.4.0-kdelibs-kimgio-fixed.diff
-    )
-    ./configure --prefix=/usr \
-                --with-ssl \
-                --enable-mitshm \
-                --disable-debug \
-                --disable-dependency-tracking \
-                --enable-final \
-                --enable-dnotify \
-                --enable-libfam \
-                --with-alsa 
-    make
-    make DESTDIR=$PKG install
-    cd ../bt
-    cp -r * $PKG/usr/share/icons/crystalsvg/
-    echo Icon=bt >> $PKG/usr/share/mimelnk/application/x-bittorrent.desktop
-    rm -f $PKG/usr/include/ltdl.h
-    rm -rf $PKG/usr/share/doc $PKG/usr/share/apps/LICENSES
+	./configure	--prefix=/usr \
+				--with-ssl \
+				--enable-mitshm \
+				--disable-debug \
+				--disable-dependency-tracking \
+				--enable-final \
+				--enable-dnotify \
+				--enable-libfam \
+				--with-alsa 
+	make
+	make DESTDIR=$PKG install
+	cd ../bt
+	cp -r * $PKG/usr/share/icons/crystalsvg/
+	echo Icon=bt >> $PKG/usr/share/mimelnk/application/x-bittorrent.desktop
+	rm -f $PKG/usr/include/ltdl.h
+	rm -rf $PKG/usr/share/doc $PKG/usr/share/apps/LICENSES
 }

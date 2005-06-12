@@ -92,6 +92,9 @@ drwxr-xr-x	root/root	usr/share/apps/klinkstatuspart/
 -rw-r--r--	root/root	usr/share/apps/klinkstatuspart/klinkstatus_part.rc
 drwxr-xr-x	root/root	usr/share/apps/klinkstatuspart/pics/
 -rw-r--r--	root/root	usr/share/apps/klinkstatuspart/pics/304.png
+drwxr-xr-x	root/root	usr/share/apps/kmdr-editor/
+drwxr-xr-x	root/root	usr/share/apps/kmdr-editor/pics/
+-rw-r--r--	root/root	usr/share/apps/kmdr-editor/pics/kommandersplash.png
 drwxr-xr-x	root/root	usr/share/apps/kxsldbg/
 -rw-r--r--	root/root	usr/share/apps/kxsldbg/kxsldbg_shell.rc
 drwxr-xr-x	root/root	usr/share/apps/kxsldbgpart/

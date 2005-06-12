@@ -661,7 +661,6 @@ drwxr-xr-x	root/root	usr/include/kspell2/
 -rw-r--r--	root/root	usr/include/kstringvalidator.h
 -rw-r--r--	root/root	usr/include/kstyle.h
 -rw-r--r--	root/root	usr/include/ksvgiconengine.h
--rw-r--r--	root/root	usr/include/kswap.h
 -rw-r--r--	root/root	usr/include/ksycoca.h
 -rw-r--r--	root/root	usr/include/ksycocaentry.h
 -rw-r--r--	root/root	usr/include/ksycocatype.h
@@ -3350,6 +3349,7 @@ drwxr-xr-x	root/root	usr/share/icons/crystalsvg/16x16/actions/
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/actions/editpaste.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/actions/editshred.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/actions/edittrash.png
+-rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/actions/emptytrash.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/actions/encrypted.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/actions/eraser.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/16x16/actions/exec.png
@@ -3764,6 +3764,7 @@ drwxr-xr-x	root/root	usr/share/icons/crystalsvg/22x22/actions/
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/22x22/actions/editpaste.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/22x22/actions/editshred.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/22x22/actions/edittrash.png
+-rw-r--r--	root/root	usr/share/icons/crystalsvg/22x22/actions/emptytrash.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/22x22/actions/encrypted.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/22x22/actions/eraser.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/22x22/actions/exec.png
@@ -4105,6 +4106,7 @@ drwxr-xr-x	root/root	usr/share/icons/crystalsvg/32x32/actions/
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/32x32/actions/editpaste.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/32x32/actions/editshred.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/32x32/actions/edittrash.png
+-rw-r--r--	root/root	usr/share/icons/crystalsvg/32x32/actions/emptytrash.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/32x32/actions/encrypted.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/32x32/actions/exec.png
 -rw-r--r--	root/root	usr/share/icons/crystalsvg/32x32/actions/exit.png

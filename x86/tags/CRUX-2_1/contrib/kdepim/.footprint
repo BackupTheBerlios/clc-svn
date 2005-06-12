@@ -29,7 +29,6 @@ drwxr-xr-x	root/root	usr/bin/
 -rwxr-xr-x	root/root	usr/bin/kontact
 -rwxr-xr-x	root/root	usr/bin/korgac
 -rwxr-xr-x	root/root	usr/bin/korganizer
--rwxr-xr-x	root/root	usr/bin/korganizerIn
 -rwxr-xr-x	root/root	usr/bin/korn
 -rwxr-xr-x	root/root	usr/bin/kpalmdoc
 -rwxr-xr-x	root/root	usr/bin/kpilot
@@ -189,7 +188,6 @@ drwxr-xr-x	root/root	usr/include/kpilot/
 -rw-r--r--	root/root	usr/include/kpilot/pilotRecord.h
 -rw-r--r--	root/root	usr/include/kpilot/pilotSerialDatabase.h
 -rw-r--r--	root/root	usr/include/kpilot/plugin.h
--rw-r--r--	root/root	usr/include/kpilot/recordConduit.h
 -rw-r--r--	root/root	usr/include/kpilot/syncAction.h
 -rw-r--r--	root/root	usr/include/kpilot/uiDialog.h
 drwxr-xr-x	root/root	usr/include/ksieve/
@@ -524,9 +522,9 @@ drwxr-xr-x	root/root	usr/lib/kde3/plugins/designer/
 -rwxr-xr-x	root/root	usr/lib/libakregatorprivate.la
 -rwxr-xr-x	root/root	usr/lib/libakregatorprivate.so
 -rwxr-xr-x	root/root	usr/lib/libgpgme++.la
-lrwxrwxrwx	root/root	usr/lib/libgpgme++.so -> libgpgme++.so.0.1.0
-lrwxrwxrwx	root/root	usr/lib/libgpgme++.so.0 -> libgpgme++.so.0.1.0
--rwxr-xr-x	root/root	usr/lib/libgpgme++.so.0.1.0
+lrwxrwxrwx	root/root	usr/lib/libgpgme++.so -> libgpgme++.so.0.2.0
+lrwxrwxrwx	root/root	usr/lib/libgpgme++.so.0 -> libgpgme++.so.0.2.0
+-rwxr-xr-x	root/root	usr/lib/libgpgme++.so.0.2.0
 -rwxr-xr-x	root/root	usr/lib/libkabc_groupdav.la
 lrwxrwxrwx	root/root	usr/lib/libkabc_groupdav.so -> libkabc_groupdav.so.1.0.0
 lrwxrwxrwx	root/root	usr/lib/libkabc_groupdav.so.1 -> libkabc_groupdav.so.1.0.0
@@ -782,6 +780,9 @@ drwxr-xr-x	root/root	usr/share/apps/akregator/about/
 -rw-r--r--	root/root	usr/share/apps/akregator/pageviewer.rc
 drwxr-xr-x	root/root	usr/share/apps/akregator/pics/
 -rw-r--r--	root/root	usr/share/apps/akregator/pics/akregator_flag.png
+-rw-r--r--	root/root	usr/share/apps/akregator/pics/kmmsgflag.png
+-rw-r--r--	root/root	usr/share/apps/akregator/pics/kmmsgnew.png
+-rw-r--r--	root/root	usr/share/apps/akregator/pics/kmmsgunseen.png
 drwxr-xr-x	root/root	usr/share/apps/kaddressbook/
 -rw-r--r--	root/root	usr/share/apps/kaddressbook/bookmark_xxportui.rc
 drwxr-xr-x	root/root	usr/share/apps/kaddressbook/contacteditorpages/
@@ -890,6 +891,7 @@ drwxr-xr-x	root/root	usr/share/apps/kconf_update/
 -rwxr-xr-x	root/root	usr/share/apps/kconf_update/kmail-3.3-use-ID-for-accounts.pl
 -rwxr-xr-x	root/root	usr/share/apps/kconf_update/kmail-3.3b1-misc.pl
 -rwxr-xr-x	root/root	usr/share/apps/kconf_update/kmail-3.4-misc.pl
+-rwxr-xr-x	root/root	usr/share/apps/kconf_update/kmail-3.4.1-update-status-filters.pl
 -rwxr-xr-x	root/root	usr/share/apps/kconf_update/kmail-pgpidentity.pl
 -rwxr-xr-x	root/root	usr/share/apps/kconf_update/kmail-upd-identities.pl
 -rw-r--r--	root/root	usr/share/apps/kconf_update/kmail.upd

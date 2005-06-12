@@ -1,5 +1,5 @@
 drwxr-xr-x	root/root	etc/
--rwxr-xr-x	root/root	etc/lisa.conf
+-rw-r--r--	root/root	etc/lisa.conf
 drwxr-xr-x	root/root	etc/rc.d/
 -rwxr-xr-x	root/root	etc/rc.d/lisa
 drwxr-xr-x	root/root	usr/
@@ -52,6 +52,7 @@ drwxr-xr-x	root/root	usr/include/kopete/
 -rw-r--r--	root/root	usr/include/kopete/kopetemetacontact.h
 -rw-r--r--	root/root	usr/include/kopete/kopetemimetypehandler.h
 -rw-r--r--	root/root	usr/include/kopete/kopetenotifyclient.h
+-rw-r--r--	root/root	usr/include/kopete/kopetenotifydataobject.h
 -rw-r--r--	root/root	usr/include/kopete/kopeteonlinestatus.h
 -rw-r--r--	root/root	usr/include/kopete/kopeteonlinestatusmanager.h
 -rw-r--r--	root/root	usr/include/kopete/kopetepassword.h
@@ -306,7 +307,6 @@ drwxr-xr-x	root/root	usr/share/apps/kget/icons/crystalsvg/22x22/actions/
 -rw-r--r--	root/root	usr/share/apps/kget/icons/crystalsvg/22x22/actions/dock.png
 -rw-r--r--	root/root	usr/share/apps/kget/icons/crystalsvg/22x22/actions/tool_clipboard.png
 -rw-r--r--	root/root	usr/share/apps/kget/icons/crystalsvg/22x22/actions/tool_delay.png
--rw-r--r--	root/root	usr/share/apps/kget/icons/crystalsvg/22x22/actions/tool_delete.png
 -rw-r--r--	root/root	usr/share/apps/kget/icons/crystalsvg/22x22/actions/tool_disconnect.png
 -rw-r--r--	root/root	usr/share/apps/kget/icons/crystalsvg/22x22/actions/tool_dock.png
 -rw-r--r--	root/root	usr/share/apps/kget/icons/crystalsvg/22x22/actions/tool_drop_target.png
@@ -1380,12 +1380,15 @@ drwxr-xr-x	root/root	usr/share/apps/kppp/Rules/Israel/
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Israel/Bezeq_Interurban.rst
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Israel/Bezeq_Local.rst
 drwxr-xr-x	root/root	usr/share/apps/kppp/Rules/Italy/
+-rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Atlanet.rst
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Infostrada_Internet_SpZero.rst
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Infostrada_Libero1055_Base.rst
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Infostrada_Libero1055_SpZero.rst
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Infostrada_Loc_Reg_Naz_SpZero.rst
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Infostrada_Locali_Base.rst
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Infostrada_Reg_Naz_Base.rst
+-rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Tele2_Altri_ISP.rst
+-rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Tele2_Internet_Tele2.rst
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Telecom_Interurbane_Fino15Km.rst
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Telecom_Interurbane_Oltre15Km.rst
 -rw-r--r--	root/root	usr/share/apps/kppp/Rules/Italy/Telecom_Locali.rst

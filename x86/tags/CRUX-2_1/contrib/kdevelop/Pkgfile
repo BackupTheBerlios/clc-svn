@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.4 2005/03/17 23:30:23 sten Exp $
+# $Id: Pkgfile,v 1.5 2005/06/11 12:58:28 sten Exp $
 # Description: an IDE for KDE with support for many languages, and toolkits
 # URL: http://www.kdevelop.org/
 # Maintainer: sten, nick dot steeves at shaw dot ca
@@ -8,18 +8,18 @@
 
 name=kdevelop
 version=3.2.0
-release=1
-source=(ftp://ftp.kde.org/pub/kde/stable/3.4/src/$name-$version.tar.bz2)
+release=2
+source=(ftp://ftp.kde.org/pub/kde/stable/3.4.1/src/$name-$version.tar.bz2)
 
 build () {
-    cd $name-$version
-    ./configure --prefix=/usr \
+	cd $name-$version
+	./configure	--prefix=/usr \
 				--disable-debug \
 				--disable-dependency-tracking \
 				--enable-final
-    make
-    make DESTDIR=$PKG install
-    rm -rf $PKG/usr/share/{doc,locale}
-    # conflicts with kdesdk
-    rm -rf $PKG/usr/bin/extractrc
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/{doc,locale}
+	# conflicts with kdesdk
+	rm -rf $PKG/usr/bin/extractrc
 }

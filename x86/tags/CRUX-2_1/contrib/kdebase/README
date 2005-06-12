@@ -1,4 +1,4 @@
-# $Id: README,v 1.11 2005/05/01 07:25:10 sten Exp $
+# $Id: README,v 1.12 2005/06/11 12:58:28 sten Exp $
 
 Since KDE has way too many compilation requirements, I would like to
 inform you about the PKGMK_IGNORE_FOOTPRINT variable in /etc/pkgmk.conf.
@@ -70,10 +70,10 @@ Multimedia extensions
     libogg          	(standard)
 
 	cdparanoia			(recommended)
-	* cdaudio ripping support for konqueror
+	* cdaudio ripping support
 
 	lame				(recommended)
-	* mp3/ogg converter support for konqueror
+	* mp3/ogg converter support
 
 	libmad				(recommended)
 	* for superior mp3 playback quality
@@ -81,7 +81,7 @@ Multimedia extensions
 	libmusicbrainz		(recommended)
 	taglib				(recommended)
 	libtunepimp			(recommended)
-	* these three are required to build Juk
+		* these three are required to build Juk
 
 	flac                (optional)
 
@@ -123,16 +123,17 @@ Other extensions
 	ghostscript			(recommended)
 	* printer driver for cups, PostScript/PDF support for KDE
 
-	openldap			(recommended)
-	* ldap support for KDE
-
 	python				(recommended)
 	* some KDE components use Python as a scripting engine
 
-	xpdf				(recommended)
-	* for significantly improved PDF support
+	openldap			(optional)
+	* allows the address book and some PIM applications to access an LDAP
+	  server	
 
-	pilot-link			(Recommended)
+	xpdf				(optional)
+	* provides enhanced information about PDF file via /usr/bin/pdfinfo
+
+	pilot-link			(optional)
 	* needed for KPilot
 		- syncronizes Palm with the Kontact infrastructure
 
@@ -171,15 +172,14 @@ KDE development stuff:
 	kdevelop 
 	kdewebdev
 
-I recommend you to run 'ldconfig' after the installation of new libraries.
 
 Announcement
-[1] http://lists.kde.org/?l=kde-announce&m=110943281419778&w=2
+[1] http://www.kde.org/announcements/announce-3.4.1.php
 
-KDE 3.4 Requirements, Recommendations and Options
+KDE 3.4.1 Requirements, Recommendations and Options
 [2] http://www.kde.org/info/requirements/3.4.php
 
 
 Daniel Mueller
 --
-edited by Nick Steeves
+updated by Nick Steeves

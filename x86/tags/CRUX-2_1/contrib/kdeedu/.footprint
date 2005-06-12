@@ -534,6 +534,7 @@ drwxr-xr-x	root/root	usr/share/apps/klettres/en/syllab/
 -rw-r--r--	root/root	usr/share/apps/klettres/en/syllab/sit.ogg
 -rw-r--r--	root/root	usr/share/apps/klettres/en/syllab/sky.ogg
 -rw-r--r--	root/root	usr/share/apps/klettres/en/syllab/th.ogg
+-rw-r--r--	root/root	usr/share/apps/klettres/es.txt
 drwxr-xr-x	root/root	usr/share/apps/klettres/fr/
 drwxr-xr-x	root/root	usr/share/apps/klettres/fr/alpha/
 -rw-r--r--	root/root	usr/share/apps/klettres/fr/alpha/a-0.ogg
