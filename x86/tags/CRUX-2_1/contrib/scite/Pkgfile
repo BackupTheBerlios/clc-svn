@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.7 2005/04/06 07:12:36 jue Exp $
+# $Id: Pkgfile,v 1.8 2005/06/12 09:18:17 jue Exp $
 # Description: Editor based on the Scintilla editing component
 # URL:         http://www.scintilla.org/
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
-# Depends on:  gtk
+# Depends on:  gtk, hicolor-icon-theme
 
 name=scite
-version=163
+version=164
 release=1
 source=(http://dl.sourceforge.net/sourceforge/scintilla/$name$version.tgz)
 

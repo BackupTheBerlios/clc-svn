@@ -1,0 +1,28 @@
+diff -Nru uptimed-0.3.3.orig/Makefile.in uptimed-0.3.3/Makefile.in
+--- uptimed-0.3.3.orig/Makefile.in	2004-06-20 13:45:54.000000000 +0300
++++ uptimed-0.3.3/Makefile.in	2005-06-12 20:34:02.000000000 +0300
+@@ -428,7 +428,7 @@
+ 
+ 
+ install-data-local:
+-	$(INSTALL) -d /var/spool/uptimed
++	$(INSTALL) -d $(DESTDIR)/var/spool/uptimed
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
+diff -Nru uptimed-0.3.3.orig/etc/uptimed.conf-dist uptimed-0.3.3/etc/uptimed.conf-dist
+--- uptimed-0.3.3.orig/etc/uptimed.conf-dist	2004-06-18 18:26:38.000000000 +0300
++++ uptimed-0.3.3/etc/uptimed.conf-dist	2005-06-12 20:34:44.000000000 +0300
+@@ -25,10 +25,10 @@
+ SEND_EMAIL=0
+ 
+ # We need a sendmail compatible mailer, though.
+-SENDMAIL=/usr/lib/sendmail -t
++SENDMAIL=/usr/sbin/sendmail -t
+ 
+ # Where to note our PID
+-PIDFILE=/var/run/uptimed
++PIDFILE=/var/run/uptimed.pid
+ 
+ # Milestones are configurable now.
+ # Syntax is pretty easy: MILESTONE=time:description
