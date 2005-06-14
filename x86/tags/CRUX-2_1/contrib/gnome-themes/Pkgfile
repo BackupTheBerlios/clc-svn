@@ -1,8 +1,8 @@
-# $Id: Pkgfile,v 1.5 2005/04/28 04:11:38 jaeger Exp $
+# $Id: Pkgfile,v 1.6 2005/06/13 14:25:03 jaeger Exp $
 # Description: themes collection for GNOME
 # URL: http://art.gnome.org/
 # Maintainer: Matt Housh, jaeger at morpheus dot net
-# Depends on: gtk-engines, libgnomeui
+# Depends on: gtk, gtk-engines, intltool, pkgconfig
 # Group: gnome
 
 name=gnome-themes
