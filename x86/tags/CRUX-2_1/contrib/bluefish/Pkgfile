@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.4 2005/03/09 21:09:54 till Exp $
+# $Id: Pkgfile,v 1.5 2005/06/14 14:18:14 till Exp $
 # Maintainer: Till Biedermann, tillbiedermann at yahoo dot de
 # Packager: Jochem Kossen, j dot kossen at home dot nl Edited by gadam at arkonet dot gr
 # URL: http://bluefish.openoffice.nl/
@@ -6,7 +6,7 @@
 # Depends on: libpcre, aspell, gtk
 
 name=bluefish
-version=1.0
+version=1.0.1
 release=1
 source=(http://pkedu.fbt.eitn.wau.nl/~olivier/downloads/$name-$version.tar.bz2)
 
