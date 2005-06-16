@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.3 2005/06/14 10:43:35 vector Exp $
+# $Id: Pkgfile,v 1.4 2005/06/15 16:50:11 vector Exp $
 # Description: Secure, fast, compliant and very flexible web server
 # URL: http://www.lighttpd.net/
 # Maintainer: Jukka Heino, jukka at karsikkopuu dot net
@@ -7,8 +7,8 @@
 # Nice to have: libpcre
 
 name=lighttpd
-version=1.3.13
-release=2
+version=1.3.14
+release=1
 source=(http://www.$name.net/download/$name-$version.tar.gz \
         $name.conf \
         $name.rc)

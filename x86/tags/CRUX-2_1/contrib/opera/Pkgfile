@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.7 2005/06/05 15:23:18 vector Exp $
+# $Id: Pkgfile,v 1.8 2005/06/15 20:26:11 vector Exp $
 # Description: Lightweight web browser with news, e-mail and IRC
 # URL: http://www.opera.com
 # Maintainer: Jukka Heino, jukka at karsikkopuu dot net
@@ -6,13 +6,13 @@
 # Depends on: libstdc++-compat, qt3
 
 name=opera
-version=8.01
+version=8.01-20050615.5
 release=1
-source=(http://$name.nsc.no/linux/801/final/en/i386/$name-$version-20050602.5-shared-qt.i386-en.tar.bz2 \
+source=(http://$name.nsc.no/linux/801/final/en/i386/shared/$name-$version-shared-qt.i386-en.tar.bz2 \
         $name.patch)
 
 build() {
-    cd $name-$version-20050602.5-shared-qt.i386-en
+    cd $name-$version-shared-qt.i386-en
     patch -p1 < $SRC/$name.patch
 
     ./install.sh --prefix=$PKG/usr
