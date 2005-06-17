@@ -30,7 +30,6 @@ drwxr-xr-x	root/root	usr/share/graveman/
 -rw-r--r--	root/root	usr/share/graveman/graver-petite.png
 -rw-r--r--	root/root	usr/share/graveman/graver.png
 -rw-r--r--	root/root	usr/share/graveman/hint.png
--rw-r--r--	root/root	usr/share/graveman/i-cdrom.png
 -rw-r--r--	root/root	usr/share/graveman/main-settings.png
 -rw-r--r--	root/root	usr/share/graveman/menu-data.png
 -rw-r--r--	root/root	usr/share/graveman/petit-parametre.png
@@ -145,6 +144,7 @@ drwxr-xr-x	root/root	usr/share/graveman/themes/plainset/
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/CDRWIcon.png
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/CDRWsmallIcon.png
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/CDsmallIcon.png
+-rw-r--r--	root/root	usr/share/graveman/themes/plainset/CharsetSmallIcon.png
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/DVDRWsmallIcon.png
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/DVDsmallIcon.png
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/DirIcon.png
@@ -173,7 +173,9 @@ drwxr-xr-x	root/root	usr/share/graveman/themes/plainset/
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/Menu-Other-32.png
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/Menu-Other-48.png
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/OKIcon.png
+-rw-r--r--	root/root	usr/share/graveman/themes/plainset/Themes.png
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/WARNIcon.png
+-rw-r--r--	root/root	usr/share/graveman/themes/plainset/Working.mng
 -rw-r--r--	root/root	usr/share/graveman/themes/plainset/graveman
 -rw-r--r--	root/root	usr/share/graveman/window_burn.glade
 -rw-r--r--	root/root	usr/share/graveman/window_inprogress.glade

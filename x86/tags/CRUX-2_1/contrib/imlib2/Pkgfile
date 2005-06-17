@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.5 2005/05/25 19:38:47 danm Exp $
+# $Id: Pkgfile,v 1.6 2005/06/16 21:26:52 danm Exp $
 # Description: Image Manipulation Library 2 
 # Maintainer: Daniel Mueller, daniel at danm dot de
 # URL: http://www.enlightenment.org
 # Depends on: freetype
 
 name=imlib2
-version=1.2.0.007
+version=1.2.1
 release=1
 source=(http://enlightenment.freedesktop.org/files/$name-$version.tar.gz)
 

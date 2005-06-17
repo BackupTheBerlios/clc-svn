@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.11 2005/05/25 16:15:04 jaeger Exp $
+# $Id: Pkgfile,v 1.12 2005/06/16 15:14:37 jaeger Exp $
 # Description: Userspace device management daemon
 # URL: http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 # Maintainer: Matt Housh, jaeger at morpheus dot net
@@ -15,7 +15,7 @@ build() {
 	patch -p0 Makefile < $SRC/$name-$version-makefile.diff
 	sed -i -e 's/$(OPTIMIZATION)//' Makefile
 	make \
-		USE_KLIBC=true \
+		USE_KLIBC=false \
 		USE_LOG=false \
 		DEBUG=false \
 		EXTRAS="extras/scsi_id extras/volume_id" \

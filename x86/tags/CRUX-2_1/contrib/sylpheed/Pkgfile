@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.15 2005/06/12 09:19:16 jue Exp $
+# $Id: Pkgfile,v 1.16 2005/06/16 15:22:43 jue Exp $
 # Description: GTK+ email client and news reader
 # URL:         http://sylpheed.good-day.net
 # Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
 # Depends on:  gtk, openssl
 
 name=sylpheed
-version=2.0.0beta1
+version=2.0.0beta2
 release=1
 source=(http://sylpheed.good-day.net/sylpheed/v2.0beta/$name-$version.tar.gz)
 

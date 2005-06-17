@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.13 2005/05/17 20:35:55 sip Exp $
+# $Id: Pkgfile,v 1.14 2005/06/16 17:43:56 sip Exp $
 # Description: CD Burning program
 # URL: http://www.nongnu.org/graveman/
 # Maintainer: Simone Rota, sip at varlock dot com
@@ -6,7 +6,7 @@
 # Depends on: libglade, libid3tag, libmad, libvorbis, cdrtools, sox, cdrdao, p5-xml-parser, libmng
 
 name=graveman
-version=0.3.12
+version=0.3.12-4
 release=1
 source=(http://graveman.tuxfamily.org/sources/$name-$version.tar.gz)
 
