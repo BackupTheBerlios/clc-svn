@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.8 2005/05/20 12:35:20 vector Exp $
+# $Id: Pkgfile,v 1.9 2005/06/17 04:57:32 vector Exp $
 # Description: Mail retriever with support for multiple protocols and formats
 # URL: http://pyropus.ca/software/getmail/
 # Maintainer: Jukka Heino, jukka at karsikkopuu dot net
@@ -6,8 +6,8 @@
 # Depends on: python
 
 name=getmail
-version=4.3.10
-release=2
+version=4.3.11
+release=1
 source=(http://pyropus.ca/software/$name/old-versions/$name-$version.tar.gz \
         $name.patch)
 
