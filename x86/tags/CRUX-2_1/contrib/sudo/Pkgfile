@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.12 2005/04/12 08:07:18 vector Exp $
+# $Id: Pkgfile,v 1.13 2005/06/20 05:21:32 vector Exp $
 # Description: Sudo (superuser do)
 # URL: http://www.sudo.ws/sudo/
 # Maintainer: Jukka Heino, jukka at karsikkopuu dot net
@@ -6,7 +6,7 @@
 # Depends on:
 
 name=sudo
-version=1.6.8p8
+version=1.6.8p9
 release=1
 source=(http://www.sudo.ws/$name/dist/$name-$version.tar.gz)
 
@@ -14,8 +14,9 @@ build() {
     cd $name-$version
     ./configure --prefix=/usr --libexecdir=/usr/lib
     make
+    install -d $PKG/{etc,usr/{bin,sbin}}
     make DESTDIR=$PKG install
-    rm -rf $PKG/usr/info
     ln -sf sudo $PKG/usr/bin/sudoedit
     ln -sf sudo.8.gz $PKG/usr/man/man8/sudoedit.8
+    rm -rf $PKG/usr/info
 }

@@ -1,15 +1,26 @@
-# $Id: Pkgfile,v 1.1 2005/04/27 23:05:21 jaeger Exp $
+# $Id: Pkgfile,v 1.2 2005/06/20 12:42:05 jaeger Exp $
 # Description: An EXIF tag parsing library
 # URL: http://libexif.sourceforge.net/
 # Maintainer: Matt Housh, jaeger at morpheus dot net
 
 name=libexif
 version=0.6.12
-release=1
-source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.bz2)
+release=2
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.bz2 \
+	$name-$version-86740.patch)
 
 build () {
 	cd $name-$version
+
+	# fix a bug with the gimp JPEG plugin
+	patch -p2 < $SRC/$name-$version-86740.patch
+
+	# hack to fix a problem with soname versioning - will be fixed with 0.6.13
+	sed -i -e 's/^LIBEXIF_AGE=0$/LIBEXIF_AGE=2/' \
+		-e 's/^LIBEXIF_REVISION=0$/LIBEXIF_REVISION=2/' \
+		-e 's/^LIBEXIF_VERSION_INFO=.*$/LIBEXIF_VERSION_INFO=$LIBEXIF_CURRENT:$LIBEXIF_AGE:$LIBEXIF_REVISION/' \
+		configure
+
 	./configure --prefix=/usr --disable-nls
 	make
 	make DESTDIR=$PKG install

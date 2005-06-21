@@ -1,4 +1,4 @@
-# $Id: Pkgfile,v 1.5 2005/04/06 18:07:49 sip Exp $
+# $Id: Pkgfile,v 1.6 2005/06/20 22:22:52 sip Exp $
 # Description: GTK Print Dialog
 # URL: http://gtklp.sourceforge.net
 # Maintainer: Simone Rota, sip at varlock dot com
@@ -6,7 +6,7 @@
 # Depends on: gtk, cups
 
 name=gtklp
-version=1.0c
+version=1.0f
 release=1
 source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.src.tar.gz)
 

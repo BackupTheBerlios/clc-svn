@@ -1,0 +1,20 @@
+# $Id: Pkgfile,v 1.3 2005/06/20 20:28:50 victord Exp $
+# Description: ClearLooks GTK 2.x theme engine
+# Maintainer: Victor <victord@users.berlios.de>
+# Packager: Justin <justin.rebelo@telus.net>
+# URL: http://sourceforge.net/projects/clearlooks/
+# Depends on: gtk
+# Group: gnome
+
+name=gtk-engines-clearlooks
+version=0.6.1
+release=1
+source=(http://dl.sourceforge.net/sourceforge/clearlooks/clearlooks-$version.tar.bz2)
+
+build() {
+    cd clearlooks-$version
+    find . -exec touch {} \;
+    ./configure --prefix=/usr
+    make
+    make DESTDIR=$PKG install
+}
