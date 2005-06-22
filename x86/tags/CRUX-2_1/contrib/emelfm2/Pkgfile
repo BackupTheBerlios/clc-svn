@@ -1,11 +1,11 @@
-# $Id: Pkgfile,v 1.6 2005/06/03 03:02:23 danielw Exp $
+# $Id: Pkgfile,v 1.7 2005/06/21 06:28:15 danielw Exp $
 # Description: A gtk file manager that implements the two-pane design.
 # URL: http://www.emelfm2.org/
 # Maintainer: Daniel Walpole, danielw at netspace dot net dot au 
 # Depends on: gtk
 
 name=emelfm2
-version=20050526
+version=20050617
 release=1
 source=(http://emelfm2.org/rel/pre/$name-tom-$version.tar.gz)
 
