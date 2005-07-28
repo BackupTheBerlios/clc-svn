@@ -1,0 +1,32 @@
+drwxr-xr-x	peter/users	usr/
+drwxr-xr-x	peter/users	usr/bin/
+-rwxr-xr-x	peter/users	usr/bin/aconnect
+-rwxr-xr-x	peter/users	usr/bin/alsamixer
+-rwxr-xr-x	peter/users	usr/bin/amidi
+-rwxr-xr-x	peter/users	usr/bin/amixer
+-rwxr-xr-x	peter/users	usr/bin/aplay
+-rwxr-xr-x	peter/users	usr/bin/aplaymidi
+lrwxrwxrwx	peter/users	usr/bin/arecord -> aplay
+-rwxr-xr-x	peter/users	usr/bin/arecordmidi
+-rwxr-xr-x	peter/users	usr/bin/aseqnet
+-rwxr-xr-x	peter/users	usr/bin/iecset
+-rwxr-xr-x	peter/users	usr/bin/speaker-test
+drwxr-xr-x	peter/users	usr/man/
+drwxr-xr-x	peter/users	usr/man/man1/
+-rw-r--r--	peter/users	usr/man/man1/aconnect.1.gz
+-rw-r--r--	peter/users	usr/man/man1/alsactl.1.gz
+-rw-r--r--	peter/users	usr/man/man1/alsamixer.1.gz
+-rw-r--r--	peter/users	usr/man/man1/amidi.1.gz
+-rw-r--r--	peter/users	usr/man/man1/amixer.1.gz
+-rw-r--r--	peter/users	usr/man/man1/aplay.1.gz
+-rw-r--r--	peter/users	usr/man/man1/aplaymidi.1.gz
+lrwxrwxrwx	peter/users	usr/man/man1/arecord.1.gz -> aplay.1.gz
+-rw-r--r--	peter/users	usr/man/man1/arecordmidi.1.gz
+-rw-r--r--	peter/users	usr/man/man1/aseqnet.1.gz
+-rw-r--r--	peter/users	usr/man/man1/iecset.1.gz
+-rw-r--r--	peter/users	usr/man/man1/speaker-test.1.gz
+drwxr-xr-x	peter/users	usr/man/man8/
+-rw-r--r--	peter/users	usr/man/man8/alsaconf.8.gz
+drwxr-xr-x	peter/users	usr/sbin/
+-rwxr-xr-x	peter/users	usr/sbin/alsaconf
+-rwxr-xr-x	peter/users	usr/sbin/alsactl
