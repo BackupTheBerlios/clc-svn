@@ -1,0 +1,21 @@
+# $Id: Pkgfile,v 1.2 2005/04/02 09:20:04 jue Exp $
+# Description: xterm replacement with transparency and fading
+# URL:         http://aterm.sourceforge.net
+# Maintainer:  Jürgen Daubert, juergen dot daubert at t-online dot de
+# Depends on:  x11
+
+name=aterm
+version=0.4.2
+release=5
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz)
+
+build () {
+    cd $name-$version
+    sed -i 's/#define LINUX_KEYS//' src/feature.h
+    ./configure --prefix=/usr \
+                --enable-fading \
+                --enable-xpm-background \
+                --enable-background-image
+    make
+    make DESTDIR=$PKG install
+}
