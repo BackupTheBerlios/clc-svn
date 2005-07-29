@@ -1,0 +1,105 @@
+Index: ntpd/ntp_io.c
+--- ntpd/ntp_io.c.orig	2003-10-07 23:10:39.000000000 +0200
++++ ntpd/ntp_io.c	2003-10-19 11:37:19.000000000 +0200
+@@ -809,6 +809,7 @@
+ 		/*
+ 		 * enable reception of multicast packets
+ 		 */
++#if defined(IPV6_JOIN_GROUP)
+ 		mreq6.ipv6mr_multiaddr = iaddr6;
+ 		mreq6.ipv6mr_interface = 0;
+ 		if(setsockopt(inter_list[i].fd, IPPROTO_IPV6, IPV6_JOIN_GROUP,
+@@ -818,6 +819,7 @@
+ 			 mreq6.ipv6mr_interface, stoa(&addr));
+ 		inter_list[i].flags |= INT_MULTICAST;
+ 		inter_list[i].num_mcast++;
++#endif
+ 		if(i >= ninterfaces)
+ 			ninterfaces = i+1;
+ 
+@@ -963,6 +965,7 @@
+ 			}
+ 			else
+ 			{
++#if defined(IPV6_LEAVE_GROUP)
+ 				/* We are sharing "any address" port :-(  Don't close it! */
+ 				if (setsockopt(inter_list[i].fd, IPPROTO_IPV6, IPV6_LEAVE_GROUP,
+ 					(char *)&mreq6, sizeof(mreq6)) == -1)
+@@ -971,6 +974,7 @@
+ 				/* If there are none left negate the Multicast flag */
+ 				if(inter_list[i].num_mcast == 0)
+ 					inter_list[i].flags &= ~INT_MULTICAST;
++#endif
+ 			}
+ 		}
+ 		break;
+
+taken from http://cvsweb.freebsd.org/ports/net/ntp/ntp.tar.gz?tarball=1 patch-ntpdc::ntpdc.c
+--- ntpdc/ntpdc.c.orig	Sat Oct 11 00:52:22 2003
++++ ntpdc/ntpdc.c	Sun Jan 25 13:29:58 2004
+@@ -449,7 +449,11 @@
+ 	hints.ai_flags = AI_NUMERICHOST;
+ 
+ 	a_info = getaddrinfo(hname, service, &hints, &ai);
++#ifdef EAI_NODATA
+ 	if (a_info == EAI_NONAME || a_info == EAI_NODATA) {
++#else
++	if (a_info == EAI_NONAME) {
++#endif
+ 		hints.ai_flags = AI_CANONNAME;
+ #ifdef AI_ADDRCONFIG
+ 		hints.ai_flags |= AI_ADDRCONFIG;
+
+taken from http://cvsweb.freebsd.org/ports/net/ntp/ntp.tar.gz?tarball=1 patch-ntpq::ntpq.c
+--- ntpq/ntpq.c.orig	Thu Oct  9 02:27:05 2003
++++ ntpq/ntpq.c	Sun Jan 25 13:49:33 2004
+@@ -630,7 +630,11 @@
+ 	hints.ai_flags = AI_NUMERICHOST;
+ 
+ 	a_info = getaddrinfo(hname, service, &hints, &ai);
++#ifdef EAI_NODATA
+ 	if (a_info == EAI_NONAME || a_info == EAI_NODATA) {
++#else
++	if (a_info == EAI_NONAME) {
++#endif
+ 		hints.ai_flags = AI_CANONNAME;
+ #ifdef AI_ADDRCONFIG
+ 		hints.ai_flags |= AI_ADDRCONFIG;
+
+Index: configure.in
+--- configure.in.orig	2004-06-03 15:19:21.000000000 +0200
++++ configure.in	2004-06-03 15:18:18.000000000 +0200
+@@ -819,7 +819,7 @@
+  *) AC_CHECK_FUNCS(umask)
+     ;;
+ esac
+-AC_CHECK_FUNCS(uname updwtmp updwtmpx vsprintf)
++AC_CHECK_FUNCS(uname updwtmp updwtmpx vsprintf vsnprintf)
+ 
+ case "$host" in
+  *-*-sunos4*)
+Index: configure
+--- configure.orig	2004-06-03 15:19:14.000000000 +0200
++++ configure	2004-06-03 15:18:26.000000000 +0200
+@@ -17746,7 +17746,7 @@
+ 
+ 
+ 
+-for ac_func in uname updwtmp updwtmpx vsprintf
++for ac_func in uname updwtmp updwtmpx vsprintf vsnprintf
+ do
+ as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ echo "$as_me:$LINENO: checking for $ac_func" >&5
+Index: config.h.in
+--- config.h.in.orig	2004-06-03 15:18:53.000000000 +0200
++++ config.h.in	2004-06-03 15:18:55.000000000 +0200
+@@ -822,6 +822,9 @@
+ /* Define to 1 if you have the `vsprintf' function. */
+ #undef HAVE_VSPRINTF
+ 
++/* Define to 1 if you have the `vsnprintf' function. */
++#undef HAVE_VSNPRINTF
++
+ /* Define to 1 if you have the </sys/sync/queue.h> header file. */
+ #undef HAVE__SYS_SYNC_QUEUE_H
+ 
