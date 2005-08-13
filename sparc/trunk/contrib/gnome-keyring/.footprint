@@ -1,0 +1,15 @@
+drwxr-xr-x	peter/users	usr/
+drwxr-xr-x	peter/users	usr/bin/
+-rwxr-xr-x	peter/users	usr/bin/gnome-keyring-daemon
+drwxr-xr-x	peter/users	usr/include/
+drwxr-xr-x	peter/users	usr/include/gnome-keyring-1/
+-rw-r--r--	peter/users	usr/include/gnome-keyring-1/gnome-keyring.h
+drwxr-xr-x	peter/users	usr/lib/
+drwxr-xr-x	peter/users	usr/lib/gnome-keyring/
+-rwxr-xr-x	peter/users	usr/lib/gnome-keyring/gnome-keyring-ask
+-rwxr-xr-x	peter/users	usr/lib/libgnome-keyring.la
+lrwxrwxrwx	peter/users	usr/lib/libgnome-keyring.so -> libgnome-keyring.so.0.0.1
+lrwxrwxrwx	peter/users	usr/lib/libgnome-keyring.so.0 -> libgnome-keyring.so.0.0.1
+-rwxr-xr-x	peter/users	usr/lib/libgnome-keyring.so.0.0.1
+drwxr-xr-x	peter/users	usr/lib/pkgconfig/
+-rw-r--r--	peter/users	usr/lib/pkgconfig/gnome-keyring-1.pc
