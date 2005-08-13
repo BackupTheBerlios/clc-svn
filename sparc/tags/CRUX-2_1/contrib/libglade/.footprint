@@ -1,0 +1,30 @@
+drwxr-xr-x	peter/users	etc/
+drwxr-xr-x	peter/users	etc/xml/
+drwxr-xr-x	peter/users	etc/xml/dtd/
+drwxr-xr-x	peter/users	etc/xml/dtd/libglade/
+drwxr-xr-x	peter/users	etc/xml/dtd/libglade/2.0/
+-rw-r--r--	peter/users	etc/xml/dtd/libglade/2.0/catalog
+drwxr-xr-x	peter/users	usr/
+drwxr-xr-x	peter/users	usr/bin/
+drwxr-xr-x	peter/users	usr/include/
+drwxr-xr-x	peter/users	usr/include/libglade-2.0/
+drwxr-xr-x	peter/users	usr/include/libglade-2.0/glade/
+-rw-r--r--	peter/users	usr/include/libglade-2.0/glade/glade-build.h
+-rw-r--r--	peter/users	usr/include/libglade-2.0/glade/glade-init.h
+-rw-r--r--	peter/users	usr/include/libglade-2.0/glade/glade-parser.h
+-rw-r--r--	peter/users	usr/include/libglade-2.0/glade/glade-xml.h
+-rw-r--r--	peter/users	usr/include/libglade-2.0/glade/glade.h
+drwxr-xr-x	peter/users	usr/lib/
+-rw-r--r--	peter/users	usr/lib/libglade-2.0.a
+-rwxr-xr-x	peter/users	usr/lib/libglade-2.0.la
+lrwxrwxrwx	peter/users	usr/lib/libglade-2.0.so -> libglade-2.0.so.0.0.7
+lrwxrwxrwx	peter/users	usr/lib/libglade-2.0.so.0 -> libglade-2.0.so.0.0.7
+-rwxr-xr-x	peter/users	usr/lib/libglade-2.0.so.0.0.7
+drwxr-xr-x	peter/users	usr/lib/pkgconfig/
+-rw-r--r--	peter/users	usr/lib/pkgconfig/libglade-2.0.pc
+drwxr-xr-x	peter/users	usr/share/
+drwxr-xr-x	peter/users	usr/share/xml/
+drwxr-xr-x	peter/users	usr/share/xml/dtd/
+drwxr-xr-x	peter/users	usr/share/xml/dtd/libglade/
+drwxr-xr-x	peter/users	usr/share/xml/dtd/libglade/2.0/
+-rw-r--r--	peter/users	usr/share/xml/dtd/libglade/2.0/glade-2.0.dtd
