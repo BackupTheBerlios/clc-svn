@@ -1,0 +1,30 @@
+# $Id$
+# Description: simple system monitor that sits in the corner of your desktop
+# URL:         http://torsmo.sourceforge.net/
+# Maintainer:  Johannes Winkelmann, jw at tks6 dot net
+# Packager:    Han Boetes, han at mijncomputer dot nl
+# Depends on:  x11
+
+name=torsmo
+version=0.18
+release=1
+source=(http://dl.sourceforge.net/sourceforge/$name/$name-$version.tar.gz\
+	torsmo-0.18.noswap.patch \
+	torsmo-0.18.i2c.patch \
+	torsmo-0.18-ignore-net-workarea.diff \
+	torsmo-0.18-cpufreq-sysfs.diff)
+
+build() {
+    cd $name-$version
+
+    patch -p0 < $SRC/torsmo-0.18.noswap.patch
+    patch -p1 < $SRC/torsmo-0.18.i2c.patch
+    patch -p1 < $SRC/torsmo-0.18-ignore-net-workarea.diff
+    patch -p1 < $SRC/torsmo-0.18-cpufreq-sysfs.diff
+    ./configure \
+        --prefix=/usr \
+        --disable-nls --enable-xft
+    make
+    make install DESTDIR=$PKG
+    install -D torsmorc.sample $PKG/usr/share/$name/torsmorc.sample
+}
