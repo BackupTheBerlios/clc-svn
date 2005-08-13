@@ -1,0 +1,16 @@
+drwxr-xr-x	peter/users	usr/
+drwxr-xr-x	peter/users	usr/include/
+drwxr-xr-x	peter/users	usr/include/libxklavier/
+-rw-r--r--	peter/users	usr/include/libxklavier/xklavier.h
+-rw-r--r--	peter/users	usr/include/libxklavier/xklavier_config.h
+drwxr-xr-x	peter/users	usr/lib/
+-rw-r--r--	peter/users	usr/lib/libxklavier.a
+-rwxr-xr-x	peter/users	usr/lib/libxklavier.la
+lrwxrwxrwx	peter/users	usr/lib/libxklavier.so -> libxklavier.so.10.0.0
+lrwxrwxrwx	peter/users	usr/lib/libxklavier.so.10 -> libxklavier.so.10.0.0
+-rwxr-xr-x	peter/users	usr/lib/libxklavier.so.10.0.0
+drwxr-xr-x	peter/users	usr/lib/pkgconfig/
+-rw-r--r--	peter/users	usr/lib/pkgconfig/libxklavier.pc
+drwxr-xr-x	peter/users	usr/share/
+drwxr-xr-x	peter/users	usr/share/libxklavier/
+-rw-r--r--	peter/users	usr/share/libxklavier/xfree86.xml
