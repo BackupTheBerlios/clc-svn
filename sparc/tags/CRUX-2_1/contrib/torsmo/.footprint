@@ -1,0 +1,9 @@
+drwxr-xr-x	peter/users	usr/
+drwxr-xr-x	peter/users	usr/bin/
+-rwxr-xr-x	peter/users	usr/bin/torsmo
+drwxr-xr-x	peter/users	usr/man/
+drwxr-xr-x	peter/users	usr/man/man1/
+-rw-r--r--	peter/users	usr/man/man1/torsmo.1.gz
+drwxr-xr-x	peter/users	usr/share/
+drwxr-xr-x	peter/users	usr/share/torsmo/
+-rwxr-xr-x	peter/users	usr/share/torsmo/torsmorc.sample

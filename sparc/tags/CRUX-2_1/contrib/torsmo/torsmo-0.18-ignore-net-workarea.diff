@@ -1,0 +1,54 @@
+diff -u -x '*.o' -b -ur torsmo-0.18.orig/torsmo.c torsmo-0.18/torsmo.c
+--- torsmo-0.18.orig/torsmo.c	2004-12-21 23:14:46.000000000 +0100
++++ torsmo-0.18/torsmo.c	2005-05-20 21:51:52.234685552 +0200
+@@ -1856,6 +1856,7 @@
+ #endif
+   gap_x = 5;
+   gap_y = 5;
++  ignore_net_workarea = 0;
+ 
+   free(current_mail_spool);
+   {
+@@ -2023,6 +2024,9 @@
+       else
+         CONF_ERR
+     }
++    CONF("ignore_net_workarea") {
++      ignore_net_workarea = string_to_bool(value);
++    }
+     CONF("gap_x") {
+       if (value)
+         gap_x = atoi(value);
+diff -u -x '*.o' -b -ur torsmo-0.18.orig/torsmo.h torsmo-0.18/torsmo.h
+--- torsmo-0.18.orig/torsmo.h	2004-12-21 22:49:17.000000000 +0100
++++ torsmo-0.18/torsmo.h	2005-05-20 21:51:05.791745952 +0200
+@@ -124,6 +124,7 @@
+ extern int use_xft;
+ #endif
+ 
++extern int ignore_net_workarea;
+ extern Display *display;
+ extern int display_width;
+ extern int display_height;
+diff -u -x '*.o' -b -ur torsmo-0.18.orig/x11.c torsmo-0.18/x11.c
+--- torsmo-0.18.orig/x11.c	2004-12-21 23:19:55.000000000 +0100
++++ torsmo-0.18/x11.c	2005-05-20 21:43:57.778813808 +0200
+@@ -14,6 +14,8 @@
+ int use_xft;
+ #endif
+ 
++int ignore_net_workarea;
++
+ /* some basic X11 stuff */
+ Display *display;
+ int display_width;
+@@ -65,7 +67,8 @@
+     XFree(buf); buf = 0;
+ 
+     /* get workarea */
+-    if (XGetWindowProperty(display, root, ATOM(_NET_WORKAREA), desktop*4, 4,
++    if (!ignore_net_workarea &&
++        XGetWindowProperty(display, root, ATOM(_NET_WORKAREA), desktop*4, 4,
+           False, XA_CARDINAL, &type, &format, &nitems, &bytes, &buf) ==
+         Success && type == XA_CARDINAL) {
+       workarea[0] = ((long *) buf)[0];

@@ -1,0 +1,5 @@
+d1118480b32426251df4667ca017c4aa  torsmo-0.18-cpufreq-sysfs.diff
+a4a02f3f3496eb51efa108c79a436675  torsmo-0.18-ignore-net-workarea.diff
+0aa744033b2091d42d3817cd1bb62f59  torsmo-0.18.i2c.patch
+665c68fb6d053d92d013ba44a84f394c  torsmo-0.18.noswap.patch
+88bd8f627637d785a1d681f4f15f00b6  torsmo-0.18.tar.gz

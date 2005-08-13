@@ -1,0 +1,36 @@
+--- torsmo-0.18.orig/linux.c	2004-12-21 22:20:07.000000000 +0100
++++ torsmo-0.18/linux.c	2005-05-20 23:27:21.000780728 +0200
+@@ -432,16 +432,27 @@
+     	assert(frequency!=NULL);
+     }
+     //char frequency[10];
+-    f=fopen("/proc/cpuinfo","r"); //open the CPU information file
+-    //if (!f)
+-    //    return;
+-    while (fgets(s,1000,f)!=NULL)  //read the file
+-        if ( strncmp(s, "cpu M", 5)==0 ) { //and search for the cpu mhz
++    /* this will only use the cpu0, but it's as good as using the
++     * first value from /proc/cpuinfo jw */
++    f=fopen("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq","r");
++    if (f) {
++        if (fgets(s, 1000,f)) {
++            s[strlen(s)-1] = '\0';
++            long f = strtol(s, NULL, 10);
++            snprintf(frequency, 100, "%ld", f / 1000);
++        }
++    } else {
++        f=fopen("/proc/cpuinfo","r"); //open the CPU information file
++        //if (!f)
++        //    return;
++        while (fgets(s,1000,f)!=NULL)  //read the file
++            if ( strncmp(s, "cpu M", 5)==0 ) { //and search for the cpu mhz
+                 //printf("%s", strchr(s, ':')+2);
+                 strcpy(frequency,strchr(s, ':')+2); //copy just the number
+                 frequency[strlen(frequency)-1] = '\0'; // strip \n
+                 break;
+-        }
++            }
++    }
+     fclose(f);
+     return frequency;
+ }
