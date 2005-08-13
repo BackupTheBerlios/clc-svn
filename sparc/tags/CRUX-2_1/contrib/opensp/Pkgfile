@@ -1,0 +1,28 @@
+# $Id: Pkgfile,v 1.4 2005/04/27 15:52:49 jaeger Exp $
+# Description: SGML parser
+# URL: http://openjade.sourceforge.net/
+# Maintainer: Matt Housh, jaeger at morpheus dot net
+# Depends on: libstdc++-compat
+
+name=opensp
+version=1.5.1
+release=1
+source=(http://dl.sourceforge.net/sourceforge/openjade/OpenSP-$version.tar.gz \
+	$name-gcc34.patch)
+
+build() {
+	cd OpenSP-$version
+	patch -p1 < $SRC/$name-gcc34.patch
+	./configure --prefix=/usr \
+		--disable-nls \
+		--enable-http \
+		--enable-default-catalog=/etc/sgml/catalog:/etc/xml/catalog \
+		--enable-default-search-path=/usr/share/sgml:/usr/share/xml \
+		--enable-xml-messages
+	make
+	make DESTDIR=$PKG install
+	rm -fr $PKG/usr/{,share/}doc
+	for bin in nsgmls sgmlnorm spam spcat spent; do
+		ln -s o$bin $PKG/usr/bin/$bin
+	done
+}
