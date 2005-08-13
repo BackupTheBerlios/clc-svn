@@ -1,0 +1,33 @@
+drwxr-xr-x	peter/users	usr/
+drwxr-xr-x	peter/users	usr/bin/
+-rwxr-xr-x	peter/users	usr/bin/vte
+drwxr-xr-x	peter/users	usr/include/
+drwxr-xr-x	peter/users	usr/include/vte/
+-rw-r--r--	peter/users	usr/include/vte/pty.h
+-rw-r--r--	peter/users	usr/include/vte/reaper.h
+-rw-r--r--	peter/users	usr/include/vte/vte.h
+-rw-r--r--	peter/users	usr/include/vte/vteaccess.h
+drwxr-xr-x	peter/users	usr/lib/
+-rw-r--r--	peter/users	usr/lib/libvte.a
+-rwxr-xr-x	peter/users	usr/lib/libvte.la
+lrwxrwxrwx	peter/users	usr/lib/libvte.so -> libvte.so.4.4.0
+lrwxrwxrwx	peter/users	usr/lib/libvte.so.4 -> libvte.so.4.4.0
+-rwxr-xr-x	peter/users	usr/lib/libvte.so.4.4.0
+drwxr-xr-x	peter/users	usr/lib/pkgconfig/
+-rw-r--r--	peter/users	usr/lib/pkgconfig/vte.pc
+drwxr-xr-x	peter/users	usr/lib/vte/
+-rwxr-xr-x	peter/users	usr/lib/vte/decset
+-rwxr-sr-x	peter/users	usr/lib/vte/gnome-pty-helper
+-rwxr-xr-x	peter/users	usr/lib/vte/interpret
+-rwxr-xr-x	peter/users	usr/lib/vte/iso8859mode
+-rwxr-xr-x	peter/users	usr/lib/vte/nativeecho
+-rwxr-xr-x	peter/users	usr/lib/vte/osc
+-rwxr-xr-x	peter/users	usr/lib/vte/slowcat
+-rwxr-xr-x	peter/users	usr/lib/vte/utf8echo
+-rwxr-xr-x	peter/users	usr/lib/vte/utf8mode
+-rwxr-xr-x	peter/users	usr/lib/vte/vterdb
+-rwxr-xr-x	peter/users	usr/lib/vte/window
+drwxr-xr-x	peter/users	usr/share/
+drwxr-xr-x	peter/users	usr/share/vte/
+drwxr-xr-x	peter/users	usr/share/vte/termcap/
+-rw-r--r--	peter/users	usr/share/vte/termcap/xterm
