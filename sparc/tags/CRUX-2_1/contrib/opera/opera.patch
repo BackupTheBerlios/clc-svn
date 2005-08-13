@@ -1,0 +1,47 @@
+diff -Nru opera-7.54-20041210.5-shared-qt.i386-en.orig/install.sh opera-7.54-20041210.5-shared-qt.i386-en/install.sh
+--- opera-7.54-20041210.5-shared-qt.i386-en.orig/install.sh	2004-12-10 14:53:02.000000000 +0200
++++ opera-7.54-20041210.5-shared-qt.i386-en/install.sh	2004-12-22 09:26:08.202520568 +0200
+@@ -1277,43 +1277,6 @@
+ 		chmod $chmodv 755 $exec_dir/vxmlplugin.so.0.1
+ 	fi
+ 
+-
+-
+-	if test -z "${OPERADESTDIR}"; then
+-
+-	# System wide configuration files
+-	config_dir="/etc"
+-	if can_write_to "$config_dir"; then
+-	    echo
+-	    echo "System wide configuration files:"
+-	    echo "  $config_dir/opera6rc"
+-	    echo "  $config_dir/opera6rc.fixed"
+-	    echo " cannot be prefixed"
+-	    if con_firm "Do you want to install them"; then
+-		backup $config_dir/opera6rc opera6rc config
+-		backup $config_dir/opera6rc.fixed opera6rc.fixed config
+-		cp $cpv $cpf config/opera6rc $config_dir
+-		cp $cpv $cpf config/opera6rc.fixed $config_dir
+-	    fi
+-	else
+-	    echo
+-	    echo "User \"${USERNAME}\" does not have write access to $config_dir"
+-	    echo " System wide configuration files:"
+-	    echo "  $config_dir/opera6rc"
+-	    echo "  $config_dir/opera6rc.fixed"
+-	    echo " were not installed"
+-	fi
+-
+-     # Shorcuts and Icons
+-	icons
+-	gnome
+-	kde 3
+-	kde 2
+-	kde1
+-	mandrake
+-
+-	fi # OPERADESTDIR
+-
+ # Add uninstallation here
+ 
+ 	if ver_bose; then
